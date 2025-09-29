@@ -13,8 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\crs-base\Crs.Base.CommonControlsLibrary\Crs.Base.CommonControlsLibrary.csproj" />
-    <ProjectReference Include="..\..\..\crs-base\Crs.Base.CommonUtilsLibrary\Crs.Base.CommonUtilsLibrary.csproj" />
+    <ProjectReference Include="..\..\..\..\REPOSITORY_GIT\crs-base\Crs.Base.CommonControlsLibrary\Crs.Base.CommonControlsLibrary.csproj" />
+    <ProjectReference Include="..\..\..\..\REPOSITORY_GIT\crs-base\Crs.Base.DBaseLibrary\Crs.Base.DBaseLibrary.csproj" />
     <ProjectReference Include="..\Crs.Home.ApocalypsData\Crs.Home.ApocalypsData.csproj" />
   </ItemGroup>
 

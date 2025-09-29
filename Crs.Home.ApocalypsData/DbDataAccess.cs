@@ -684,8 +684,7 @@ namespace Crs.Home.ApocalypsData
                 ; ";*/
                 DbFactory conn = new DbFactory(connectionString, providerName);
                 lstres = conn.ExecuteSql<PSD_RES>(sql, dt1, dt2);
-                //var lst = lstres.GroupBy(X => new { X.DATA_EVENTO, X.RUOTA, X.NUM_ESTRATTO}).ToList();
-                lstres = lstres.DistinctBy(X => new { X.DATA_EVENTO, X.RUOTA, X.NUM_ESTRATTO }).ToList();
+                //lstres = System.Linq.Enumerable.DistinctBy(lstres, r=>X => new { X.DATA_EVENTO, X.RUOTA, X.NUM_ESTRATTO }).ToList();
                
                 //table1.GroupBy(x => x.Text).Select(x => x.FirstOrDefault());
             }
