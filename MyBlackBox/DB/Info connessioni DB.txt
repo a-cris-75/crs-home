@@ -1,0 +1,130 @@
+INFO SQL SERVER: UTENTI, LOGIN,SCHEMA
+	1) premessa: se instalo il db da situazione vergine devo seguire la strada dell'autenticazione windows dato che altrimenti devo agire su REGISTRY con regedit
+	 per permettere l'autenticazione in due modalità: windows e sql serverv autentication
+		1)The Authentication mode for MS-SQL Server can be changed after installation without installing the SQL Management Studio.
+
+			a.Open the Window Registry Editor (Start --> Run --> regedit.exe).
+			b.Go to "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SQL Server\<INSTANCE NAME>\MSSQLServer where <INSTANCE NAME? is the name of the MS-SQL instance.
+			c.Locate the field "LoginMode".  Change it's value to "2" to put MS-SQL into Mixed Mode Authentication.
+			d.Restart the MS-SQL service.
+			
+			NB: il valore iniiale della chiave nel registry è 1
+
+	2) se volesi utilizzare l'autenticazione SQL Server (SQLServer autentication anzichè Windows nt..) nello script potrei agire in questo modo:
+		a. aggiungo il login: 
+			CREATE LOGIN [mbb] WITH PASSWORD = N'******' ,
+			  DEFAULT_DATABASE = [master],
+			  DEFAULT_LANGUAGE = [English],
+			  CHECK_POLICY = OFF,
+			  CHECK_EXPIRATION = OFF
+			GO
+			
+		b. aggiungo lo user e lo schema
+			CREATE USER [mbb]
+			  FOR LOGIN [mbb]
+			  WITH DEFAULT_SCHEMA = [mbb]
+			GO
+
+			CREATE SCHEMA [mbb]
+			  AUTHORIZATION [mbb]
+			GO
+			
+			.in questo modo creo un utente che fa riferimento all'utente di login con lo stesso nome (per semplicità) mbb
+			.autorizzo l'utente mbb (che deriva dal login mbb) ad utilizzare lo schema mbb
+			
+		c. a questo punto posso creare gli oggetti del db, che fanno riferimento al nuovo schema
+			es:
+			CREATE TABLE [mbb].[note] (
+				[ID] int NOT NULL,
+				..
+				
+		d. la connection string per sql server ora comprenderà anche
+			dbUser= mbb, dbpwd=mbbcore (su file ini)
+			che si traduce in user id=mbb; password=mbbcore
+			
+	3) in EMS ricorda di registrare il database con windows autentication o sql server authentication
+		.in base alla modalità di accesso/registrazione, sarà possibile visualizzare gli oggetti del db
+			a. se l'accesso è con sql server auth. e il db è stato generato con utente e pwd => vedo gli oggetti di mbb
+			   altrimenti se entro con dbo (win auth.) non vedo niente
+			b. se entro con win auth. (utente di default dbo) e genero il db con schema dbo, nello schema dbo vedrò le tabelle create da script
+			
+
+
+
+CAMBIO DB NOTE (DA MYSQL A SQLSERVER):
+- il tipo di dati in mysql tinyint (utile per visualizzare sulle griglie il check box può essere tradotto in sqlserver con bit ottenendo lo stesso risultato
+- la connection string di sql se mi connetto con autenticazione windows è:
+	Data Source= localhost\sqlexpress;
+    Initial Catalog=databasename;
+	Integrated Security=SSPI; -- se la connessione è trusted (sicura)
+	-- altrimenti 
+	user id=nomeUtente;
+    password=pwd;
+	
+	
+	
+NOTE INSTALLAZIONE DB DA SITUAZIONE VERGINE (CON SCRIPT):
+
+
+
+SQL SERVER INFO:
+	connessione remota:
+
+	1) Abilitare le connessioni remote per l'istanza di SQL Server a cui si desidera connettersi da un computer remoto.
+    2) Attivare il servizio SQL Server Browser.
+		.nel pc remoto a cui voglio connettermi devo avviare il servizio sql browser
+    3) Configurare il firewall per consentire il traffico di rete correlato a SQL Server e per il servizio SQL Server Browser.
+		.generare eccezioni per 2 applicazioni:
+			APPLICAZIONE A): C:\Program Files\Microsoft SQL Server\MSSQL10.SQLEXPRESS\MSSQL\Binn\sqlservr.exe
+			1-In Windows Firewall, fare clic sulla scheda eccezioni e quindi fare clic su Aggiungi programma.
+				(voce Allow program or feautures  through win firewall
+			2-La finestra Aggiungi programma, fare clic su Sfoglia.
+			3-Fare clic su \MSSQL\Binn\sqlservr.exe C:\Program Files\Microsoft SQL ServerMSSQL. 1, fare clic su Apri e quindi fare clic su OK.
+			
+			APPLICAZIONE B): C:\Program Files (x86)\Microsoft SQL Server\90\Shared\sqlbrowser.exe
+	4) riavvia i servizi SQLServer, SQLServerBrowser
+	5) in gestione computer (Computer management - tast dx risorse del computer) assicurarsi che:
+		.in services and application/sqlserver config/SQlServernetwork config
+		.in protocols abilitare almeno named pipes
+		
+MySQL info
+	.ricorda in windows firewall (pannello di controllo) di fare:
+		1) Allow program or feauture through win firewall
+		2) Allow another program (ma forse è già nella lista)
+		3) Seleziona flag public
+		
+	NOTE BUGS E SOLUZIONI
+	1) error number 1364 Failed 'authentication_string'..
+		installazione da ver 5.5.32 (o 5.5.9)
+		.in configurazione non deve essere flaggato il check 
+			'Enable root access for remote machine' altrimenti c'è un errore in configurazione (bug)
+		.è possibile ripristinare l'accesso remoto con root eseguendo il comandoa da cmd (programmi/mysql/mysql server 5.5/command line client:
+			'user'@'%'
+		.megio:
+			ALTER TABLE mysql.`user`  CHANGE COLUMN `authentication_string` `authentication_string` TEXT NULL COLLATE 'utf8_bin' AFTER `plugin`;
+	
+	2) mySQL ERROR 1045 (28000): Access denied for user 'root'@'localhost
+		soluziome da command line client
+		grant all privileges on *.* to 'root'@'localhost' identified by 'yourpassword' with grant option.
+		
+	3) se compare l'errore in connessione (con EMS):
+		.host not allowed to connect with this mysql
+		. su server in command client eseguire
+			GRANT ALL ON *.* to root@'192.168.1.4' IDENTIFIED BY 'your-root-password'; 
+			es: GRANT ALL ON *.* to root@'vmwin7cris' IDENTIFIED BY 'admin'; 
+		
+		
+		
+SQL SERVER (sa, manager)
+- NOTE CONNESSIONI AL DB IN REMOTO
+- con XP non riesco a connettermi con win7 64 sqlexpress (da win7 a win7 si)
+
+This problem occurs if the user tries to log in with credentials that cannot be validated. This problem can occur in the following scenarios:
+
+Scenario 1: The login may be a SQL Server login but the server only accepts Windows Authentication.
+Scenario 2: You are trying to connect by using SQL Server Authentication but the login used does not exist on SQL Server.
+Scenario 3: The login may use Windows Authentication but the login is an unrecognized Windows principal. An unrecognized Windows principal means that Windows can't verify the login. This might be because the Windows login is from an untrusted domain.
+
+To resolve this problem, follow the steps that apply to your scenario. Scenario 1: Configure SQL Server in Mixed Authentication Mode.
+
+SQL Server 2012, SQL Server 2008, and SQL Server 2005 Open SQL Server Management Studio. To do this, click Start, click All Programs, click Microsoft SQL Server 200x (where x is the version of SQL), and then click SQL Server Management Studio. Right-click the server, and then click Properties. See image. On the Security page, under Server authentication, click the SQL Server and Windows Authentication mode option button, and then click OK. See image. In the SQL Server Management Studio dialog box, click OK to restart SQL Server. 
