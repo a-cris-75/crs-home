@@ -1,0 +1,14 @@
+﻿delete  from note_key;
+go;
+
+delete  from note_doc;
+go;
+
+delete  from activity;
+go;
+
+delete  from activity_log;
+go;
+
+delete  from note_sharing;
+go;
