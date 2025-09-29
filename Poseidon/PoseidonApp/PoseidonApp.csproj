@@ -1,0 +1,485 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{8EC9E0F2-0898-4377-B272-52F2BBA47BE5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PoseidonApp</RootNamespace>
+    <AssemblyName>PoseidonApp</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>d:\DEVELOPMENT\C#\Poseidon\PUBLISH\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>false</MapFileExtensions>
+    <ProductName>POSEIDON</ProductName>
+    <PublisherName>MyBlackBox</PublisherName>
+    <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
+    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <CreateDesktopShortcut>true</CreateDesktopShortcut>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <BootstrapperComponentsLocation>Relative</BootstrapperComponentsLocation>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>
+    </StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>F35BD17635EBEEFBAA18AC93D79B749D730FFD33</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>PoseidonApp_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>symantec.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Optimize>false</Optimize>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CRS.CommonControlsLib">
+      <HintPath>..\..\CRS.Common\RELEASE\CRS.CommonControlsLib.dll</HintPath>
+    </Reference>
+    <Reference Include="CRS.DBLibrary">
+      <HintPath>..\..\CRS.Common\RELEASE\CRS.DBLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="CRS.Library">
+      <HintPath>..\..\CRS.Common\RELEASE\CRS.Library.dll</HintPath>
+    </Reference>
+    <Reference Include="CRS.MainFormIniLib">
+      <HintPath>..\..\CRS.Common\RELEASE\CRS.MainFormIniLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Infragistics4.Shared.v13.1, Version=13.1.20131.1001, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Infragistics\NetAdvantage 2013.1\Windows Forms\CLR4.0\Bin\Infragistics4.Shared.v13.1.dll</HintPath>
+    </Reference>
+    <Reference Include="Infragistics4.Win.Misc.v13.1, Version=13.1.20131.1001, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Infragistics\NetAdvantage 2013.1\Windows Forms\CLR4.0\Bin\Infragistics4.Win.Misc.v13.1.dll</HintPath>
+    </Reference>
+    <Reference Include="Infragistics4.Win.UltraChart.v13.1.Design">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Infragistics\NetAdvantage 2013.1\Windows Forms\CLR4.0\Bin\Infragistics4.Win.UltraChart.v13.1.Design.dll</HintPath>
+    </Reference>
+    <Reference Include="Infragistics4.Win.UltraWinCalcManager.v13.1, Version=13.1.20131.1001, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Infragistics\NetAdvantage 2013.1\Windows Forms\CLR4.0\Bin\Infragistics4.Win.UltraWinCalcManager.v13.1.dll</HintPath>
+    </Reference>
+    <Reference Include="Infragistics4.Win.UltraWinChart.v13.1, Version=13.1.20131.1001, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Infragistics\NetAdvantage 2013.1\Windows Forms\CLR4.0\Bin\Infragistics4.Win.UltraWinChart.v13.1.dll</HintPath>
+    </Reference>
+    <Reference Include="Infragistics4.Win.UltraWinDataSource.v13.1, Version=13.1.20131.1001, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Infragistics\NetAdvantage 2013.1\Windows Forms\CLR4.0\Bin\Infragistics4.Win.UltraWinDataSource.v13.1.dll</HintPath>
+    </Reference>
+    <Reference Include="Infragistics4.Win.UltraWinGrid.ExcelExport.v13.1">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Infragistics\NetAdvantage 2013.1\Windows Forms\CLR4.0\Bin\Infragistics4.Win.UltraWinGrid.ExcelExport.v13.1.dll</HintPath>
+    </Reference>
+    <Reference Include="Infragistics4.Win.UltraWinGrid.v13.1, Version=13.1.20131.1001, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Infragistics\NetAdvantage 2013.1\Windows Forms\CLR4.0\Bin\Infragistics4.Win.UltraWinGrid.v13.1.dll</HintPath>
+    </Reference>
+    <Reference Include="Infragistics4.Win.v13.1, Version=13.1.20131.1001, Culture=neutral, PublicKeyToken=7dd5c3163f2cd0cb">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Infragistics\NetAdvantage 2013.1\Windows Forms\CLR4.0\Bin\Infragistics4.Win.v13.1.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\..\Dll\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Graph, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.Office.Tools.Excel, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Windows\assembly\GAC_MSIL\System.Data.SqlServerCe\4.0.0.0__89845dcd8080cc91\System.Data.SqlServerCe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="UIAutomationTypes" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="APPGlobalInfo.cs" />
+    <Compile Include="COSTANTS.cs" />
+    <Compile Include="Forms\FPSDResCalcoli.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FPSDResCalcoli.Designer.cs">
+      <DependentUpon>FPSDResCalcoli.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FPSDTabellone.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FPSDTabellone.Designer.cs">
+      <DependentUpon>FPSDTabellone.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MathCalc.cs" />
+    <Compile Include="PSDCalc.cs" />
+    <Compile Include="PSDEstrazioni.cs" />
+    <Compile Include="Forms\FPSDOptionsApp.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FPSDOptionsApp.Designer.cs">
+      <DependentUpon>FPSDOptionsApp.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FPSDSceltaNumCasuali.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FPSDSceltaNumCasuali.Designer.cs">
+      <DependentUpon>FPSDSceltaNumCasuali.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FPSDSceltaR1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FPSDSceltaR1.Designer.cs">
+      <DependentUpon>FPSDSceltaR1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserControls\PSDAccoppiamenti.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\PSDAccoppiamenti.Designer.cs">
+      <DependentUpon>PSDAccoppiamenti.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PSDColorTab.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\PSDColorTab.Designer.cs">
+      <DependentUpon>PSDColorTab.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PSDOptionsApp.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\PSDOptionsApp.Designer.cs">
+      <DependentUpon>PSDOptionsApp.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PSDOptionsAppMain.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\PSDOptionsAppMain.Designer.cs">
+      <DependentUpon>PSDOptionsAppMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PSDParams.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\PSDParams.Designer.cs">
+      <DependentUpon>PSDParams.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PSDResGroupBy.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\PSDResGroupBy.Designer.cs">
+      <DependentUpon>PSDResGroupBy.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PSDSavedCalcs.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\PSDSavedCalcs.Designer.cs">
+      <DependentUpon>PSDSavedCalcs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PSDSceltaR1.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\PSDSceltaR1.Designer.cs">
+      <DependentUpon>PSDSceltaR1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PSDStarSystem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\PSDStarSystem.Designer.cs">
+      <DependentUpon>PSDStarSystem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PSDTabAnalisi.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\PSDTabAnalisi.Designer.cs">
+      <DependentUpon>PSDTabAnalisi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PSDTabellone.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\PSDTabellone.Designer.cs">
+      <DependentUpon>PSDTabellone.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PSDChartAnalysis.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\PSDChartAnalysis.Designer.cs">
+      <DependentUpon>PSDChartAnalysis.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PSDResultsCalc.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\PSDResultsCalc.Designer.cs">
+      <DependentUpon>PSDResultsCalc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PSDSceltaNumCasuali.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\PSDSceltaNumCasuali.Designer.cs">
+      <DependentUpon>PSDSceltaNumCasuali.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PSDViewParamsNumInGioco.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\PSDViewParamsNumInGioco.Designer.cs">
+      <DependentUpon>PSDViewParamsNumInGioco.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Forms\FPSDOptionsApp.resx">
+      <DependentUpon>FPSDOptionsApp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FPSDResCalcoli.resx">
+      <DependentUpon>FPSDResCalcoli.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FPSDSceltaNumCasuali.resx">
+      <DependentUpon>FPSDSceltaNumCasuali.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FPSDSceltaR1.resx">
+      <DependentUpon>FPSDSceltaR1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FPSDTabellone.resx">
+      <DependentUpon>FPSDTabellone.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\licenses.licx" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="UserControls\PSDAccoppiamenti.resx">
+      <DependentUpon>PSDAccoppiamenti.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\PSDChartAnalysis.resx">
+      <DependentUpon>PSDChartAnalysis.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\PSDColorTab.resx">
+      <DependentUpon>PSDColorTab.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\PSDOptionsApp.resx">
+      <DependentUpon>PSDOptionsApp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\PSDOptionsAppMain.resx">
+      <DependentUpon>PSDOptionsAppMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\PSDParams.resx">
+      <DependentUpon>PSDParams.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\PSDResGroupBy.resx">
+      <DependentUpon>PSDResGroupBy.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\PSDSavedCalcs.resx">
+      <DependentUpon>PSDSavedCalcs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\PSDSceltaR1.resx">
+      <DependentUpon>PSDSceltaR1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\PSDStarSystem.resx">
+      <DependentUpon>PSDStarSystem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\PSDTabAnalisi.resx">
+      <DependentUpon>PSDTabAnalisi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\PSDTabellone.resx">
+      <DependentUpon>PSDTabellone.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\PSDSceltaNumCasuali.resx">
+      <DependentUpon>PSDSceltaNumCasuali.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\PSDViewParamsNumInGioco.resx">
+      <DependentUpon>PSDViewParamsNumInGioco.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="app.config" />
+    <None Include="Application.ini">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Properties\DataSources\Poseidon.DataEntities.LOTTO.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.DbAccoppiate.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.DbAmbiInDecina.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.LineaSegnale.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.NumeroRegola1.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.ParametriCalcoloR1.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.ParametriGenerali.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.ParametriGrafico.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.ParametriGraficoSegnale.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.ParametriPendenze.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.ParametriR1.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.ParametriR1Generali.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.ParametriSegnale.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PendenzeLinee.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PendenzeLineeSegnale.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.Previsioni.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_CALCS.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_ESTR_ESTRAZIONI.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_ESTR_GEMELLI.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_ESTR_LOTTO.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_ESTR_LOTTO_SAT.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_ESTR_SEGNALI.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_ESTR_SUCCESSI.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_GRPSAT.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_GRPSAT_ITEM.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_MATH_MATRIX_NUM.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_MATH_PLANET_NUM.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_MATH_RES_STAR_SYSTEM.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_MATH_STAR_SYSTEM_MIN_DIST_RES.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_MATH_STAR_SYSTEM_MIN_DIST_RES_GRID.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_MATH_STAR_SYSTEM_RECURSIVE.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_MATH_STAR_SYSTEM_RES.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_MATH_STAR_SYSTEM_RES_PREV.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_MATRIX.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_PARAMETRI_R1.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_PARAMETRI_SEGN_SAT.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_RES.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_RES_RUOTA.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_RES_TOT.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_RES_TOT_SAT.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_RUOTA_OCCORRENZE.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.RangePendenzeLinee.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.RisultatiR1.datasource" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.SQL.Server.Compact.3.5">
+      <Visible>False</Visible>
+      <ProductName>SQL Server Compact 3.5 SP2</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="apple.ico" />
+    <Content Include="dice.ico" />
+    <Content Include="symantec.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PoseidonData\PoseidonData.csproj">
+      <Project>{bd897c89-8536-46fe-ba87-fecc8a7cf655}</Project>
+      <Name>PoseidonData</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
