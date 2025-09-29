@@ -1,0 +1,145 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{BD897C89-8536-46FE-BA87-FECC8A7CF655}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PoseidonData</RootNamespace>
+    <AssemblyName>PoseidonData</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Optimize>true</Optimize>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>false</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CRS.DBLibrary">
+      <HintPath>..\..\CRS.Common\RELEASE\CRS.DBLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="CRS.Library, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\CRS.Common\CRS.Library\obj\Debug\CRS.Library.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dll\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DataEntities\dbTypes.cs" />
+    <Compile Include="DataEntities\posTypes.cs" />
+    <Compile Include="DbDataAccess.cs" />
+    <Compile Include="DbDataUpdate.cs" />
+    <Compile Include="LottoArmoniaModel.cs" />
+    <Compile Include="Parameters.cs" />
+    <Compile Include="PerformanceTracker.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.DbAccoppiate.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.DbAmbiInDecina.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.LineaSegnale.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.NumeroRegola1.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.ParametriCalcoloR1.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.ParametriGenerali.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.ParametriGrafico.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.ParametriGraficoSegnale.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.ParametriPendenze.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.ParametriR1.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.ParametriR1Generali.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.ParametriSegnale.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PendenzeLinee.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PendenzeLineeSegnale.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.Previsioni.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_CALCS.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_ESTR_ESTRAZIONI.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_ESTR_GEMELLI.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_ESTR_LOTTO.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_ESTR_LOTTO_SAT.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_ESTR_SEGNALI.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_ESTR_SUCCESSI.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_GRPSAT.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_GRPSAT_ITEM.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_MATH_MATRIX_NUM.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_MATH_PLANET_NUM.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_MATH_STAR_SYSTEM_MIN_DIST_RES.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_MATH_STAR_SYSTEM_MIN_DIST_RES_GRID.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_MATH_STAR_SYSTEM_RECURSIVE.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_MATH_STAR_SYSTEM_RES.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_MATH_STAR_SYSTEM_RES_PREV.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_MATRIX.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_PARAMETRI_R1.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_PARAMETRI_SEGN_SAT.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_RES.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_RES_RUOTA.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_RES_TOT.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.PSD_RES_TOT_SAT.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.RangePendenzeLinee.datasource" />
+    <None Include="Properties\DataSources\PoseidonData.DataEntities.RisultatiR1.datasource" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
