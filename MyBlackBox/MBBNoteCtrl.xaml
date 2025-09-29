@@ -1,0 +1,78 @@
+﻿<UserControl x:Class="MyBlackBoxCore.MBBNoteCtrl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MyBlackBoxCore"
+             mc:Ignorable="d" Width="259" Height="30">
+    <UserControl.Resources>
+
+        <Style x:Key="RoundedPanelStyle" TargetType="{x:Type TextBox}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox" >
+                        <Grid>
+                            <Border BorderThickness="1"
+                                BorderBrush="#5D000000"
+                                CornerRadius="3"                                                                                       
+                                    Background="{TemplateBinding Background}">
+                                <Button BorderBrush="Transparent" IsTabStop="False" 
+                                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                                        BorderThickness="0" />
+                            </Border>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+
+            </Setter>
+            <!--Setter Property="HorizontalAlignment" Value=" Center"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/-->
+            <Setter Property="TextElement.FontFamily" Value="SimSun"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="Width" Value="19"/>
+            <Setter Property="Background" Value="#FFD6D5D5" />
+
+        </Style>
+
+
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32*"/>
+            <RowDefinition Height="0"/>
+        </Grid.RowDefinitions>
+        <Border Name="pnlTxtTitle" Grid.Row="0" BorderThickness="1"   CornerRadius="3" BorderBrush="#50000000" Background="#C5F0F0F0">
+            <Grid Grid.Column="1">
+
+                <TextBox Name="txtTitle" Background="#C5F0F0F0" VerticalScrollBarVisibility="Auto" UseLayoutRounding="True" ToolTip="Title note" MaxLines="6" Margin="2,2,0,2" TextWrapping="Wrap" 
+                             FontStyle="Italic" FontWeight="Bold" BorderBrush="#FFF0ECEC" />
+            </Grid>
+        </Border>
+        <Border Name="pnlTxtMsg" Grid.Row="1"  Margin="-20,2" Padding="2" BorderThickness="1" CornerRadius="5" BorderBrush="#50000000" Background="#C5F0F0F0">
+            <Grid Name="pnlGridTextMsg"  >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="32*"></RowDefinition>
+                    <RowDefinition Height="0"/>
+                </Grid.RowDefinitions>
+
+                <TextBox Name="txtMsg"  VerticalScrollBarVisibility="Auto" UseLayoutRounding="True" 
+                         Background="#C5F0F0F0" BorderBrush="{x:Null}" AcceptsReturn="True" AcceptsTab="True" 
+                             Tag="text" TextWrapping="Wrap" MaxLength="3005" HorizontalScrollBarVisibility="Auto" />
+                <DockPanel Grid.Row="1"  Background="#C5F0F0F0" >
+                    <TextBox Name="txtDate" Grid.Row="1"  UseLayoutRounding="True" DockPanel.Dock="Left"
+                             Background="#C5F0F0F0" BorderBrush="#B4E8E5E5" IsReadOnly="True" 
+                             Foreground="Gray" FontStretch="UltraCondensed" FontSize="11" FontStyle="Italic" IsTabStop="False" Width="105" />
+                    <TextBox Name="txtChars" Grid.Row="1"  UseLayoutRounding="True" DockPanel.Dock="Left"
+                             Background="#C5F0F0F0" BorderBrush="#B4E8E5E5" IsReadOnly="True" 
+                             Foreground="Gray" FontStretch="UltraCondensed" FontSize="11" FontStyle="Italic" IsTabStop="False" Width="65" />
+
+                </DockPanel>
+            </Grid>
+        </Border>
+
+    </Grid>
+</UserControl>

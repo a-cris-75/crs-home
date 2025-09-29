@@ -1,0 +1,133 @@
+﻿ULTIMA VERSIONE STABILE PRIMA DI FAVORITES: 1.0.0.63
+PROSSIMA: 2.0.0.0
+
+21/08/2015
+- situazione: 
+1) da finire implemetazione eliminazione del file di testo con tutte le note
+	.devo tagliarlo fino ad una certa data
+	.devo fare il backup ogni volta che lo taglio  
+
+2) da finire e da testare nuova funzione preferiti
+
+
+BUG ALL'APERTURA DELLA FORM PRINCIPALE DOPO AVER FATTO TUTTO :
+- prova ad escludere l'ultima form inserita dei favorites dato che è l'ultima modififca effettuata
+- Impossibile trovare informazioni su questo formato pixel
+SOLUZIONE: il problema derivava dal fatto che in debug non copiavo nella cartella dimdestinazione le icone e le immagini
+- nel progetto, nelle cartelle Images ed ico selzionai file e setta la proprietà 
+	.Copy to output dir: Copy if newer (o always)
+
+
+MIGLIORIE
+1) GetNextSection: ogni volta si deve posizionare sulla riga partendo dall'inizio
+	.sarebbe utile partire subita da startposition
+2) Vale lo stesso per GetValue..
+3) sono da testare
+
+
+TIMERS
+1) ora il refreshtimer serve per autosave e caricamento da file delle note condivise
+	.forse è utile dividere i timers
+2) il refreshtimerSharing legge le note condivise dal DB (vedi punto 1 per salvataggio su DB)
+3) TO DO: nuovo timere per allineamento files doc
+	.l'ho divisi da refreshtimer 
+
+	.OK DA TESTARE
+=> NOVITA'
+1) NUOVO timer solo per autosalvataggio ogni 10 sec: si attiva da quando l'utente smette di scrivere su text title
+	.testato ok
+2) Dispatchere timer per documenti e note condivise secondo parametri da file ini in form params
+	.ok
+
+BUGS
+1) ha inserito una nuova nota 864 / 865 (pe 2 volte) quando avrebbe dovuto andare in modifica della correnete
+	.infatti compaiono note doppie
+	.cerca dove viene impostato MDE_INS anzichè MDE_UPD
+
+	.sembra capiti quando ricerco una nota (con find) e la modifico, oppure semplicemente la carico
+	.quando viene caricata forse lo è come nuova
+
+	.SOLUZIONE: quando facevo gotoNext o Prev o gotolast aggiornavo current note prima di fare save note
+		quindi salvavo una nota non vuota (forzo il salva se sono in autosave) essendo in modalità inserimento 
+
+DA TESTARE
+ok1) REMOVE PARTIAL SECTION: dovrebbe rimuovere da file di testo le note precedenti
+	.attenzione che non deve far casino e cancellare sezioni in più o in menoaltrimenti perde allineamento
+
+
+
+ok.vedi GetNewFilter
+ok.FillDocs
+ok.GetDocsFromNotes
+ok.GetNotesAndDocs
+ok.getnotes
+
+CONDIVISIONE NOTE 
+1) l'idea è quella di mandare mesaggi ad un altro utente o ad un gruppo di utenti
+2) dato che la situazione attuale(fino al 20/09/2015) è ingarbugliata decido di semplificare la gestione delle directory in cui scrivere per gli utenti condivisi
+3) NOTE NORMALI: vengono scritte normalemte nella dir di dropbox (in realta si può scegliere fra i parametri: potrbbe essere anche una directory su server) in 4 file denominati 
+	.syncroDbUPD: note inserite modificate
+	.syncroDbDEL: note cancellate
+	.syncroDbINS: NON USATA
+	.syncroDbDOCS: usata per salvare gli address dei documenti di una nota
+4) NOTE CONDIVISE: scrivo la nota per ogni utente con cui condivido nella sua cartella di condivisione
+
+	.SCRITTURA (PER OGNI UTENTE CONDIVISO): 
+		in una directory di partenza da parametri 
+		all'interno trovo una sottodirectory del tipo SHARED_nomeutentecondiviso
+		TROVO I SOLITI DUE FILE syncroDbUPD
+	.LETTURA delle risposte:
+		cerco nella stessa directory di partenza da parametri 
+		all'interno cerco la cartella SHARED_mionomeutente
+		leggo dal file syncroDbUPD
+
+	.NB: 
+	1) se sono in rete configuro una cartella in cui inserirò le cartelle di ogni utente con cui condividerò note 
+		.la cartella si chiama SHARED_utentedestinatario (che comunque è un'altro utente myBlackBox)
+	2) se uso drop box configuro uno spazio comune in cui inserirò le cartelle degliutenti destinatari (compresa la mia) col nome SHARED_..
+		
+
+DA FARE TEST CONDIVISIONE:
+-MODIFICATA TUTTA LA LOGICA!!
+
+
+NUOVA GESTIONE NOTE CONDIVISE:
+1) ora l'intenzione è di non inserire una nota per ogni risposta ma di aggiornare la nota condivisa originale per non creae note inutili
+2) è da vedere come recuperare la nota originale e integrarla con la risposta
+3) vedi saveNote in MBBSharingNotes e DbDataAccess.GetNotesAndDocsForSharing
+
+DA CAPIRE
+1) come usare DbNoteSharing: è simile a dbnote ma contiene: istoread 
+2) è stata pensata per incorporare la tabella omonima del db che a sua volta rappresenta la lista degli utenti con cui condivido la nota :
+	- una nota di un utente può essere condivisa con n altri utenti chiamati UserNameSharing
+3) con la nuova gestione probabilmernte posso utilizzare la struttura DbNote al posto di DbNoteSharing
+	.devo riscrivere GetNotesAndDocsForSharing
+
+GESTIONE FILE E NOTE CONDIVISE
+1) ORA RECUPERO DA FILE SHARED le note condivise: tutte da una certa data
+2) è utile forse recuperare solo quelle isToRead: quando flaggo su letta modifico la nota nella cartella shared settando il parametro
+3) poi posso filtrare le notre raccolte per isToRead
+4) FORSE è UTILE METTERE UN FILTRO PER DATA per poter recuperare solo le ultime
+	- direttamente in MBBSharingNotes: calendario in cui posoo andare indietro di una giornata: ad ogni giornata faccio SyncroGetNotesFromFileShared
+	- aggiungo il parametro dt1, dt2
+5) devo vedere come ricavare i documenti condivisi dalla lista di note 
+	- ho il file in cui vengono scritti ma non ho dalle note un'indicazione chiara se alla nota è associato un file
+	- recupero lista di docs condivisi che sono associati sicuramente alla nota e all'utente
+
+
+	SITUAZIONE ATTUALE 26/09/2015
+1) VA BENE PER IL SALVATAGGIO DELLE NOTE E IL SEND 
+2) DEVO RICOSTRUIRE L'ALBERO DELLE NOTE PADRE FIGLIO: NUOVA STRUTTURA
+	.IN BASE ALLA LISTA DELLE NOTE RECUPERATE: 
+	.per ogni id nota associa le note che hano idnoteparent = id
+	.in ordine cronologico
+3) struttura: testo con lista note padre/figlio, id nota root
+
+29/09
+ da fare test condivisione con correzioni bugs
+
+
+
+ 27/11/2015
+  DA RISOLVERE PROBLEMA id note associato ai documenti: nei pc remoti che importano le info delle nuove note l'id note potrebbe essere diverso
+  - devo verificare se esiste già eventualmente rigenerarlo

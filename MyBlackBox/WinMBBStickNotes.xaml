@@ -1,0 +1,224 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MyBlackBoxCore"
+        xmlns:my="clr-namespace:CRS.WPFControlsLib;assembly=CRS.WPFControlsLib"
+        x:Class="MyBlackBoxCore.WinMBBStickNotes" 
+        WindowStyle="None" WindowStartupLocation="CenterScreen" 
+        AllowDrop="True" AllowsTransparency="True" UseLayoutRounding="True"
+        Title="WinMBBStickNotes" Height="1000" Width="1000" 
+        Background="{x:Null}" ResizeMode="CanResizeWithGrip" ShowInTaskbar="True" MouseLeftButtonDown="Window_MouseLeftButtonDown">
+    <Grid x:Name="pnlGridMain">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="400*"></ColumnDefinition>
+            <ColumnDefinition Width="420"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="200*"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Border Name ="pnlBorderContainer" Grid.Row="0" Grid.Column="0" CornerRadius="5" Background="Transparent" 
+                     BorderBrush="#50000000" BorderThickness="0" >
+            <Grid >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="32"></RowDefinition>
+                    <RowDefinition Height="20*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Border Background="GhostWhite"  CornerRadius="5" BorderBrush="#50000000" BorderThickness="1">
+                    <DockPanel Grid.Row="0" LastChildFill="False">
+                        <Image Name="imgResizeNotes" Height="21" Width="21" VerticalAlignment="Center" Source="/MyBlackBoxCore;component/Ico/be Libbe.ico"  ToolTip="Resize.."  Cursor="Hand" Margin="8,0,5,0" 
+                               MouseDown="imgResizeNotes_MouseDown" HorizontalAlignment="Left" MinWidth="21" MinHeight="21" />
+                        <Image Name="imgSetColorNote" Tag="0" 
+                               Height="21" Width="21" VerticalAlignment="Center" Source="/MyBlackBoxCore;component/Ico/select-by-color-icon.png"  ToolTip="Color: same for week of date or activity"  Cursor="Hand" Margin="3" 
+                               MouseDown="imgSetColorNote_MouseDown" HorizontalAlignment="Left" MinWidth="21" MinHeight="21" />
+
+                        <my:CRSIconButton Name="btnChainEmptyActivityNotes" LabelVisibility="Collapsed" Tag="1" Width="28" Height="26" Margin="15,0,0,0" 
+                                                  Icon="/MyBlackBoxCore;component/Ico/chain-icon.png" IconVisibility="Visible" 
+                                                  IconWidth="21" IconHeight="21" IconOrientation="Horizontal"  ToolTip="Got to activity to chain" Visibility="Visible" 
+                                                HorizontalAlignment="Left" VerticalAlignment="Center" Click="btnChainEmptyActivityNotes_Click" FontFamily="Segoe Print"/>
+                        <my:CRSIconButton  Name = "btnGoToDocs" LabelVisibility="Collapsed"  IconVisibility="Visible" 
+                                           Icon="/MyBlackBoxCore;component/Images/root_treeview.ico" IconHeight="21" IconWidth="21"
+                                           Width="28" Height="26" Margin="3,0,0,0" Cursor="Hand" ToolTip="Show docs" Foreground="Gray"
+                                           Click="btnGoToDocs_Click"/>
+
+                        <my:CRSIconButton Name="btnPrevPage" Width="28" Height="26" Margin="3,0,0,0"   
+                                              Tag="1" LabelText="&lt;" LabelVisibility="Visible" 
+                                              IconHeight="28" IconWidth="28" ToolTip="Go to previus page.." Click="btnPrevPage_Click" 
+                                              FontFamily="Segoe Print" FontSize="22" IconVisibility="Collapsed" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                        <my:CRSIconButton Name="btnNextPage" Width="28" Height="26" Margin="3,0,0,0"   
+                                              Tag="1"
+                                              LabelText="&gt;" LabelVisibility="Visible" 
+                                              IconHeight="28" IconWidth="28" ToolTip="Go to next page.." Click="btnNextPage_Click" 
+                                              FontFamily="Segoe Print" FontSize="22" IconVisibility="Collapsed" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                        <TextBlock Text="num per page: " Margin="20,0,0,0" FontStyle="Italic" VerticalAlignment="Center"/>
+                        <TextBox Name="txtNumPerPage" Text="30" Width="20" Margin="10,0,0,0" DockPanel.Dock="Left" TextAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Text="page: " Margin="20,0,0,0" FontStyle="Italic" VerticalAlignment="Center"/>
+                        <TextBox Name="txtNumPage" Text="0" ToolTip="Press Enter key to change"
+                                 Width="20" Margin="5,0,0,0" 
+                                 DockPanel.Dock="Left" TextAlignment="Center" 
+                                 VerticalAlignment="Center" KeyDown="txtNumPage_KeyDown"/>
+
+                        <TextBlock Name ="txtDateInterval" Text=" -- " Margin="12,0,12,0" FontStyle="Italic" VerticalAlignment="Center" DockPanel.Dock="Right"/>
+                        <TextBlock Name ="txtNumNotes" Text=" tot:  " Margin="12,0,12,0" FontStyle="Italic" VerticalAlignment="Center" DockPanel.Dock="Right"/>
+                    </DockPanel>
+                </Border>
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="5">
+                    <WrapPanel x:Name="pnlWrapMain" Background="Transparent" ScrollViewer.VerticalScrollBarVisibility="Visible" />
+                </ScrollViewer>
+            </Grid>
+        </Border>
+        <Grid Name="pnlGridBottom" Visibility="Collapsed" Grid.Row="2" Grid.Column="0" Background="WhiteSmoke" Opacity="0.8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"></ColumnDefinition>
+                <ColumnDefinition Width="200*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+           
+        </Grid>
+        
+        <DockPanel x:Name="pnlDockRight" Grid.Row="0" Grid.Column="1">
+            <!--Grid DockPanel.Dock="Top">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="32"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+-->
+            <Border Grid.Row="0" CornerRadius="5" Background="GhostWhite" Margin="3,0,0,0" Height="32"
+                    BorderBrush="#50000000" BorderThickness="1" DockPanel.Dock="Top" >
+                <DockPanel Grid.Row="0" DockPanel.Dock="Top" Height="34" HorizontalAlignment="Right" >
+                    <Image Name="imgExit" Height="21" Width="21" VerticalAlignment="Center" Source="/MyBlackBoxCore;component/Ico/bullet_ball_glass_red.ico"  ToolTip="Close"  Cursor="Hand" Margin="3" 
+                            MouseDown="imgExit_MouseDown" HorizontalAlignment="Center" MinWidth="21" MinHeight="21" />
+                    <Image Name="imgMaximize" Height="21" Width="21" VerticalAlignment="Center" Source="/MyBlackBoxCore;component/Ico/bullet_ball_glass_green.ico"  ToolTip="Maximize"  Cursor="Hand" Margin="3" 
+                            MouseDown="imgMaximize_MouseDown" HorizontalAlignment="Center" MinWidth="21" MinHeight="21" />
+                    <Image Name="imgMinimize" Height="21" Width="21" VerticalAlignment="Center" Source="/MyBlackBoxCore;component/Ico/bullet_ball_glass_yellow.ico"  ToolTip="Minimize"  Cursor="Hand" Margin="3" 
+                            MouseDown="imgMinimize_MouseDown" HorizontalAlignment="Center" MinWidth="21" MinHeight="21" />
+                </DockPanel>
+            </Border>
+            <DockPanel Grid.Row="1" Height="Auto" DockPanel.Dock="Top">
+                <DockPanel Name="pnlFilters" DockPanel.Dock="Bottom">
+                    <Border CornerRadius="3"  BorderThickness="1" BorderBrush="LightGray" Height="34"  DockPanel.Dock="Top" VerticalAlignment="Center" Background="#FFE6E6E6" 
+                        Margin="3">
+                        <TextBlock Text="Filters" FontStyle="Italic" Foreground="Gray" FontSize="16" FontWeight="Bold"
+                                    Height="Auto" TextAlignment="Center"
+                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border >
+                    <DockPanel x:Name="pnlFilterTitle" Grid.Column="1" Background="WhiteSmoke" Margin="0,0,2,0" DockPanel.Dock="Bottom">
+                        <Label Content="Filter title" VerticalAlignment="Center"></Label>
+                        <RadioButton Name="rbFilterAND" Content="AND" Width="Auto" Margin="3" DockPanel.Dock="Right" VerticalAlignment="Center"/>
+                        <RadioButton Name="rbFilterOR" Content="OR" Width="Auto" Margin="3" IsChecked="True" DockPanel.Dock="Right" VerticalAlignment="Center"/>
+                        <TextBox Name="txtFilterTitle" VerticalAlignment="Center" KeyDown="txtFilterTitle_KeyDown" FontWeight="Bold" FontStyle="Italic"></TextBox>
+                    </DockPanel>
+                    
+                    <DockPanel Name="pnlListKeys" DockPanel.Dock="Bottom" MaxHeight="200">
+                        <ScrollViewer Margin="5,5,0,5">
+                        <ListView x:Name="lstviewListKeys"  FontStyle="Italic"  SelectedIndex="1" >
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Columns="1"/>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <CheckBox Content="mbb"/>
+                            <CheckBox Content="mbb1"/>
+                            <CheckBox Content="mbb2asassasas"/>
+                            <CheckBox Content="mbbassasa3"/>
+                            <CheckBox Content="mbbassasa3"/>
+
+                            </ListView>
+                        </ScrollViewer>
+                        <Calendar x:Name="calendar" Grid.Row="2" Height="180"
+                            SelectionMode="MultipleRange" Margin="0,20,0,0"
+                        Background="WhiteSmoke" Opacity="0.9" DockPanel.Dock="Bottom" VerticalAlignment="Bottom"/>
+                    </DockPanel>
+                </DockPanel>
+                <Border Name="pnlActivities" Visibility="Visible" CornerRadius="3" Background="GhostWhite" BorderThickness="1" BorderBrush="LightGray" Margin="3">
+                    <DockPanel Margin="3" DockPanel.Dock="Top" MinHeight="400" >
+                        <DockPanel Name="pnlTopGrid"  DockPanel.Dock="Top">
+                            <Border CornerRadius="5"  BorderThickness="1" BorderBrush="LightGray" Height="34"  DockPanel.Dock="Top" VerticalAlignment="Center" Background="#FFE6E6E6" 
+                                    Margin="3">
+                            <TextBlock Text="Activities" FontStyle="Italic" Foreground="Gray" FontSize="16" FontWeight="Bold"
+                                    Height="Auto" TextAlignment="Center"
+                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <DockPanel Name="pnlBtns" Grid.Row="0" DockPanel.Dock="Top" 
+                                    Height="34" LastChildFill="False" >
+
+                                <my:CRSIconButton  Name="btnShowFilter" Width="32" Height="30" Margin="3,0,0,0" Canvas.Left="310" Canvas.Top="6" IconVisibility="Collapsed" IconHeight="24" IconWidth="24" 
+                                                LabelText="..." LabelVisibility="Visible" ToolTip="Filter" 
+                                                Click="btnShowFilter_Click" Visibility="Collapsed" />
+
+                                <!--my:CRSIconButton Name="btnFind" LabelVisibility="Visible" LabelText=""  Tag="1" Width="34" Height="30" Margin="3,0,3,0" 
+                                                    Icon="/MyBlackBoxCore;component/Images/find3.png" IconVisibility="Visible" 
+                                                    IconWidth="21" IconHeight="21" IconOrientation="Horizontal"  ToolTip="Cerca" Visibility="Visible" 
+                                                HorizontalAlignment="Left" VerticalAlignment="Center" Click="btnFind_Click" FontSize="20" FontFamily="Segoe Print"/-->
+                                <CheckBox Name="chkShowSelInNotes" Content="Select all notes " VerticalAlignment="Center" Margin="10,0,0,0" ToolTip="Show selectabel notes" Click="chkShowSelInNotes_Click"/>
+                                <DockPanel Name="pnlActOkCanc"  Visibility="Visible"  HorizontalAlignment="Left" Width="Auto" Margin="5,0,0,0" VerticalAlignment="Center" >
+                                <my:CRSIconButton Name="imgNoteActivityOk" BorderThickness="0"  Height="30" Width="34" VerticalAlignment="Top" Icon="/MyBlackBoxCore;component/Images/confirm2.png" 
+                                        ToolTip="Save" Cursor="Hand" HorizontalAlignment="Right" Margin="10,0,3,0" Click="imgNoteActivityOk_Click" Background="{x:Null}" />
+                                <my:CRSIconButton Name="imgNoteActivityCanc" BorderThickness="0" Height="30" Width="34" VerticalAlignment="Top" Icon="/MyBlackBoxCore;component/Images/cancel2.png" 
+                                        ToolTip="Cancel" Cursor="Hand" HorizontalAlignment="Center" Click="imgNoteActivityCanc_Click" Background="{x:Null}" />
+
+                                </DockPanel>
+                            </DockPanel>
+                            <!--DockPanel Name="pnlFiltersActivities">
+                                <Grid  Height="34" VerticalAlignment="Top"  DockPanel.Dock="Top" >
+                                    <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="114"></ColumnDefinition>
+                                    <ColumnDefinition Width="200*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Label x:Name="lblFilterName" Content="Find name / title" VerticalAlignment="Center" Width="Auto" HorizontalAlignment="Left" />
+                                    <TextBox Name="txtFind"  Grid.Column="1" AllowDrop="True" Margin="29,6,3,6" FontSize="14" ToolTip="Find name/title activity" 
+                                            HorizontalContentAlignment="Stretch" VerticalAlignment="Center" />
+
+                                </Grid>
+                                <DockPanel DockPanel.Dock="Top"  Height="34" VerticalAlignment="Top">
+                                    
+                                    <Label x:Name="lblFilterDate" Content ="Date" DockPanel.Dock="Left" VerticalAlignment="Center" Width="40" Margin="0,4" ></Label>
+                                    <RadioButton Name ="rbFindMod" Content="MOD" Margin="3,10,0,5" Width="50" DockPanel.Dock="Left" IsChecked="True" ToolTip="Order by last modified activity" FontStyle="Italic"/>
+                                    <RadioButton Name ="rbFindIns" Content="INS" Margin="3,10,0,5" Width="44" DockPanel.Dock="Left" ToolTip="Order by date inserted activity" FontStyle="Italic"/>
+
+                                    <DatePicker Name="dtFilter1" Width="120" DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Left" 
+                                    Margin="2,0,0,0" SelectedDateChanged="dtFilter1_SelectedDateChanged"></DatePicker>
+                                    <Label Content="-" DockPanel.Dock="Left" Margin="1,0" VerticalAlignment="Center" Width="16" HorizontalAlignment="Left" />
+                                    <DatePicker Name="dtFilter2" Width="120" DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,5"></DatePicker>
+
+                                </DockPanel>
+                                <DockPanel Height="34" VerticalAlignment="Top">
+                                    <Label x:Name="lblSts" Content="Status " HorizontalAlignment="Left"  VerticalAlignment="Center" />
+                                    <CheckBox Name="chkStsWait" Content="Waiting" Margin="5,0,0,0" IsChecked="true" VerticalAlignment="Center" FontStyle="Italic"></CheckBox>
+                                    <CheckBox Name="chkStsStart" Content="Started" Margin="5" IsChecked="true" VerticalAlignment="Center" FontStyle="Italic"></CheckBox>
+                                    <CheckBox Name="chkStsClose" Content="Closed" Margin="5" IsChecked="true" VerticalAlignment="Center" FontStyle="Italic"></CheckBox>
+                                    <CheckBox Name="chkStsDel" Content="Deleted" Margin="5" IsChecked="false" VerticalAlignment="Center" FontStyle="Italic"></CheckBox>
+                                    <CheckBox Name="chkStsWithNotes" Content="With notes" Margin="5" IsChecked="false" VerticalAlignment="Center" FontStyle="Italic"></CheckBox>
+
+                                </DockPanel>
+                            </DockPanel-->
+
+                        </DockPanel>
+
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                            <DockPanel Name="pnlActivitiesContainer" Grid.Row="1"                            
+                                Margin="2" Background="WhiteSmoke" LastChildFill="False" >
+                                <local:MBBActivity x:Name="CtrlAcivities" MODE="-1"  />
+                            </DockPanel>
+                        </ScrollViewer>
+
+                    </DockPanel>
+                </Border>
+            </DockPanel>
+            
+        </DockPanel>
+        <Border Grid.Column="1" Grid.Row="1" CornerRadius="5" Background="GhostWhite"
+                     BorderBrush="#50000000" BorderThickness="1" >
+            <DockPanel HorizontalAlignment="Center">
+                <Button Name="btnSetFilter" Height="32" Width="80" 
+                        Content="Set Filter" 
+                         VerticalAlignment="Center" HorizontalAlignment="Left" Click="btnSetFilter_Click"/>
+                <Button Name ="btnClear"  Grid.Column="1" Grid.Row="1" 
+                        Margin="8,0,0,0"
+                        Height="32" Width="80" Content="Clear" 
+                    VerticalAlignment="Center" HorizontalAlignment="Left" Click="btnClear_Click"/>
+            </DockPanel>
+        </Border>
+    </Grid>
+</Window>

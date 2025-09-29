@@ -1,0 +1,93 @@
+﻿<UserControl x:Class="MyBlackBoxCore.MBBNotes"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:my="clr-namespace:CRS.WPFControlsLib;assembly=CRS.WPFControlsLib"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d"  Background="#FFEBEBEB"
+             d:DesignHeight="392" MouseEnter="UserControl_MouseEnter" Width="656">
+    <UserControl.Resources>
+
+        <Style x:Key="myListboxStyle" >
+            <Style.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#9B61A4DE"/>
+                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#695B8EBA"/>
+            </Style.Resources>
+        </Style>
+
+    </UserControl.Resources>
+    <Grid Name="pnlGridMain">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="68"></RowDefinition>
+            <RowDefinition Height="269*"></RowDefinition>
+            <RowDefinition Height="0"></RowDefinition>
+        </Grid.RowDefinitions>
+        <!--StackPanel Name="pnlBtns" Grid.Row="0"/-->
+
+        <Grid Name="pnlBtns"  >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="34"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="34"></RowDefinition>
+                <RowDefinition Height="34"></RowDefinition>
+            </Grid.RowDefinitions>
+            <DockPanel Grid.Column="0">
+                <Image Name="imgExit" Height="21" Width="21" VerticalAlignment="Center" Source="/MyBlackBoxCore;component/Ico/bullet_ball_glass_red.ico"  ToolTip="Exit"  Cursor="Hand" Margin="3" MouseDown="imgExit_MouseDown" HorizontalAlignment="Center" MinWidth="21" MinHeight="21" />
+            </DockPanel>
+            <DockPanel Grid.Row="0" Grid.Column="1">
+                <my:CRSIconButton Name="btnOpen" Margin="3,0,0,0" Width="32" LabelText="&gt;" Icon="/MyBlackBoxCore;component/Images/playdx.png" LabelVisibility="Visible" IconHeight="24" IconWidth="24" ToolTip="Apri le note selezionate" Click="btnOpen_Click" IconVisibility="Collapsed" FontFamily="Segoe Print" FontSize="22" FontWeight="Bold" FontStyle="Normal" IconOrientation="Horizontal" OverridesDefaultStyle="True" Height="30" />
+                <my:CRSIconButton Name="btnDel"  Margin="3,0,0,0" Width="32" Icon="/MyBlackBoxCore;component/Images/del.png" IconHeight="24" LabelVisibility="Visible" ToolTip="Elimina le note selezionate" Click="btnDel_Click" IsManipulationEnabled="True" IconWidth="24" IconVisibility="Collapsed" LabelText="x" FontFamily="Segoe Print" FontSize="22" FontWeight="Bold" FontStyle="Normal" OverridesDefaultStyle="True" VerticalContentAlignment="Center" Height="30" />
+                <my:CRSIconButton Name="btnMerge" Margin="3,0,0,0" Height="30"  Width="32" IconVisibility="Collapsed" IconWidth="24" IsManipulationEnabled="True" IconHeight="24" IconOrientation="Horizontal" LabelVisibility="Visible" ToolTip="Unisci le note in una" LabelText="++" OverridesDefaultStyle="True" FontSize="22" FontFamily="Segoe Print" Click="btnMerge_Click" />
+
+                <CheckBox Name="chkSelAll" Content="Select all" Margin="10,10,0,10" Click="chkSelAll_Click" VerticalContentAlignment="Center" Width="86"/>
+                <Label x:Name="lblFilterText" Content="Find text" Margin="42,3,3,0" VerticalAlignment="Top" Width="56" />
+                <TextBox Name="txtFind" AllowDrop="True" Margin="3" TextChanged="txtFind_TextChanged" VerticalAlignment="Center" FontSize="14" ToolTip="Find in text notes" />
+
+            </DockPanel>
+            <DockPanel Grid.Row="1" Grid.Column="1" >
+                <Label x:Name="lblOrder" Content="Order by " HorizontalAlignment="Right" VerticalAlignment="Center" />
+                <ComboBox Name="cbOrderBy" SelectedIndex="1" 
+                          Width="167" ToolTip="Select type calc dir" Margin="0,0,6,0" 
+                          DropDownClosed="cbOrderBy_DropDownClosed" HorizontalAlignment="Left" VerticalAlignment="Center">
+                    <ComboBoxItem>
+                        <TextBlock Text="1- date time ascending"></TextBlock>
+                    </ComboBoxItem>
+                    <ComboBoxItem>
+                        <TextBlock Text="2- date time descending"></TextBlock>
+                    </ComboBoxItem>
+                    <ComboBoxItem>
+                        <TextBlock Text="3- title A..B"></TextBlock>
+                    </ComboBoxItem>
+                </ComboBox>
+                <Label x:Name="lblTreeView" Content="Tree View " HorizontalAlignment="Right" Margin="6,0,0,0" VerticalAlignment="Center" />
+
+                <ComboBox Name="cbTypeDir" ToolTip="Select type calc dir" Margin="3,0,0,0" Width="120" HorizontalAlignment="Left" VerticalAlignment="Center">
+                    <ComboBoxItem Content="1-dir by occurrency position key" />
+                    <ComboBoxItem Content="2-dir by occurrency key title" />
+                    <!--ComboBoxItem Content="2-dir by occurrency key title 2"/-->
+                </ComboBox>
+                <my:CRSIconButton Name="btnTreeView" Margin="3,2,0,2" Height="30"  Width="32" IconVisibility="Collapsed" IconWidth="24" IsManipulationEnabled="True" 
+                                  IconHeight="24" IconOrientation="Horizontal" LabelVisibility="Visible" ToolTip="Order in directory mode" LabelText=">>" 
+                                  OverridesDefaultStyle="True" FontSize="22" FontFamily="Segoe Print" Click="btnTreeView_Click" Background="#FFDDDDDD" />
+                <my:CRSIconButton Name="btnNormalize" FontFamily="Segoe UI Emoji" FontSize="22" Height="30" IconHeight="24" IconOrientation="Horizontal" 
+                                  IconVisibility="Collapsed" IconWidth="24" IsManipulationEnabled="True" LabelText="-" LabelVisibility="Visible"  OverridesDefaultStyle="True" 
+                                  ToolTip="Normalizza: Elimina i nodi con un solo figlio associando la nota al nodo superiore (rende più facile la lettura)" 
+                                  Width="32" Margin="3,0,0,0" Click="btnNormalize_Click" />
+                <TextBlock Height="22" Name="textBlockNumNotes" Text="Notes: " FontStyle="Italic" VerticalAlignment="Center" Padding="3" DockPanel.Dock="Right" Margin="3" HorizontalAlignment="Right" />
+                
+               
+            </DockPanel>
+
+        </Grid>
+
+        <ListView Grid.Row="1" Name="lvNotes" Background="WhiteSmoke"
+                  Margin="2"
+                  SelectionMode="Single" UseLayoutRounding="True" Style="{StaticResource myListboxStyle}">
+        </ListView>
+        <TreeView Grid.Row="2" Name="tvNotes" Style="{StaticResource myListboxStyle}">
+        </TreeView>
+    </Grid>
+</UserControl>

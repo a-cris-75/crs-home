@@ -1,0 +1,38 @@
+﻿<Window x:Class="MyBlackBoxCore.WinMBBIntro"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MyBlackBoxCore"
+        mc:Ignorable="d"
+        Title="WinMBBIntro" Height="78" Width="215"
+        ResizeMode="NoResize" WindowStyle="None" UseLayoutRounding="True" 
+        AllowsTransparency="True" Background="Transparent" 
+        Opacity="1"      
+        ShowInTaskbar="False" AllowDrop="True" Topmost="True" Activated="Window_Activated"
+        >
+    <Border CornerRadius="10" 
+            Background="WhiteSmoke"
+            BorderThickness="1" BorderBrush="LightGray">
+        <Grid>
+            
+            <DockPanel >
+                <Image Opacity="0.3" Source="box2save.png" Margin="0,0,0,0" Width="55" HorizontalAlignment="Left"></Image>
+                <ProgressBar x:Name="barProgress" Margin="10,3,10,3"
+                             Foreground="#FFB8DFF9" Background="Transparent"    Value="10"                      
+                             Height="12" DockPanel.Dock="Bottom" VerticalAlignment="Bottom"></ProgressBar>
+                <!--
+                <TextBlock Text="importing notes" Height="auto" FontStyle="Italic" TextWrapping="Wrap" Opacity="0.5"  VerticalAlignment="Top" DockPanel.Dock="Top"></TextBlock>
+                -->
+                <TextBlock Name="txtInfoDataImport" Text="calc to.."
+                       TextAlignment="Center"
+                       Height="auto" TextWrapping="Wrap" Opacity="0.5" DockPanel.Dock="Bottom" VerticalAlignment="Center"/>
+                <TextBlock Name="txtHeader" Text="wait for import data.." 
+                       Margin="0,3"
+                       FontSize="15" FontStyle="Italic" Canvas.Top="40" Canvas.Left="60" 
+                       Width="Auto" TextAlignment="Center" DockPanel.Dock="Top" VerticalAlignment="Top"></TextBlock>
+            </DockPanel>
+            
+        </Grid>
+    </Border>
+</Window>

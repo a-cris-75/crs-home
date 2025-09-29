@@ -1,0 +1,421 @@
+﻿<UserControl x:Class="MyBlackBoxCore.MBBActivity"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MyBlackBoxCore"
+             xmlns:my="clr-namespace:CRS.WPFControlsLib;assembly=CRS.WPFControlsLib"
+             mc:Ignorable="d"  Background="Transparent"
+             d:DesignHeight="600" d:DesignWidth="410">
+    <UserControl.Resources>
+        <!--Font FontStyle="Italic"/-->
+        <SolidColorBrush x:Key="WatermarkForeground" Color="Black" />
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+        <Style x:Key="RoundedButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button" >
+                        <Grid>
+                            <Border BorderThickness="1"
+                                BorderBrush="#5D000000"
+                                CornerRadius="3"                                                                                       
+                                    Background="{TemplateBinding Background}">
+                                <Button BorderBrush="Transparent" IsTabStop="False" 
+                                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                                        BorderThickness="0" />
+                            </Border>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+
+            </Setter>
+            <!--Setter Property="HorizontalAlignment" Value=" Center"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/-->
+            <Setter Property="TextElement.FontFamily" Value="SimSun"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="Width" Value="19"/>
+            <Setter Property="Background" Value="#FFFBFAF8" />
+
+        </Style>
+
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions  >
+            <RowDefinition Height="32"></RowDefinition>
+            <RowDefinition Height="100*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <DockPanel x:Name="pnlTopHeader" Grid.Row="0" LastChildFill="False" Background="Transparent">
+            <Image Name="imgExit" Height="21" Width="21" VerticalAlignment="Center" Source="/MyBlackBoxCore;component/Ico/bullet_ball_glass_red.ico"  
+                   ToolTip="Exit"  Cursor="Hand" Margin="3" 
+                   MouseDown="imgExit_MouseDown" HorizontalAlignment="Center" MinWidth="21" MinHeight="21" />
+            <Image Name="imgResize" Height="20" Width="21" Source="/MyBlackBoxCore;component/Ico/bullet_ball_glass_yellow.ico"  
+                   ToolTip="Resize.."  Cursor="Hand" MinWidth="21" MinHeight="21" MouseDown="imgResize_MouseDown" 
+                   HorizontalAlignment="Center" VerticalAlignment="Center" Tag="1"/>
+            <!--Image Name="imgSetdimAuto" Height="21" Width="21" VerticalAlignment="Center" Source="/MyBlackBoxCore;component/Ico/bullet_ball_glass_green.ico"  
+                   ToolTip="Set dim auto"  Cursor="Hand" Margin="3" 
+                   MouseDown="imgSetdimAuto_MouseDown" HorizontalAlignment="Center" MinWidth="21" MinHeight="21" /-->
+
+        </DockPanel>
+        <TabControl Grid.Row="1" >
+            <TabItem Header="List">
+                <Border Grid.Row="1" Margin ="2" Padding="2" CornerRadius="5" Background="WhiteSmoke"  BorderBrush="#50000000" BorderThickness="1" >
+
+                    <Grid Name="pnlGridMain">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="140"/>
+                            <RowDefinition Height="100*"/>
+                            <RowDefinition Height="140"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200*"/>
+                            <ColumnDefinition Width="0"/>
+                        </Grid.ColumnDefinitions>
+                        <DockPanel Name="pnlTopGrid" Grid.Row="0">
+
+                            <DockPanel Name="pnlBtns" Grid.Row="0" DockPanel.Dock="Top" Height="34" LastChildFill="False" >
+
+
+                                <my:CRSIconButton Name="btnAddAct" Width="32" Height="30" Margin="3,0,0,0" 
+                                                Canvas.Left="6" Canvas.Top="6"  LabelText="+" 
+                                                Icon="/MyBlackBoxCore;component/Images/playdx.png" LabelVisibility="Visible" IconHeight="28" IconWidth="28" 
+                                                ToolTip="Add activity.." Click="btnAddAct_Click" FontFamily="Segoe Print" FontSize="22" 
+                                                IconVisibility="Collapsed" FontWeight="Bold" />
+                                <my:CRSIconButton Name="btnDel"  Width="32" Height="30" Margin="3,0,0,0" Canvas.Left="46" Canvas.Top="6" Icon="/MyBlackBoxCore;component/Images/del.png" IconHeight="24" IconWidth="24" LabelText="x" LabelVisibility="Visible" 
+                                                ToolTip="Delete.." Click="btnDel_Click" FontFamily="Segoe Print" FontSize="22" FontWeight="Bold" IconVisibility="Collapsed" />
+                                <my:CRSIconButton  Name="btnModAct" Width="32" Height="30" Margin="3,0,0,0" Canvas.Left="310" Canvas.Top="6" Icon="/MyBlackBoxCore;component/Images/sync2.png" 
+                                                   IconHeight="24" IconWidth="24" 
+                                                LabelText="/" LabelVisibility="Visible" IconVisibility="Collapsed" FontFamily="Segoe Print"
+                                                ToolTip="Modify"  Visibility="Visible"  FontWeight="Bold" Click="btnModAct_Click" FontSize="14" />
+
+                                <my:CRSIconButton Name="btnNote"  Visibility="Collapsed"
+                                                Width="32" Height="30" Margin="3,0,0,0" Canvas.Left="46" Canvas.Top="6" IconHeight="24" IconWidth="24" LabelText="N" LabelVisibility="Visible" 
+                                                ToolTip="Note.." Click="btnNote_Click" FontFamily="Segoe Print" 
+                                                FontSize="18" FontWeight="Bold" IconVisibility="Collapsed" />
+
+                                <my:CRSIconButton  Name="btnShowFilter" Width="32" Height="30" Margin="3,0,0,0" Canvas.Left="310" Canvas.Top="6" IconVisibility="Collapsed" IconHeight="24" IconWidth="24" 
+                                                LabelText="..." LabelVisibility="Visible" ToolTip="Show params filter" 
+                                                Click="btnShowFilter_Click" Visibility="Visible" />
+                                <my:CRSIconButton Name="btnOpen" Width="32" Height="30" Margin="3,0,0,0" Canvas.Left="6" Canvas.Top="6"  
+                                                LabelText="&gt;" Icon="/MyBlackBoxCore;component/Images/playdx.png" LabelVisibility="Visible" 
+                                                IconHeight="28" IconWidth="28" ToolTip="Open detail selected activity to start" Click="btnOpen_Click" 
+                                                FontFamily="Segoe Print" FontSize="22" IconVisibility="Collapsed" FontWeight="Bold" />
+                                <my:CRSIconButton  Name="btnSyncroSource" Visibility="Collapsed"
+                                                Width="32" Height="30" Margin="3,0,0,0" Canvas.Left="310" Canvas.Top="6" Icon="/MyBlackBoxCore;component/Images/sync2.png" IconHeight="24" IconWidth="24" 
+                                                LabelText="/"  FontFamily="Segoe Print" LabelVisibility="Collapsed"
+                                                ToolTip="Syncronize with last modified"   Click="btnSyncroLocal_Click" FontWeight="Bold" />
+
+                                <my:CRSIconButton Name="btnFindPerc" LabelVisibility="Visible" LabelText=">>"  Tag="1" Width="55" Height="30" Margin="3,0,3,0" 
+                                                  Icon="/MyBlackBoxCore;component/Images/find3.png" IconVisibility="Visible" 
+                                                  IconWidth="21" IconHeight="21" IconOrientation="Horizontal"  ToolTip="Find activities" Visibility="Visible" 
+                                                HorizontalAlignment="Left" Click="btnFindPerc_Click" FontSize="20" FontFamily="Segoe Print" DockPanel.Dock="Right" VerticalAlignment="Center"/>
+
+                                <my:CRSIconButton Name="btnFind" LabelVisibility="Visible" LabelText=">"  Tag="1" Width="55" Height="30" Margin="3,0,3,0" 
+                                                  Icon="/MyBlackBoxCore;component/Images/find3.png" IconVisibility="Visible" 
+                                                  IconWidth="21" IconHeight="21" IconOrientation="Horizontal"  ToolTip="Find activities" Visibility="Visible" 
+                                                HorizontalAlignment="Left" Click="btnFind_Click" FontSize="20" FontFamily="Segoe Print" DockPanel.Dock="Right" VerticalAlignment="Center"/>
+
+
+                                <my:CRSIconButton Name="btnChainEmptyActivityNotes" LabelVisibility="Collapsed" Tag="1" Width="32" Height="30" Margin="3,0,0,0" 
+                                                  Icon="/MyBlackBoxCore;component/Ico/chain-unchain-icon.png" IconVisibility="Visible" 
+                                                  IconWidth="21" IconHeight="21" IconOrientation="Horizontal"  ToolTip="Got to notes not chained with activity" Visibility="Visible" 
+                                                HorizontalAlignment="Left" DockPanel.Dock="Right" VerticalAlignment="Center" 
+                                                  Click="btnChainEmptyActivityNotes_Click" FontFamily="Segoe Print"/>
+
+                            </DockPanel>
+
+                            <DockPanel Name="pnlFilters">
+                                <Grid  Height="34" VerticalAlignment="Top"  DockPanel.Dock="Top" >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="114"></ColumnDefinition>
+                                        <ColumnDefinition Width="200*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Label x:Name="lblFilterName" Content="Find name / title" VerticalAlignment="Center" Width="Auto" HorizontalAlignment="Left" />
+                                    <TextBox Name="txtFind"  Grid.Column="1" AllowDrop="True" Margin="27,6,3,6" FontSize="14" ToolTip="Find name/title activity" 
+                                             HorizontalContentAlignment="Stretch" VerticalAlignment="Center" />
+
+                                </Grid>
+                                <DockPanel DockPanel.Dock="Top"  Height="34" VerticalAlignment="Top">
+
+                                    <Label x:Name="lblFilterDate" Content ="Date" DockPanel.Dock="Left" VerticalAlignment="Center" Width="40" Margin="0,4" />
+                                    <RadioButton Name ="rbFindMod" Content="MOD" Margin="3,10,0,5" Width="50" DockPanel.Dock="Left" IsChecked="True" FontStyle="Italic"/>
+                                    <RadioButton Name ="rbFindIns" Content="INS" Margin="3,10,0,5" Width="44" DockPanel.Dock="Left" FontStyle="Italic"/>
+
+                                    <DatePicker Name="dtFilter1" Width="115" DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Left" 
+                                Margin="2,0,0,0" SelectedDateChanged="dtFilter1_SelectedDateChanged"></DatePicker>
+                                    <Label Content="-" DockPanel.Dock="Left" Margin="1,0" VerticalAlignment="Center" Width="16" HorizontalAlignment="Left" />
+                                    <DatePicker Name="dtFilter2" Width="115" DockPanel.Dock="Left" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,5"></DatePicker>
+
+                                </DockPanel>
+                                <DockPanel Height="34" VerticalAlignment="Top">
+                                    <Label x:Name="lblSts" Content="Status " HorizontalAlignment="Left"  VerticalAlignment="Center" />
+                                    <!--ComboBox Name="cbSts"  Width="110" ToolTip="Status" Margin="24,6,3,6"  HorizontalAlignment="Left">
+                                <ComboBoxItem Content="1- Waiting" />
+                                <ComboBoxItem Content="2- Started" />
+                                <ComboBoxItem Content="3- Closed" />
+                                <ComboBoxItem Content="4- Deleted" />
+                            </-->
+                                    <CheckBox Name="chkStsWait" Content="Waiting" Margin="3,0,0,0" IsChecked="true" VerticalAlignment="Center" FontStyle="Italic"></CheckBox>
+                                    <CheckBox Name="chkStsStart" Content="Started" Margin="4" IsChecked="true" VerticalAlignment="Center"></CheckBox>
+                                    <CheckBox Name="chkStsClose" Content="Closed" Margin="4" IsChecked="true" VerticalAlignment="Center" FontStyle="Italic"></CheckBox>
+                                    <CheckBox Name="chkStsDel" Content="Deleted" Margin="4" IsChecked="false" VerticalAlignment="Center" FontStyle="Italic"></CheckBox>
+                                    <CheckBox Name="chkStsWithNotes" Content="With notes" Margin="4" IsChecked="false" VerticalAlignment="Center" FontStyle="Italic"></CheckBox>
+                                </DockPanel>
+                            </DockPanel>
+                        </DockPanel>
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" >
+                            <DockPanel Name="pnlActivitiesContainer" Grid.Row="1"  Background="#FFEAEAEA"                          
+                                       Margin="2"  LastChildFill="False" >
+                            </DockPanel>
+                        </ScrollViewer>
+                        <GridSplitter Height="5" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"></GridSplitter>
+                        <Grid Name="pnlBottom" Grid.Column="0" Grid.Row="2" Margin="0,2,0,0" >
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="200*"/>
+                                <ColumnDefinition Width="34"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Grid Name="pnlContainerNewCurrentAct" Grid.Column="0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="0"/>
+                                    <RowDefinition Height="120*"/>
+                                </Grid.RowDefinitions>
+                                <Grid Name ="pnlNewAct" Grid.Row="0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="80*"/>
+                                        <RowDefinition Height="34"/>
+                                    </Grid.RowDefinitions>
+                                    <DockPanel Name="pnlActDescIns"  Grid.Row="0">
+                                        <TextBlock Name="pnlConatainerAct" Text=" Cosa stai facendo?.." FontStyle="Italic" UseLayoutRounding="True"
+                                    Foreground="{StaticResource WatermarkForeground}"
+                                    Visibility="{Binding ElementName=txtTitleIns, 
+                                            Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                                        <TextBox Name="txtTitleIns"  BorderThickness="1" BorderBrush="LightGray"
+                                                VerticalScrollBarVisibility="Auto" UseLayoutRounding="True" ToolTip="Title note"  Grid.Column="1" MaxLines="6" 
+                                                TextWrapping="Wrap" Margin="2" 
+                                                FontStyle="Italic" FontWeight="Bold"  Cursor="Pen" DockPanel.Dock="Top" />
+                                        <TextBox Name="txtTextIns" VerticalScrollBarVisibility="Auto" UseLayoutRounding="True" ToolTip="Title note"  Grid.Column="1" MaxLines="6" 
+                                                TextWrapping="Wrap" Margin="2" 
+                                                FontStyle="Italic" BorderBrush="LightGray" Cursor="Pen" DockPanel.Dock="Top" />
+                                    </DockPanel>
+                                    <DockPanel Name="pnlStatuTypeAct" Grid.Row="1">
+                                        <DockPanel Height="34" VerticalAlignment="Top">
+                                            <Label x:Name="lblStsIns" Content="Status " HorizontalAlignment="Left"  VerticalAlignment="Center" />
+                                            <ComboBox Name="cbStsIns"  SelectedIndex="-1" Width="100" ToolTip="Status" Margin="0,6,3,6"  HorizontalAlignment="Left">
+                                                <ComboBoxItem Content="Waiting"></ComboBoxItem>
+                                                <ComboBoxItem Content="Started"></ComboBoxItem>
+                                                <ComboBoxItem Content="Closed"></ComboBoxItem>
+                                                <ComboBoxItem Content="Deleted"></ComboBoxItem>
+                                            </ComboBox>
+
+                                        </DockPanel>
+                                        <DockPanel Height="34" VerticalAlignment="Top">
+                                            <Label x:Name="lbTypeIns" Content="Type " HorizontalAlignment="Left"  VerticalAlignment="Center" />
+                                            <ComboBox Name="cbTypeIns" SelectedIndex="-1" Width="100" ToolTip="Status" Margin="0,6,3,6"  HorizontalAlignment="Left">
+                                                <ComboBoxItem Content="Incident" />
+                                                <ComboBoxItem Content="Backlog" />
+                                                <ComboBoxItem Content="Burocracy" />
+                                                <ComboBoxItem Content="Office" />
+                                                <ComboBoxItem Content="Developement" />
+                                            </ComboBox>
+                                        </DockPanel>
+
+                                        <DockPanel>
+                                            <Label x:Name="lbHoursPrew" Content="Hours " HorizontalAlignment="Left"  VerticalAlignment="Center" />
+                                            <TextBox x:Name="txtHPrev" VerticalAlignment="Center" TextAlignment="Center" Margin="0,0,3,0"/>
+                                        </DockPanel>
+                                    </DockPanel>
+                                </Grid>
+                                <DockPanel Name="pnlCurrentActLbl"  Grid.Row="1" Background="AliceBlue">
+                                    <Border Height="28" CornerRadius="2" BorderBrush="SlateGray" Background="WhiteSmoke"
+                                            DockPanel.Dock="Top" BorderThickness="1">
+                                        <TextBlock Text="Current activity" Foreground="Gray"
+                                       TextAlignment="Center" FontWeight="Bold" FontStyle="Italic"
+                                       DockPanel.Dock="Top" VerticalAlignment="Center"></TextBlock>
+                                    </Border>
+                                    <DockPanel Name="pnlCurrentAct"  Margin="2" DockPanel.Dock="Top">
+                                        <my:CRSContainerData Name="ctrlCurrentActivity" DockPanel.Dock="Top" Height="Auto"/>
+                                    </DockPanel>
+                                </DockPanel>
+                            </Grid>
+                            <DockPanel Name ="pnlBtnsGrid" Grid.Column="1" OpacityMask="Black" >
+                                <Canvas Name="pnlPlayStop" Width="35" Height="35" Visibility="Visible" DockPanel.Dock="Top">
+                                    <Image Name="imgPlay" Tag="1" Cursor="Hand" ToolTip="Start activity"
+                                            VerticalAlignment="Stretch" Source="/MyBlackBoxCore;component/Ico/bullet_triangle_blue.ico" 
+                                           HorizontalAlignment="Stretch" Canvas.Left="0" Canvas.Top="0" Stretch="Fill" Height="32" Width="32" Visibility="Visible" 
+                                            MouseDown="imgBlackBoxPlay_MouseDown" />
+                                </Canvas>
+                                <DockPanel Name="pnlOkCanc" Visibility="Visible" HorizontalAlignment="Center" Width="35" DockPanel.Dock="Top" >
+                                    <Image Name="imgOk" Stretch="Fill" Height="26" Width="26" VerticalAlignment="Top" Source="/MyBlackBoxCore;component/Images/confirm2.png" 
+                                        ToolTip="Save" MouseDown="imgOk_MouseDown" Cursor="Hand" DockPanel.Dock="Top" HorizontalAlignment="Right" Margin="0,0,5,0" />
+                                    <Image Name="imgCanc" Stretch="Fill" Height="26" Width="26" VerticalAlignment="Top" Source="/MyBlackBoxCore;component/Images/cancel2.png" 
+                                        ToolTip="Cancel" MouseDown="imgCanc_MouseDown" Cursor="Hand" DockPanel.Dock="Top" HorizontalAlignment="Center" />
+                                </DockPanel>
+                                <DockPanel x:Name="pnlProgBar" DockPanel.Dock="Top">
+                                    <TextBlock Name="txtPercProgBar" Text="%" Height="20" DockPanel.Dock="Top" Background="Transparent"
+                                       TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top" Width="32">
+                                    </TextBlock>
+                                    <Border BorderThickness="1" BorderBrush="Gray"  CornerRadius="5" DockPanel.Dock="Top" 
+                                    Margin="2,0,1,0" Padding="1" >
+                                        <ProgressBar x:Name="pbPerc" Height="Auto" Width="Auto"  BorderThickness="0"
+                                         Orientation="Vertical" Minimum="0" Maximum="120" 
+                                         DockPanel.Dock="Top" Foreground="GreenYellow" Value="100">
+                                        </ProgressBar>
+                                    </Border>
+                                </DockPanel>
+                            </DockPanel>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </TabItem>
+            <TabItem Header="Report" MouseDown="TabItem_MouseDown">
+                <Border CornerRadius="5" Margin ="2" Padding="2" Background="WhiteSmoke"  BorderBrush="#50000000" BorderThickness="1">
+                    <Grid Name="pnlLogActivitiesAndEmptyLog" >
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="65"/>
+                            <RowDefinition Height="0"/>
+                            <RowDefinition Height="100*"/>
+                        </Grid.RowDefinitions>
+                        <my:CRSContainerData Name="ctrlContainerEmptyAct" IDX_COLOR="-2" 
+                                             Visibility="Visible" Grid.Row="1"  Height="Auto"/>
+                        <GridSplitter Background="Transparent"  VerticalAlignment="Bottom" Height="10" HorizontalAlignment="Stretch" 
+                                      DragCompleted="GridSplitter_DragCompleted" DragStarted="GridSplitter_DragStarted" />
+
+                        <DockPanel Grid.Row="2" >
+                            <Border Margin="2,5,2,3" Height="28" CornerRadius="2" BorderBrush="SlateGray" Background="WhiteSmoke"
+                                            DockPanel.Dock="Top" BorderThickness="1">
+                                <DockPanel>
+                                    <TextBox Name="txtMedHgtContainerAct" Text="80" Visibility="Collapsed" DockPanel.Dock="Right" 
+                                         VerticalAlignment="Center" Margin="0,4" Width="23" TextAlignment="Center" HorizontalAlignment="Right"></TextBox>
+                                    <TextBlock Text="List log" Foreground="Gray"
+                                       TextAlignment="Center" FontWeight="Bold" FontStyle="Italic"
+                                       DockPanel.Dock="Left" VerticalAlignment="Center" MouseDown="TextBlock_MouseDown"></TextBlock>
+                                </DockPanel>
+                            </Border>
+                            <Border Margin="2,5,2,3" Height="52" CornerRadius="2" BorderBrush="LightGray" Background="WhiteSmoke"
+                                    DockPanel.Dock="Top" BorderThickness="1">
+
+                                <ScrollViewer Name="scrollpnlListLogs" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Hidden">
+
+                                    <DockPanel Name="pnlLogActivitiesListPanels" LastChildFill="False"  >
+
+                                        <!--
+                                <Border BorderBrush="LightGray" BorderThickness="1" Background="Aqua" Margin="0,2,2,2" >
+                                    <DockPanel Width="5" HorizontalAlignment="Left" ToolTip="tot min: " ></DockPanel>
+                                </Border>
+                                <Border BorderBrush="LightGray" BorderThickness="1"  Background="Bisque" Margin="0,0,2,0">
+                                    <DockPanel Width="10" HorizontalAlignment="Left" ToolTip="tot min: "></DockPanel>
+                                </Border>
+                               -->
+                                    </DockPanel>
+                                </ScrollViewer>
+                                <!--/-->
+
+                            </Border>
+
+                            <ScrollViewer Name="scrollpnlListContainerLogs" Grid.Row="2" >
+                                <Grid x:Name="pnlLogActivities"  Margin="3" ScrollViewer.VerticalScrollBarVisibility="Auto" >
+                                    <!--
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="120*"/>
+                                    <RowDefinition Height="5"/>
+                                    <RowDefinition Height="40*"/>
+                                    <RowDefinition Height="5"/>
+                                </Grid.RowDefinitions>
+                                
+                                <my:CRSContainerData Grid.Row="0" IDX="-2" Height="Auto" VerticalAlignment="Stretch" />
+                                <GridSplitter Grid.Row="1"  VerticalAlignment="Top" Height="5" HorizontalAlignment="Stretch" ></GridSplitter>
+                                <my:CRSContainerData Grid.Row="2" IDX="-2" Height="Auto" VerticalAlignment="Stretch" />
+                                <GridSplitter Grid.Row="3"  VerticalAlignment="Center" Height="5" HorizontalAlignment="Stretch" ></GridSplitter>
+-->
+                                </Grid>
+
+                            </ScrollViewer>
+                        </DockPanel>
+                        <DockPanel Name="pnlDockOptLogAct" Grid.Row="0" VerticalAlignment="Top" LastChildFill="False">
+                            <DockPanel x:Name="pnlReportButtonsTop" DockPanel.Dock="Top" Height="34">
+                                <my:CRSIconButton Name="btnSetParamsLog" LabelVisibility="Visible" LabelText=">>" Tag="0" Width="65" Height="30" Margin="3,0"                                                
+                                                  Icon="/MyBlackBoxCore;component/Images/find3.png" IconVisibility="Visible" 
+                                                  IconWidth="21" IconHeight="21" ToolTip="Find logs" Visibility="Visible" 
+                                                  HorizontalAlignment="Left"  DockPanel.Dock="Right" FontFamily="Segoe Print" FontSize="20"                                                                                             
+                                                  Click="btnSetParamsLog_Click" VerticalAlignment="Center"  />
+                                <my:CRSIconButton x:Name="btnResizeLog" Width="32" Height="30" Margin="3,0,0,0"   
+                                              Tag="1"
+                                              LabelText="&lt;&gt;" Icon="/MyBlackBoxCore;component/Images/playdx.png" LabelVisibility="Visible" 
+                                              IconHeight="28" IconWidth="28" ToolTip="Resize interval time log activity" Click="btnResizeLog_Click" 
+                                              FontFamily="Segoe Print" FontSize="20" IconVisibility="Collapsed" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <my:CRSIconButton Name="btnChangeLog" Width="32" Height="30" Margin="3,0,0,0"   
+                                              Tag="1"
+                                              LabelText="/" LabelVisibility="Visible" 
+                                              IconHeight="28" IconWidth="28" ToolTip="Change log activity" Click="btnChangeLog_Click" 
+                                              FontFamily="Segoe Print" FontSize="14" IconVisibility="Collapsed" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                <my:CRSIconButton Name="btnInsLog" Width="32" Height="30" Margin="3,0,0,0"   
+                                              Tag="1"  LabelText="+" LabelVisibility="Visible" 
+                                              IconHeight="28" IconWidth="28" ToolTip="Add log activity" Click="btnInsLog_Click" 
+                                              FontFamily="Segoe Print" FontSize="20" IconVisibility="Collapsed" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" />
+
+                                <DockPanel Name="pnlRepOkCanc" Opacity="0.5" IsEnabled="False" Visibility="Visible"  HorizontalAlignment="Left" Width="Auto" Margin="5,0,0,0" VerticalAlignment="Center" >
+                                    <my:CRSIconButton Name="imgRepOk" BorderThickness="0"  Height="30" Width="34" VerticalAlignment="Center" Icon="/MyBlackBoxCore;component/Images/confirm2.png" 
+                                        ToolTip="Save" MouseDown="imgRepOk_MouseDown" Cursor="Hand" HorizontalAlignment="Right" Margin="0,0,3,0" PreviewMouseDown="imgRepOk_MouseDown" />
+                                    <my:CRSIconButton Name="imgRepCanc" BorderThickness="0" Height="30" Width="34" VerticalAlignment="Center" Icon="/MyBlackBoxCore;component/Images/cancel2.png" 
+                                        ToolTip="Cancel" MouseDown="imgRepCanc_MouseDown" Cursor="Hand" HorizontalAlignment="Center" PreviewMouseDown="imgRepCanc_MouseDown" />
+
+                                </DockPanel>
+                                <TextBlock x:Name="txtInfoActivityLogOp" Text=".." TextAlignment="Right" FontStyle="Italic" VerticalAlignment="Center" Margin="3,0" DockPanel.Dock="Right"/>
+                            </DockPanel>
+                            <DockPanel DockPanel.Dock="Top">
+                                <Label Content="Date from" DockPanel.Dock="Left" VerticalAlignment="Center"/>
+                                <DatePicker x:Name="dtpDateFromLogs" VerticalAlignment="Center" Width="145" DockPanel.Dock="Left" 
+                                    HorizontalAlignment="Left"/>
+                                <Label Content="to" DockPanel.Dock="Left" 
+                                   Margin="20,3,3,3"
+                                   VerticalAlignment="Center"/>
+                                <DatePicker x:Name="dtpDateToLogs" VerticalAlignment="Center" Width="145"
+                                        DockPanel.Dock="Left" 
+                                    HorizontalAlignment="Left"/>
+                            </DockPanel>
+
+                            <DockPanel DockPanel.Dock="Top" Visibility="Collapsed">
+                                <Label Content="Interval working hours" VerticalAlignment="Center"/>
+                                <TextBox Name="txtIntHour1" TextAlignment="Center" Width="34" Text="8" VerticalAlignment="Center" Margin="5"/>
+                                <TextBox Name="txtIntHour2" TextAlignment="Center" Width="34" Text="18" VerticalAlignment="Center" Margin="5"/>
+                                <Label Content="Working hours day" VerticalAlignment="Center"/>
+                                <TextBox Name="txtHoursDayLogs" TextAlignment="Center" Width="34" Text="9" VerticalAlignment="Center"/>
+
+                            </DockPanel>
+
+                            <DockPanel Name="pnlChgInsLog" Height="100" DockPanel.Dock="Top" Visibility="Visible" VerticalAlignment="Top" >
+                                <!--Label Content="Activity" DockPanel.Dock="Left"/-->
+                                <Canvas >
+                                    <ComboBox Name="cbListActivitiesChg" VerticalAlignment="Top"
+                                      Canvas.Left="10" HorizontalAlignment="Left" Canvas.Top="3" Width="384"/>
+
+                                    <Label Content="Date from" Canvas.Top="32" VerticalAlignment="Center"/>
+
+                                    <my:CRSDateTimePicker x:Name="dtpDateFromLogsIns" 
+                                        Text="Date from" 
+                                        Width="294" Canvas.Top="32" Canvas.Left="100"
+                                        HorizontalAlignment="Left"/>
+                                    <Label Content="Date to" Canvas.Top="64" VerticalAlignment="Center"/>
+                                    <my:CRSDateTimePicker x:Name="dtpDateToLogsIns" 
+                                        Text="Date from" 
+                                        Width="294" Canvas.Top="64" Canvas.Left="100"
+                                        HorizontalAlignment="Left"/>
+                                </Canvas>
+                            </DockPanel>
+                        </DockPanel>
+
+                    </Grid>
+                </Border>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

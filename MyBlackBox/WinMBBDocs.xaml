@@ -1,0 +1,19 @@
+﻿<Window x:Class="MyBlackBoxCore.WinMBBDocs"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Files" Height="288" Width="400"
+        xmlns:my="clr-namespace:MyBlackBoxCore" 
+        WindowStyle="None" WindowStartupLocation="CenterScreen" UseLayoutRounding="True"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown" 
+        AllowsTransparency="True" 
+        ShowInTaskbar="False" Background="{x:Null}" ResizeMode="CanResizeWithGrip" Icon="/MyBlackBoxCore;component/BlackBoxIcon64.ico">
+    <Border Name="pnlBorderMain" Background="#C5F0F0F0"  BorderBrush="#50000000" BorderThickness="1" CornerRadius="5"  >
+    <Grid Name="pnlMain">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0"/>
+                <RowDefinition Height="200*"/>
+            </Grid.RowDefinitions>
+            <my:MBBDocs x:Name="ctrlMBBDocs"  Grid.Row="1"  Width="Auto" Margin="3" HorizontalAlignment="Stretch"/>
+        </Grid>
+    </Border>
+</Window>

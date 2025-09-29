@@ -1,0 +1,9 @@
+﻿<Window x:Class="MyBlackBoxCore.WindowLogin"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Login" Height="222" Width="511" Name="WinLogin" 
+        xmlns:my="clr-namespace:CRS.WPFControlsLib;assembly=CRS.WPFControlsLib" WindowStartupLocation="CenterScreen" Icon="/MyBlackBoxCore;component/BlackBoxIcon64.ico">
+    <Grid>
+        <my:CRSLogin HorizontalAlignment="Stretch" Name="ctrlLogin" VerticalAlignment="Stretch" ViewMode="2" />
+    </Grid>
+</Window>

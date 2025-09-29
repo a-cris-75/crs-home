@@ -1,0 +1,92 @@
+﻿<UserControl x:Class="MyBlackBoxCore.MBBSharingNotes"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:my="clr-namespace:CRS.WPFControlsLib;assembly=CRS.WPFControlsLib"
+             mc:Ignorable="d"  Background="#FFEBEBEB"
+             d:DesignHeight="402" d:DesignWidth="330" xmlns:my1="clr-namespace:MyBlackBoxCore" MouseEnter="UserControl_MouseEnter">
+    <UserControl.Resources>
+
+        <Style x:Key="myListboxStyle" >
+            <Style.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#9B61A4DE"/>
+                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="#695B8EBA"/>
+            </Style.Resources>
+        </Style>
+
+    </UserControl.Resources>
+    <Grid Name="pnlGridMain">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="34"></RowDefinition>
+            <RowDefinition Height="200*"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="120"></RowDefinition>
+        </Grid.RowDefinitions>
+        <DockPanel>
+            <DockPanel Grid.Row="3"   UseLayoutRounding="True" DockPanel.Dock="Right" Width="164">
+                <DatePicker Height="25" Name="dtDate" Width="133" AllowDrop="False" Background="#C5F0F0F0" FontWeight="Bold" FontStyle="Italic" Foreground="Gray" BorderBrush="#50000000" FontSize="11" />
+                <Button Canvas.Left="1" Content="&lt;" FontFamily="Segoe Script" FontWeight="Bold" Height="24" IsTabStop="False" Name="btnPrevDay" Width="14" ToolTip="Prev day" Click="btnPrevDay_Click" />
+                <Button Canvas.Left="1" Content="&gt;" FontFamily="Segoe Script" FontWeight="Bold" Height="24" IsTabStop="False" Name="btnNextDay" Width="14" ToolTip="Next day" Click="btnNextDay_Click" />
+
+            </DockPanel>
+            <StackPanel Name="pnlBtns" Orientation="Horizontal" DockPanel.Dock="Left" Width="183">
+                <Image Name="imgExit" Height="21" Width="21" VerticalAlignment="Center" Source="/MyBlackBoxCore;component/Ico/bullet_ball_glass_red.ico"  ToolTip="Close permanently (restore with button sharing)"  Cursor="Hand" Margin="3" MouseDown="imgExit_MouseDown" HorizontalAlignment="Center" MinWidth="21" MinHeight="21" />
+                <Image Name="imgClose" Height="21" Width="21" VerticalAlignment="Center" Source="/MyBlackBoxCore;component/Ico/bullet_ball_glass_yellow.ico"  ToolTip="Close temporanely"  Cursor="Hand" Margin="1,3,3,3" MouseDown="imgClose_MouseDown" HorizontalAlignment="Center" MinWidth="21" MinHeight="21" />
+                <my:CRSIconButton Name="btnGoResponde" Margin="1,0,0,0" Width="32" LabelText="&gt;" Icon="/MyBlackBoxCore;component/Images/playdx.png" LabelVisibility="Visible" IconHeight="24" IconWidth="24" ToolTip="Apri"  IconVisibility="Collapsed" FontFamily="Segoe Print" FontSize="22" FontWeight="Bold" FontStyle="Normal" IconOrientation="Horizontal" OverridesDefaultStyle="True" Height="30" Click="btnGoResponde_Click" />
+                <my:CRSIconButton Name="btnDel" Margin="1,0,0,0" Width="32" Icon="/MyBlackBoxCore;component/Images/del.png" IconHeight="24" LabelVisibility="Visible" ToolTip="Cancella"  IsManipulationEnabled="True" IconWidth="24" IconVisibility="Collapsed" LabelText="x" FontFamily="Segoe Print" FontSize="22" FontWeight="Bold" FontStyle="Normal" OverridesDefaultStyle="True" VerticalContentAlignment="Center" Height="30" Visibility="Visible" Click="btnDel_Click" />
+                <Button Name="btnPrev" Height="24" Width="16" Content="&lt;" Canvas.Left="1" Click="btnPrev_Click" IsTabStop="False" FontFamily="Segoe Script" FontWeight="Bold" Margin="6,2,2,2"></Button>
+                <Button Name="btnNext" Height="24" Width="16" Content="&gt;" Canvas.Left="18" Click="btnNext_Click" IsTabStop="False" FontFamily="Segoe Script" FontWeight="Bold"></Button>
+
+            </StackPanel>
+        </DockPanel>
+        <Grid Name="pnlGridTextNote" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="150*"></RowDefinition>
+                <RowDefinition Height="60"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid Name="pnlMsg">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="170*"/>
+                    <ColumnDefinition Width="20*" />
+                </Grid.ColumnDefinitions>
+                <Border Name="pnlRigth" Background="#C5F0F0F0" BorderBrush="#50000000" BorderThickness="1" Grid.Column="2" Grid.Row="1"  
+                        Margin="1" CornerRadius="5" DockPanel.Dock="Right">
+                    <Canvas Name="pnlRate"  Grid.Column="2" Grid.Row="1">
+                        <Image Height="17" Name="imgRat5" Stretch="Fill" Width="18" VerticalAlignment="Bottom" Source="/MyBlackBoxCore;component/Images/starGray1.png" Canvas.Left="6" Canvas.Top="3" Tag="5" Cursor="Hand" MouseDown="imgRat1_MouseDown" IsHitTestVisible="False" />
+                        <Image Height="17" Name="imgRat4" Stretch="Fill" Width="18" VerticalAlignment="Bottom" Source="/MyBlackBoxCore;component/Images/starGray1.png" Canvas.Left="6" Canvas.Top="21" Tag="4" Cursor="Hand" MouseDown="imgRat1_MouseDown" IsHitTestVisible="False" />
+                        <Image Height="17" Name="imgRat3" Stretch="Fill" Width="18" VerticalAlignment="Bottom" Source="/MyBlackBoxCore;component/Images/starGray1.png" Canvas.Left="6" Canvas.Top="39" Tag="3" Cursor="Hand" MouseDown="imgRat1_MouseDown" IsHitTestVisible="False" />
+                        <Image Height="17" Name="imgRat2" Stretch="Fill" Width="18" VerticalAlignment="Bottom" Source="/MyBlackBoxCore;component/Images/starGray1.png" Canvas.Left="6" Canvas.Top="57" Tag="2" Cursor="Hand" MouseDown="imgRat1_MouseDown" IsHitTestVisible="False" />
+                        <Image Height="17" Name="imgRat1" Stretch="Fill" Width="18" VerticalAlignment="Bottom" Source="/MyBlackBoxCore;component/Images/starGray1.png" Canvas.Left="6" Canvas.Top="75" Tag="1" Cursor="Hand" MouseDown="imgRat1_MouseDown" IsHitTestVisible="False" />
+                        <Image Canvas.Top="119" Canvas.Left="5"  Height="23" Width="23" Name="imgAddFavorites" Stretch="Fill" Source="/MyBlackBoxCore;component/Images/starAzure.png" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Syncronize" Cursor="Hand" Visibility="Hidden" />
+                        <Image Name="imgOk" Stretch="Fill" Height="28" Width="28" VerticalAlignment="Bottom" Source="/MyBlackBoxCore;component/Images/confirm2.png" Canvas.Left="2" Canvas.Top="95" ToolTip="Save note" MouseDown="imgOk_MouseDown" Cursor="Hand" DockPanel.Dock="Top" />
+                        <Image Canvas.Left="2" Canvas.Top="124" Cursor="Hand" Height="27" Name="imgSync" Source="/MyBlackBoxCore;component/Images/sync1.png" Stretch="Fill" ToolTip="Syncronize" Width="27" MouseDown="imgSync_MouseDown" />
+                    </Canvas>
+                </Border>
+                <TextBox Grid.Row="0" Name="txtMsg" UseLayoutRounding="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" Margin="3"></TextBox>
+            </Grid>
+            <DockPanel Name="pnlResponse" Grid.Row="1"  Background="#C5F0F0F0"  >
+                <StackPanel Width="30" Margin="2" DockPanel.Dock="Right">
+                    <my:CRSIconButton Name="btnSendAll" Width="Auto" Height="Auto"
+                                      LabelText="R" LabelVisibility="Visible" ToolTip="Reply.."  IconVisibility="Collapsed" 
+                                      FontFamily="Segoe Print" FontSize="16" FontWeight="Bold" FontStyle="Normal" 
+                                      IconOrientation="Horizontal" OverridesDefaultStyle="True" 
+                                      Click="btnSendAll_Click" RenderTransformOrigin="0.5,0.5" >
+                        
+                    </my:CRSIconButton>
+                    <my:CRSIconButton FontFamily="Segoe Print" FontSize="16" FontStyle="Normal" FontWeight="Bold" Height="26" IconOrientation="Horizontal" IconVisibility="Collapsed" LabelText="S" LabelVisibility="Visible" Name="btnSendSingle" OverridesDefaultStyle="True" ToolTip="To owner.." Click="btnSendSingle_Click" Visibility="Hidden" />
+                </StackPanel>
+                <TextBox Grid.Row="1" Name="txtNoteReply" UseLayoutRounding="True" Margin="3" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"></TextBox>
+            </DockPanel>
+            <GridSplitter ResizeDirection="Rows" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" />
+        </Grid>
+        <DockPanel Grid.Row="2" >
+            <CheckBox Name="chkIsRead" DockPanel.Dock="Right" Margin="2,8,2,2" ToolTip="Read" Click="chkIsRead_Click" Content="Read"></CheckBox>
+            <TextBox Grid.Row="2" Name="txtTitle"  Background="#C5F0F0F0" VerticalScrollBarVisibility="Auto" UseLayoutRounding="True" 
+                             BorderBrush="#50000000" ToolTip="Title note"  Grid.Column="1" MaxLines="6" Margin="2" TextWrapping="Wrap" 
+                             FontStyle="Italic" FontWeight="Bold" IsReadOnly="True" />
+
+        </DockPanel>
+        <my1:MBBDocs Grid.Row="3" x:Name="ctrlMBBDocs" IsBtnExitVisible="False" IsBtnDelVisible="False" />
+    </Grid>
+</UserControl>

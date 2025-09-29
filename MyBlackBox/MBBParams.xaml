@@ -1,0 +1,239 @@
+﻿<UserControl x:Class="MyBlackBoxCore.MBBParams"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" d:DesignWidth="600" 
+             xmlns:my="clr-namespace:CRS.WPFControlsLib;assembly=CRS.WPFControlsLib" 
+             xmlns:my1="clr-namespace:MyBlackBoxCore" UseLayoutRounding="True" Height="404">
+    <Grid>
+        <Border Name="pnlRigth" Background="#C5F0F0F0" BorderBrush="#50000000" BorderThickness="1" Margin="0" CornerRadius="5" ToolTip="Text..">
+
+            <TabControl HorizontalAlignment="Stretch" Name="tcMain" VerticalAlignment="Stretch" Margin="3"  >
+
+                <TabItem Header="Notes and Docs" >
+                    <Canvas>
+                        <my:CRSLabelControl Name="ctrlDirStorageTemp" LabelContent="Local Directory Temp" 
+                                            LabelIconVisibility="Collapsed" WidthLabel="120" 
+                                            ControlType="dir" Width="431" Canvas.Left="6" Canvas.Top="78" Visibility="Hidden" />
+
+                        <my:CRSLabelControl Name="ctrlDirSharing" LabelContent="Directory for Share Notes" 
+                                            LabelIconVisibility="Collapsed" WidthLabel="160" 
+                                            ControlType="dir" Width="431" Canvas.Left="15" Canvas.Top="38" ContentControlChanged="ctrlDirStorage_ContentControlChanged" 
+                                            LabelAlignment="Left" Visibility="Visible" />
+                        <my:CRSLabelControl Name="ctrlDirStorageDropBox" Canvas.Left="15" Canvas.Top="6" ControlType="dir" 
+                                            LabelContent="Root Directory Storage" LabelIconVisibility="Collapsed"  
+                                            Width="431" WidthLabel="160" LabelAlignment="Left" />
+                        <!--my:CRSLabelControl Canvas.Left="15" Canvas.Top="70" LabelIconVisibility="Collapsed" 
+                                            ControlType="text" LabelAlignment="Left" 
+                                            LabelContent="Separation char titles" 
+                                            Name="ctrlSeparationCharTitle" 
+                                            Width="220" WidthLabel="160"  HeightControl="27" WidthEditInside="50" FontWeight="Bold"  /-->
+                        <!--GroupBox Header="Params find title" FontStyle="Italic" Canvas.Top="60" Canvas.Left="7" Width="275" Height="46"/-->
+
+                        <Label Canvas.Left="15" Canvas.Top="73" Content="Separation char titles" 
+                                            Name="lblSeparationCharTitle" 
+                                            Width="136" FontWeight="Bold"  />
+                        <RadioButton x:Name="rbSepChar" Canvas.Left="160" Canvas.Top="80"/>
+                        <TextBox Name ="txtSepCharTitle" Canvas.Left="180" Canvas.Top="75" Height="23" Width="35" />
+                        <RadioButton x:Name="rbSepCharSpace" Canvas.Left="230" Canvas.Top="80" IsChecked="True"/>
+                        <Label Canvas.Left="245" Canvas.Top="73" Content="space" Width="Auto"
+                                            FontStyle="Italic"  />
+
+                        <my:CRSLabelControl Name="ctrlNewFileExtension" Canvas.Left="15" Canvas.Top="110" 
+                                            ControlType="text" LabelContent="Extension doc file" 
+                                            LabelFlowDirection="LeftToRight"  LabelIconVisibility="Collapsed"
+                                            Width="230" WidthLabel="160" 
+                                            LabelAlignment="Left" HeightControl="27"/>
+
+                        <my:CRSLabelControl Name="ctrlAutoSync" Canvas.Left="27" Canvas.Top="183" 
+                                            ControlType="check"                                                    
+                                            Width="220" WidthLabel="220" LabelAlignment="Left" 
+                                            LabelContent="Auto Syncronization" LabelIconVisibility="Collapsed"         
+                                            ToolTip="Syncronize older file version with new file version" />
+
+                        <my:CRSLabelControl Name="ctrlAutoSave" Canvas.Left="184" Canvas.Top="183" 
+                                            ControlType="check" 
+                                            Width="160"  WidthLabel="120" LabelAlignment="Left" LabelContent="Auto Save" LabelIconVisibility="Collapsed"                                            
+                                            IsDefault="True"  />
+                        <my:CRSLabelControl Name="chkSyncroWithEmail" Canvas.Left="27" Canvas.Top="205" 
+                                            ControlType="check" LabelContent="Syncro with email (select if Cloud is offline)" LabelIconVisibility="Collapsed"  
+                                            WidthLabel="320" LabelAlignment="Right"
+                                            IsDefault="True" Width="320" />
+
+                        <my:CRSIconButton Name="btnExportNotesOwner" Canvas.Left="20" Canvas.Top="293" Height="23" IconVisibility="Collapsed" LabelText="Export/Clean Notes" Width="140" Click="btnExportNotesOwner_Click" />
+                        <my:CRSIconButton Canvas.Left="20" Canvas.Top="265" Height="23" IconVisibility="Collapsed" LabelText="Resync Shared Notes" Name="btnSyncroShared" Width="140" Click="btnSyncroShared_Click" />
+                        <my:CRSIconButton Canvas.Left="20" Canvas.Top="237" Height="23" IconVisibility="Collapsed" LabelText="Resync Owner Notes" Name="btnSyncroOwner" Width="140" Click="btnSyncroOwner_Click" />
+                        <my:CRSIconButton Canvas.Left="20" Canvas.Top="321" Height="23" IconVisibility="Collapsed" LabelText="Import Notes from File" x:Name="btnImportNotes" Width="140" Click="btnImportNotes_Click" />
+                        <my:CRSLabelControl Name="ctrlFileNameImport" Canvas.Left="167" Canvas.Top="321" ControlType="file" 
+                                            LabelContent="File to import" LabelIconVisibility="Collapsed"  
+                                            Width="410" WidthLabel="120" LabelAlignment="Left" />
+
+                        <my:CRSLabelControl Name="ctrlDaysSyncro" Canvas.Left="167" Canvas.Top="238" 
+                                            ControlType="num" LabelContent="Lasts days to resync" 
+                                            LabelIconVisibility="Collapsed" LabelAlignment="Left"
+                                            Width="220"  WidthLabel="180" HeightControl="26" Height="26" />
+                        <my:CRSLabelControl Name="ctrlTimerSyncro" Canvas.Left="167" Canvas.Top="265" ControlType="num" 
+                                            LabelIconVisibility="Collapsed" LabelAlignment="Left"
+                                            LabelContent="Timer read/write notes (sec)" 
+                                            Width="220" WidthLabel="180"  HeightControl="26" />
+
+                        <my:CRSLabelControl Canvas.Left="167" Canvas.Top="292" ControlType="num" 
+                                            LabelContent="Export days notes" LabelIconVisibility="Collapsed" 
+                                            Name="ctrlExportDaysNotes" Width="220"  WidthLabel="180"                                           
+                                            Visibility="Visible" HeightControl="26" Height="26" LabelAlignment="Left"/>
+                        <!--CheckBox Name="chkSyncroWithEmail"  Content="Syncro with email (select if Drop box is out)" Height="20" Width="270" Canvas.Left="247" Canvas.Top="193"/-->
+                        <!--my:CRSLabelControl  Name="chkSyncroWithEmail"  Canvas.Left="247" Canvas.Top="193" ControlType="check"  LabelContent="Syncro with email (select if Drop box is out)" Height="20" Width="270" LabelIconVisibility="Collapsed"  WidthEditInside="40" WidthLabel="120" /-->
+
+                        <Label Canvas.Left="448" Canvas.Top="5" Content="(use Cloud directory) " Height="28" Name="label2" IsEnabled="True" />
+                        <Label Canvas.Left="15" Canvas.Top="130" Content="(File create from note)"
+                               FontStyle="Italic"
+                               Height="28" Name="label3" />
+
+                        <Label Canvas.Left="409" Canvas.Top="204" Content="Last backup: " Height="28" Name="lblLastBkup" Visibility="Hidden" />
+                        <TextBlock Canvas.Left="472" Canvas.Top="-22" FontSize="11" FontStyle="Italic" Foreground="#B4808080" Name="txtVersion" Text="ver. 2.0.0" TextAlignment="Right" UseLayoutRounding="True" Width="67" />
+
+                        <Label Canvas.Left="20" Canvas.Top="159" Content="Params Syncro" Height="28" Name="label4" FontStyle="Italic" FontWeight="Bold" />
+                        <my:CRSIconButton Canvas.Left="400" Canvas.Top="100" Height="23" IconVisibility="Collapsed" LabelText="Modify in all notes" 
+                                          Name="btnModSepDB" Width="125" Click="btnModSepDB_Click" />
+                        <TextBox Canvas.Left="400" Canvas.Top="75" Height="23" Name="txtNewTitleSep" Width="35" />
+                        <TextBox Canvas.Left="490" Canvas.Top="75" Height="23" Name="txtCurrentTitleSep" Width="35" />
+                        <Label Canvas.Left="300" Canvas.Top="73" Content="Modify separator" Height="28" Name="label5" ClipToBounds="True" />
+                        <Label Canvas.Left="440" Canvas.Top="73" Content="=> new" Height="27" Name="label105" ClipToBounds="True" />
+
+
+                    </Canvas>
+
+                </TabItem>
+                <TabItem Header="Versioning and Syncronizing docs" Name="tiVersion" Visibility="Collapsed">
+                    <Canvas>
+                        <!--my:CRSLabelControl Name="ctrlAutoVers" LabelContent="Auto Versioning" LabelIconVisibility="Collapsed" WidthLabel="60" ControlType="check"  /-->
+                        <my:CRSLabelControl Name="ctrlConfirmSyncroOp" LabelContent="Confirm default syncro operation - NOT USED" LabelIconVisibility="Collapsed" WidthLabel="10" ControlType="check" Canvas.Left="276" Canvas.Top="108" Visibility="Hidden"  />
+                        <GroupBox Header="Syncronizing" Height="77" Name="gbSync" Width="406" Canvas.Left="28" Canvas.Top="40">
+                            <Grid Height="58">
+                                <RadioButton Content="Overwrite older version (dangerous in download)" Height="16" HorizontalAlignment="Left" Margin="18,8,0,0" Name="rbOverwriteOldVer" VerticalAlignment="Top" GroupName="DefOp" >
+                                    <RadioButton.Background>
+                                        <SolidColorBrush Color="White"/>
+                                    </RadioButton.Background>
+                                </RadioButton>
+                                <RadioButton Content="Sync only with owner versions (only owner can modify doc)" Height="16" HorizontalAlignment="Left" Margin="18,0,0,8" Name="rbSyncOwner" VerticalAlignment="Bottom" GroupName="DefOp" IsThreeState="True" />
+                            </Grid>
+                        </GroupBox>
+                        <my:CRSLabelControl Canvas.Left="29" Canvas.Top="190" ControlType="check" LabelContent="Is unique file name (if true exists only one file with specified name and differents paths)" LabelIconVisibility="Collapsed" Name="ctrlIsUniqueFileName" Visibility="Visible" WidthLabel="10" />
+                        <my:CRSLabelControl Canvas.Left="26" Canvas.Top="120" ControlType="num" LabelContent="Timer syncro for docs (sec)" LabelIconVisibility="Hidden" Name="ctrlTimerSyncroForDocs" Width="231" WidthLabel="180"  />
+                        <CheckBox Canvas.Left="38" Canvas.Top="15" Content="Syncro and version files and docs" Height="16" Name="chkVersionAndSyncro" Click="chkVersionAndSyncro_Click" IsChecked="True" />
+                    </Canvas>
+                </TabItem>
+                <TabItem Header="User">
+                    <DockPanel LastChildFill="False">
+
+                        <Canvas Name="pnlInfoUser" Height="190" DockPanel.Dock="Top" VerticalAlignment="Top">
+                            <my:CRSLabelControl Name="ctrlUser" Width="346" Height="30" ControlType="text" LabelContent="Email user" LabelFlowDirection="LeftToRight" 
+                                                Canvas.Left="21" Canvas.Top="12" ContentControlChanged="ctrlUser_ContentControlChanged" HeightControl="27"/>
+                            <my:CRSLabelControl Name="ctrlPwd" Width="346" Height="30" ControlType="pwd" LabelContent="Password MBB" 
+                                                LabelFlowDirection="LeftToRight" Canvas.Left="21" Canvas.Top="42"/>
+                            <my:CRSLabelControl Name="ctrlPwdEmail" Width="346" Height="30" ControlType="pwd" LabelContent="Password Email" 
+                                                LabelFlowDirection="LeftToRight" Canvas.Left="21" Canvas.Top="72" />
+                            <ComboBox Canvas.Left="417" Canvas.Top="12" Height="23" Name="comboLang" Width="62" IsReadOnly="True" />
+
+                            <Label Content="Smtp/port" Height="28" x:Name="lblServerSmtp" 
+                                   Canvas.Left="103" Canvas.Top="102" Width="68" HorizontalAlignment="Right" />
+                            <TextBox Name ="txtSmtp" Height="23" TextWrapping="Wrap" Width="120" 
+                                     Canvas.Left="176" Canvas.Top="106"/>
+                            <TextBox Name ="txtSmtpPort" Height="23" TextWrapping="Wrap" Width="40" 
+                                     Canvas.Left="301" Canvas.Top="106"/>
+
+                            <Label Canvas.Left="371" Canvas.Top="101" Content="Server" Height="28" />
+                            <ComboBox Canvas.Left="417" Canvas.Top="105" Height="23" Name="comboServerEmail" Width="159" IsReadOnly="True" SelectionChanged="comboServerEmail_SelectionChanged">
+                                <ComboBoxItem Content="Gmail" HorizontalAlignment="Left" Width="128"/>
+                                <ComboBoxItem Content="Yahoo" HorizontalAlignment="Left" Width="128"/>
+                                <ComboBoxItem Content="Office365" HorizontalAlignment="Left" Width="128"/>
+                                <ComboBoxItem Content="Outlook" HorizontalAlignment="Left" Width="128"/>
+                                <ComboBoxItem Content="Aol" HorizontalAlignment="Left" Width="128"/>
+                            </ComboBox>
+
+
+
+                            <Label Content="Imap/port" Height="28" x:Name="lblServerImap"  
+                                   Canvas.Left="103" Canvas.Top="130" HorizontalAlignment="Right" Width="68"/>
+                            <TextBox Name ="txtImap" Height="23" TextWrapping="Wrap" Width="120" 
+                                     Canvas.Left="176" Canvas.Top="133"/>
+                            <TextBox x:Name ="txtImapPort" Height="23" TextWrapping="Wrap" Width="40" 
+                                     Canvas.Left="301" Canvas.Top="133"/>
+
+                            <Label  Content="Pop3/port" Height="28" x:Name="lblServerPop" 
+                                    Canvas.Left="103" Canvas.Top="158" Width="68" HorizontalAlignment="Right" Margin="0"/>
+                            <TextBox Name ="txtPop3" Height="23" TextWrapping="Wrap" Width="120" 
+                                     Canvas.Left="176" Canvas.Top="160"/>
+                            <TextBox x:Name ="txtPop3Port" Height="23" TextWrapping="Wrap" Width="40" 
+                                     Canvas.Left="301" Canvas.Top="160"/>
+
+                            <Label Canvas.Left="375" Canvas.Top="11" Content="Lang" Height="28" Name="label1" />
+                            <Button Canvas.Left="417" Tag ="0" Canvas.Top="42" Content="Change.." Height="26" IsDefault="False" Name="btnChangePwd" TabIndex="4" ToolTip="Change Password" Width="62" Click="btnChangePwd_Click" />
+                            <Button Canvas.Left="417" Tag ="0" Canvas.Top="72" Content="Change.." Height="26" IsDefault="False" Name="btnChangePwdEmail" TabIndex="4" ToolTip="Change Password" Width="62" Click="btnChangePwdEmail_Click" />
+                            <TextBlock Canvas.Left="483" Canvas.Top="77" TextWrapping="Wrap"
+                                   Text="pwd MBB if not set" Width="105"/>
+                        </Canvas>
+                        <Canvas  Name="pnlChangePwd" Height="115" 
+                                 Visibility="Collapsed" Tag="0" DockPanel.Dock="Top" VerticalAlignment="Top">
+                            <my:CRSLabelControl Canvas.Left="71" Canvas.Top="6" x:Name="ctrlOldPwd" Width="312" ControlType="pwd" WidthLabel="120" LabelContent="Old Password" TabIndex="5" />
+                            <my:CRSLabelControl Canvas.Left="71" Canvas.Top="44" ControlType="pwd" LabelContent="New Password" x:Name="ctrlNewPwd" Width="312" WidthLabel="120" TabIndex="6" />
+                            <my:CRSLabelControl Canvas.Left="71" Canvas.Top="82" ControlType="pwd" LabelContent="Confirm" x:Name="ctrlConfirmPwd" Width="312" WidthLabel="120" TabIndex="7" />
+                            <Button Canvas.Left="418" Canvas.Top="81" Content="Save" Height="26" Name="btnSave" Width="53" Click="btnSave_Click" TabIndex="8" />
+                            <Button Canvas.Left="477" Canvas.Top="81" Content="Cancel" Height="26" Name="btnCancel" Width="53" Click="btnCancel_Click" />
+                            <TextBlock Canvas.Left="396" Canvas.Top="46" Height="23" Name="textBlockErrChangePwd" Text="" Width="155" TextAlignment="Right" Foreground="Red" />
+                        </Canvas>
+                        <Canvas  Name="pnlChangePwdEmail" Height="34" 
+                                 Visibility="Collapsed" Tag="0" DockPanel.Dock="Top" VerticalAlignment="Top">
+                            <my:CRSLabelControl Canvas.Left="71" Canvas.Top="6" ControlType="pwd" LabelContent="New Password" x:Name="ctrlNewPwdEmail" Width="312" WidthLabel="120" TabIndex="6" />
+                            <Button Canvas.Left="418" Canvas.Top="5" Content="Save" Height="26" Name="btnSavePwdEmail" Width="53" Click="btnSavePwsEmail_Click" TabIndex="8" />
+                            <Button Canvas.Left="477" Canvas.Top="5" Content="Cancel" Height="26" Name="btnCancelPwdEmail" Width="53" Click="btnCancelPwdEmail_Click" />
+                        </Canvas>
+                    </DockPanel>
+                </TabItem>
+                <TabItem Header="Syncro Results" Name="tiSyncroPendings">
+                    <Grid>
+                        <my1:MBBSyncro x:Name="ctrlMBBSyncroPendings"  />
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Utilities " Name="tiDatabase">
+                    <Grid Background="#FFE5E5E5" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="283*"/>
+                            <ColumnDefinition Width="28*"/>
+                            <ColumnDefinition Width="275*"/>
+                        </Grid.ColumnDefinitions>
+                        <Canvas Grid.Column="0" Height="Auto" Width="Auto">
+                            <Label Content="Data base utilities" FontStyle="Italic" Grid.ColumnSpan="3" Margin="4,6,274,0"></Label>
+                            <TextBox Name ="txtScriptDB"  Grid.Column="0" TextWrapping="Wrap" Text="" Height="266" Canvas.Left="4" Canvas.Top="43" Width="272" />
+                            <Button Name ="btnExecScript"  Content="Exec script!" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="BtnExecScript_Click" Height="32" Grid.ColumnSpan="2" Canvas.Left="201" Canvas.Top="6"/>
+                        </Canvas>
+                        <Canvas Grid.Column="1">
+                            <Button Name ="btnGetLog" Grid.Column="1" Content="Get log file" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75"  Height="32" Grid.ColumnSpan="2" Click="btnGetLog_Click" Canvas.Left="10" Canvas.Top="6"/>
+                            <Button Name ="btnGetAppIni" Grid.Column="1" Content="Get ini file" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="75" Height="32" Grid.ColumnSpan="2" Click="btnGetAppIni_Click" Canvas.Left="90" Canvas.Top="6"/>
+                            <Button Name ="btnGetLogListener" Grid.Column="1" Content="Get listener file" HorizontalAlignment="Left" VerticalAlignment="Top" Width="88"  Height="32" Grid.ColumnSpan="2" Canvas.Left="170" Canvas.Top="6" Click="btnGetLogListener_Click"/>
+
+                            <TextBox Name="txtPathsInfo" Grid.Column="1" IsReadOnly="True" Background="WhiteSmoke" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                                   Text="Path info:" Width="284" Height="266" VerticalAlignment="Top" Grid.ColumnSpan="2" Canvas.Left="10" Canvas.Top="43"/>
+                        </Canvas>
+                    </Grid>
+                </TabItem>
+                <!--
+                <TabItem Header="Log" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="54">
+                    <Canvas Background="#FFE5E5E5">
+                        <TextBox Name ="txtLog"  Grid.Column="0" TextWrapping="Wrap" Text="" Height="266" Canvas.Left="4" Canvas.Top="43" Width="272" />
+                        <Button Name ="btnReadLog"  Content="Read log!" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="btnReadLog_Click" Height="32" Grid.ColumnSpan="2" Canvas.Left="201" Canvas.Top="6"/>
+
+                    </Canvas>
+                </TabItem>
+                -->
+                <!--TabItem Header="Current Syncro" Name="tcCurrentPendings">
+                <Grid>
+                    <my1:MBBSyncro x:Name="ctrlMBBCurrentPendings"  />
+                </Grid>
+            </TabItem-->
+            </TabControl>
+
+        </Border>
+    </Grid>
+</UserControl>

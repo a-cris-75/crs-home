@@ -1,0 +1,20 @@
+﻿<Window x:Class="MyBlackBoxCore.WinMBBNewUser"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="New User" Height="246" Width="341"
+        xmlns:my="clr-namespace:CRS.WPFControlsLib;assembly=CRS.WPFControlsLib" 
+        WindowStartupLocation="CenterScreen"  
+        Topmost="False" Icon="/MyBlackBoxCore;component/BlackBoxIcon64.ico">
+    <Grid>
+        <Canvas Name="pnlLogin">
+            <my:CRSLabelControl  Margin="32,23,11,299" x:Name="ctrlUser"  ControlType="text" LabelContent="User"  WidthLabel="140" Width="290" Canvas.Left="-15" TabIndex="1" IsDefault="True" />
+            <my:CRSLabelControl Margin="32,63,12,260" x:Name="ctrlPwd"  LabelContent="Password" ControlType="pwd"   WidthLabel="140" Width="290" Canvas.Left="-15" Canvas.Top="-2" TabIndex="2" />
+            <my:CRSIconButton  IsDefault="True" HorizontalAlignment="Left" Margin="158,137,0,0" x:Name="btnLogin" VerticalAlignment="Top" Width="53" LabelText="Login" IconVisibility="Collapsed" PreviewMouseLeftButtonDown="btnLogin_PreviewMouseLeftButtonDown" Height="25" Canvas.Left="36" Canvas.Top="38" Focusable="True" TabIndex="4"  />
+            <my:CRSIconButton HorizontalAlignment="Left" IconVisibility="Collapsed" LabelText="Exit" Margin="217,137,0,0" x:Name="btnExit" VerticalAlignment="Top" Width="54" Grid.Column="1" Height="25" PreviewMouseLeftButtonDown="btnExit_PreviewMouseLeftButtonDown" Canvas.Left="36" Canvas.Top="38" TabIndex="9" Visibility="Visible" IsCancel="True" />
+            <TextBlock  Height="23" HorizontalAlignment="Stretch" Margin="30,103,12,50" Name="textBlockError" Text="" VerticalAlignment="Stretch" Width="190" Foreground="Red" FlowDirection="LeftToRight" Canvas.Left="-13" TextAlignment="Center" Canvas.Top="43" />
+            <Image Name="imgOffline" Canvas.Left="209" Canvas.Top="139" Height="30" Stretch="Fill" Width="30" Visibility="Collapsed" Source="/MyBlackBoxCore;component/Ico/bullet_ball_glass_red.ico" />
+            <TextBlock  Height="23" HorizontalAlignment="Stretch" Margin="30,103,12,50" Name="textBlockOffline" Text="Is Offline!!" VerticalAlignment="Stretch" Width="66" Foreground="Red" FlowDirection="LeftToRight" Canvas.Left="211" TextAlignment="Center" Canvas.Top="43" Visibility="Collapsed" />
+            <my:CRSLabelControl Canvas.Left="17" Canvas.Top="99" ControlType="pwd" LabelContent="Confirm Password" x:Name="ctrlConfirmPwd" TabIndex="3" Width="290" WidthLabel="140" />            
+        </Canvas>
+    </Grid>
+</Window>

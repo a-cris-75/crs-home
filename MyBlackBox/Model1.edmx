@@ -1,0 +1,336 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="myblackboxcoreModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityContainer Name="myblackboxcoreModelStoreContainer">
+          <EntitySet Name="note" EntityType="myblackboxcoreModel.Store.note" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="note_doc" EntityType="myblackboxcoreModel.Store.note_doc" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="note_key" EntityType="myblackboxcoreModel.Store.note_key" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="note_key_include" EntityType="myblackboxcoreModel.Store.note_key_include" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="note_sharing" EntityType="myblackboxcoreModel.Store.note_sharing" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="translation" EntityType="myblackboxcoreModel.Store.translation" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+          <EntitySet Name="userapp" EntityType="myblackboxcoreModel.Store.userapp" store:Type="Tables" Schema="dbo" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
+        </EntityContainer>
+        <EntityType Name="note">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="IDUser" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="IDUser" Type="int" Nullable="false" />
+          <Property Name="Title" Type="varchar" MaxLength="128" />
+          <Property Name="Text" Type="varchar" MaxLength="3000" />
+          <Property Name="DateTimeInserted" Type="datetime2" Precision="0" />
+          <Property Name="DateTimeLastMod" Type="datetime2" Precision="0" />
+          <Property Name="Rate" Type="int" />
+          <Property Name="JobCode" Type="varchar" MaxLength="40" />
+          <Property Name="PhaseNo" Type="int" />
+          <Property Name="Image" Type="varchar" MaxLength="60" />
+          <Property Name="IsPrivate" Type="bit" />
+          <Property Name="UserLockedBy" Type="varchar" MaxLength="20" />
+          <Property Name="AuditUser" Type="varchar" MaxLength="20" />
+          <Property Name="AuditDateTime" Type="datetime2" Precision="0" />
+        </EntityType>
+        <EntityType Name="note_doc">
+          <Key>
+            <PropertyRef Name="IDNote" />
+            <PropertyRef Name="IDUser" />
+            <PropertyRef Name="DocName" />
+          </Key>
+          <Property Name="IDNote" Type="int" Nullable="false" />
+          <Property Name="IDUser" Type="int" Nullable="false" />
+          <Property Name="DocName" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="Version" Type="int" />
+          <Property Name="DateTimeLastMod" Type="datetime2" />
+          <Property Name="InternalDirRemote" Type="varchar" MaxLength="255" />
+          <Property Name="FileNameLocal" Type="varchar" MaxLength="255" />
+          <Property Name="ToSyncronize" Type="bit" />
+        </EntityType>
+        <EntityType Name="note_key">
+          <Key>
+            <PropertyRef Name="IDNote" />
+            <PropertyRef Name="IDUser" />
+            <PropertyRef Name="Name" />
+          </Key>
+          <Property Name="IDNote" Type="int" Nullable="false" />
+          <Property Name="IDUser" Type="int" Nullable="false" />
+          <Property Name="Name" Type="varchar" Nullable="false" MaxLength="80" />
+          <Property Name="Level" Type="int" />
+        </EntityType>
+        <EntityType Name="note_key_include">
+          <Key>
+            <PropertyRef Name="WordName" />
+          </Key>
+          <Property Name="WordName" Type="varchar" Nullable="false" MaxLength="24" />
+          <Property Name="ToInclude" Type="bit" />
+        </EntityType>
+        <EntityType Name="note_sharing">
+          <Key>
+            <PropertyRef Name="IDNote" />
+            <PropertyRef Name="IDUserSharing" />
+            <PropertyRef Name="IDUser" />
+          </Key>
+          <Property Name="IDNote" Type="int" Nullable="false" />
+          <Property Name="IDUserSharing" Type="int" Nullable="false" />
+          <Property Name="IDUser" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="translation">
+          <Key>
+            <PropertyRef Name="GroupControl" />
+            <PropertyRef Name="Origin" />
+          </Key>
+          <Property Name="GroupControl" Type="varchar" Nullable="false" MaxLength="40" />
+          <Property Name="Origin" Type="varchar" Nullable="false" MaxLength="120" />
+          <Property Name="EN" Type="varchar" MaxLength="120" />
+          <Property Name="IT" Type="varchar" MaxLength="120" />
+          <Property Name="FR" Type="varchar" MaxLength="120" />
+          <Property Name="DE" Type="varchar" MaxLength="120" />
+          <Property Name="ES" Type="varchar" MaxLength="120" />
+          <Property Name="TypeControl" Type="varchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="userapp">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Name" Type="varchar" Nullable="false" MaxLength="64" />
+          <Property Name="Language" Type="varchar" MaxLength="3" />
+          <Property Name="IDProfile" Type="int" />
+          <Property Name="Password" Type="varchar" MaxLength="20" />
+          <Property Name="OldPassword" Type="varchar" MaxLength="20" />
+          <Property Name="RegistryName" Type="varchar" MaxLength="20" />
+          <Property Name="RegistrySurname" Type="varchar" MaxLength="20" />
+          <Property Name="RegistryAddress" Type="varchar" MaxLength="50" />
+          <Property Name="WorkGroup" Type="varchar" MaxLength="20" />
+          <Property Name="DateRegistration" Type="datetime2" Precision="0" />
+          <Property Name="ImagePath" Type="varchar" MaxLength="120" />
+          <Property Name="Status" Type="varchar" MaxLength="20" />
+          <Property Name="Level" Type="varchar" MaxLength="20" />
+          <Property Name="RateHour" Type="numeric" Precision="9" Scale="3" />
+          <Property Name="AuditUser" Type="varchar" MaxLength="20" />
+          <Property Name="AuditDateTime" Type="datetime2" Precision="0" />
+        </EntityType>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="myblackboxcoreModel" Alias="Self" xmlns="http://schemas.microsoft.com/ado/2009/11/edm" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation">
+        <EntityContainer Name="myblackboxcoreEntities" annotation:LazyLoadingEnabled="true" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation">
+          <EntitySet Name="notes" EntityType="myblackboxcoreModel.note" />
+          <EntitySet Name="note_doc" EntityType="myblackboxcoreModel.note_doc" />
+          <EntitySet Name="note_key" EntityType="myblackboxcoreModel.note_key" />
+          <EntitySet Name="note_key_include" EntityType="myblackboxcoreModel.note_key_include" />
+          <EntitySet Name="note_sharing" EntityType="myblackboxcoreModel.note_sharing" />
+          <EntitySet Name="translations" EntityType="myblackboxcoreModel.translation" />
+          <EntitySet Name="userapps" EntityType="myblackboxcoreModel.userapp" />
+        </EntityContainer>
+        <EntityType Name="note">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="IDUser" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="IDUser" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="128" Unicode="false" FixedLength="false" />
+          <Property Name="Text" Type="String" MaxLength="3000" Unicode="false" FixedLength="false" />
+          <Property Name="DateTimeInserted" Type="DateTime" />
+          <Property Name="DateTimeLastMod" Type="DateTime" />
+          <Property Name="Rate" Type="Int32" />
+          <Property Name="JobCode" Type="String" MaxLength="40" Unicode="false" FixedLength="false" />
+          <Property Name="PhaseNo" Type="Int32" />
+          <Property Name="Image" Type="String" MaxLength="60" Unicode="false" FixedLength="false" />
+          <Property Name="IsPrivate" Type="Boolean" />
+          <Property Name="UserLockedBy" Type="String" MaxLength="20" Unicode="false" FixedLength="false" />
+          <Property Name="AuditUser" Type="String" MaxLength="20" Unicode="false" FixedLength="false" />
+          <Property Name="AuditDateTime" Type="DateTime" />
+        </EntityType>
+        <EntityType Name="note_doc">
+          <Key>
+            <PropertyRef Name="IDNote" />
+            <PropertyRef Name="IDUser" />
+            <PropertyRef Name="DocName" />
+          </Key>
+          <Property Name="IDNote" Type="Int32" Nullable="false" />
+          <Property Name="IDUser" Type="Int32" Nullable="false" />
+          <Property Name="DocName" Type="String" Nullable="false" MaxLength="255" Unicode="false" FixedLength="false" />
+          <Property Name="Version" Type="Int32" />
+          <Property Name="DateTimeLastMod" Type="DateTime" />
+          <Property Name="InternalDirRemote" Type="String" MaxLength="255" Unicode="false" FixedLength="false" />
+          <Property Name="FileNameLocal" Type="String" MaxLength="255" Unicode="false" FixedLength="false" />
+          <Property Name="ToSyncronize" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="note_key">
+          <Key>
+            <PropertyRef Name="IDNote" />
+            <PropertyRef Name="IDUser" />
+            <PropertyRef Name="Name" />
+          </Key>
+          <Property Name="IDNote" Type="Int32" Nullable="false" />
+          <Property Name="IDUser" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="80" Unicode="false" FixedLength="false" />
+          <Property Name="Level" Type="Int32" />
+        </EntityType>
+        <EntityType Name="note_key_include">
+          <Key>
+            <PropertyRef Name="WordName" />
+          </Key>
+          <Property Name="WordName" Type="String" Nullable="false" MaxLength="24" Unicode="false" FixedLength="false" />
+          <Property Name="ToInclude" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="note_sharing">
+          <Key>
+            <PropertyRef Name="IDNote" />
+            <PropertyRef Name="IDUserSharing" />
+            <PropertyRef Name="IDUser" />
+          </Key>
+          <Property Name="IDNote" Type="Int32" Nullable="false" />
+          <Property Name="IDUserSharing" Type="Int32" Nullable="false" />
+          <Property Name="IDUser" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="translation">
+          <Key>
+            <PropertyRef Name="GroupControl" />
+            <PropertyRef Name="Origin" />
+          </Key>
+          <Property Name="GroupControl" Type="String" Nullable="false" MaxLength="40" Unicode="false" FixedLength="false" />
+          <Property Name="Origin" Type="String" Nullable="false" MaxLength="120" Unicode="false" FixedLength="false" />
+          <Property Name="EN" Type="String" MaxLength="120" Unicode="false" FixedLength="false" />
+          <Property Name="IT" Type="String" MaxLength="120" Unicode="false" FixedLength="false" />
+          <Property Name="FR" Type="String" MaxLength="120" Unicode="false" FixedLength="false" />
+          <Property Name="DE" Type="String" MaxLength="120" Unicode="false" FixedLength="false" />
+          <Property Name="ES" Type="String" MaxLength="120" Unicode="false" FixedLength="false" />
+          <Property Name="TypeControl" Type="String" MaxLength="20" Unicode="false" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="userapp">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="64" Unicode="false" FixedLength="false" />
+          <Property Name="Language" Type="String" MaxLength="3" Unicode="false" FixedLength="false" />
+          <Property Name="IDProfile" Type="Int32" />
+          <Property Name="Password" Type="String" MaxLength="20" Unicode="false" FixedLength="false" />
+          <Property Name="OldPassword" Type="String" MaxLength="20" Unicode="false" FixedLength="false" />
+          <Property Name="RegistryName" Type="String" MaxLength="20" Unicode="false" FixedLength="false" />
+          <Property Name="RegistrySurname" Type="String" MaxLength="20" Unicode="false" FixedLength="false" />
+          <Property Name="RegistryAddress" Type="String" MaxLength="50" Unicode="false" FixedLength="false" />
+          <Property Name="WorkGroup" Type="String" MaxLength="20" Unicode="false" FixedLength="false" />
+          <Property Name="DateRegistration" Type="DateTime" />
+          <Property Name="ImagePath" Type="String" MaxLength="120" Unicode="false" FixedLength="false" />
+          <Property Name="Status" Type="String" MaxLength="20" Unicode="false" FixedLength="false" />
+          <Property Name="Level" Type="String" MaxLength="20" Unicode="false" FixedLength="false" />
+          <Property Name="RateHour" Type="Decimal" Precision="9" Scale="3" />
+          <Property Name="AuditUser" Type="String" MaxLength="20" Unicode="false" FixedLength="false" />
+          <Property Name="AuditDateTime" Type="DateTime" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="myblackboxcoreModelStoreContainer" CdmEntityContainer="myblackboxcoreEntities">
+          <EntitySetMapping Name="notes"><EntityTypeMapping TypeName="myblackboxcoreModel.note"><MappingFragment StoreEntitySet="note">
+            <ScalarProperty Name="ID" ColumnName="ID" />
+            <ScalarProperty Name="IDUser" ColumnName="IDUser" />
+            <ScalarProperty Name="Title" ColumnName="Title" />
+            <ScalarProperty Name="Text" ColumnName="Text" />
+            <ScalarProperty Name="DateTimeInserted" ColumnName="DateTimeInserted" />
+            <ScalarProperty Name="DateTimeLastMod" ColumnName="DateTimeLastMod" />
+            <ScalarProperty Name="Rate" ColumnName="Rate" />
+            <ScalarProperty Name="JobCode" ColumnName="JobCode" />
+            <ScalarProperty Name="PhaseNo" ColumnName="PhaseNo" />
+            <ScalarProperty Name="Image" ColumnName="Image" />
+            <ScalarProperty Name="IsPrivate" ColumnName="IsPrivate" />
+            <ScalarProperty Name="UserLockedBy" ColumnName="UserLockedBy" />
+            <ScalarProperty Name="AuditUser" ColumnName="AuditUser" />
+            <ScalarProperty Name="AuditDateTime" ColumnName="AuditDateTime" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="note_doc"><EntityTypeMapping TypeName="myblackboxcoreModel.note_doc"><MappingFragment StoreEntitySet="note_doc">
+            <ScalarProperty Name="IDNote" ColumnName="IDNote" />
+            <ScalarProperty Name="IDUser" ColumnName="IDUser" />
+            <ScalarProperty Name="DocName" ColumnName="DocName" />
+            <ScalarProperty Name="Version" ColumnName="Version" />
+            <ScalarProperty Name="DateTimeLastMod" ColumnName="DateTimeLastMod" />
+            <ScalarProperty Name="InternalDirRemote" ColumnName="InternalDirRemote" />
+            <ScalarProperty Name="FileNameLocal" ColumnName="FileNameLocal" />
+            <ScalarProperty Name="ToSyncronize" ColumnName="ToSyncronize" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="note_key"><EntityTypeMapping TypeName="myblackboxcoreModel.note_key"><MappingFragment StoreEntitySet="note_key">
+            <ScalarProperty Name="IDNote" ColumnName="IDNote" />
+            <ScalarProperty Name="IDUser" ColumnName="IDUser" />
+            <ScalarProperty Name="Name" ColumnName="Name" />
+            <ScalarProperty Name="Level" ColumnName="Level" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="note_key_include"><EntityTypeMapping TypeName="myblackboxcoreModel.note_key_include"><MappingFragment StoreEntitySet="note_key_include">
+            <ScalarProperty Name="WordName" ColumnName="WordName" />
+            <ScalarProperty Name="ToInclude" ColumnName="ToInclude" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="note_sharing"><EntityTypeMapping TypeName="myblackboxcoreModel.note_sharing"><MappingFragment StoreEntitySet="note_sharing">
+            <ScalarProperty Name="IDNote" ColumnName="IDNote" />
+            <ScalarProperty Name="IDUserSharing" ColumnName="IDUserSharing" />
+            <ScalarProperty Name="IDUser" ColumnName="IDUser" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="translations"><EntityTypeMapping TypeName="myblackboxcoreModel.translation"><MappingFragment StoreEntitySet="translation">
+            <ScalarProperty Name="GroupControl" ColumnName="GroupControl" />
+            <ScalarProperty Name="Origin" ColumnName="Origin" />
+            <ScalarProperty Name="EN" ColumnName="EN" />
+            <ScalarProperty Name="IT" ColumnName="IT" />
+            <ScalarProperty Name="FR" ColumnName="FR" />
+            <ScalarProperty Name="DE" ColumnName="DE" />
+            <ScalarProperty Name="ES" ColumnName="ES" />
+            <ScalarProperty Name="TypeControl" ColumnName="TypeControl" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="userapps"><EntityTypeMapping TypeName="myblackboxcoreModel.userapp"><MappingFragment StoreEntitySet="userapp">
+            <ScalarProperty Name="ID" ColumnName="ID" />
+            <ScalarProperty Name="Name" ColumnName="Name" />
+            <ScalarProperty Name="Language" ColumnName="Language" />
+            <ScalarProperty Name="IDProfile" ColumnName="IDProfile" />
+            <ScalarProperty Name="Password" ColumnName="Password" />
+            <ScalarProperty Name="OldPassword" ColumnName="OldPassword" />
+            <ScalarProperty Name="RegistryName" ColumnName="RegistryName" />
+            <ScalarProperty Name="RegistrySurname" ColumnName="RegistrySurname" />
+            <ScalarProperty Name="RegistryAddress" ColumnName="RegistryAddress" />
+            <ScalarProperty Name="WorkGroup" ColumnName="WorkGroup" />
+            <ScalarProperty Name="DateRegistration" ColumnName="DateRegistration" />
+            <ScalarProperty Name="ImagePath" ColumnName="ImagePath" />
+            <ScalarProperty Name="Status" ColumnName="Status" />
+            <ScalarProperty Name="Level" ColumnName="Level" />
+            <ScalarProperty Name="RateHour" ColumnName="RateHour" />
+            <ScalarProperty Name="AuditUser" ColumnName="AuditUser" />
+            <ScalarProperty Name="AuditDateTime" ColumnName="AuditDateTime" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams>
+      <Diagram Name="Model1">
+        <EntityTypeShape EntityType="myblackboxcoreModel.note" Width="1.5" PointX="0.75" PointY="0.75" Height="3.7109993489583326" IsExpanded="true" />
+        <EntityTypeShape EntityType="myblackboxcoreModel.note_doc" Width="1.5" PointX="2.875" PointY="0.75" Height="2.5571907552083326" IsExpanded="true" />
+        <EntityTypeShape EntityType="myblackboxcoreModel.note_key" Width="1.5" PointX="4.75" PointY="0.75" Height="1.7879850260416665" IsExpanded="true" />
+        <EntityTypeShape EntityType="myblackboxcoreModel.note_key_include" Width="1.5" PointX="2.75" PointY="4.75" Height="1.4033821614583335" IsExpanded="true" />
+        <EntityTypeShape EntityType="myblackboxcoreModel.note_sharing" Width="1.5" PointX="4.75" PointY="3.75" Height="1.5956835937499996" IsExpanded="true" />
+        <EntityTypeShape EntityType="myblackboxcoreModel.translation" Width="1.5" PointX="6.75" PointY="0.75" Height="2.5571907552083326" IsExpanded="true" />
+        <EntityTypeShape EntityType="myblackboxcoreModel.userapp" Width="1.5" PointX="8.625" PointY="0.75" Height="4.2879036458333317" IsExpanded="true" />
+      </Diagram>
+    </Diagrams>
+  </Designer>
+</edmx:Edmx>
