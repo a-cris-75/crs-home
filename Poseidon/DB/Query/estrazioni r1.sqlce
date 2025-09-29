@@ -1,0 +1,45 @@
+﻿select * from psd_estr_lotto l;
+
+select *, count(*)  from psd_estr_estrazioni e
+join psd_reg_r1 r  on r.data_evento = e.Data
+and (r.numeroa = e.N1 or r.numeroa = e.N2 or r.numeroa = e.N3 or r.numeroa = e.N4 or r.numeroa = e.N5)
+and r.ruota = e.ruota
+where e.data>getDate()-10000
+--and e.ruota = 'BA'
+;
+
+select r.data_evento, r.ruota, count(*) from psd_estr_estrazioni e
+join psd_reg_r1 r  on r.data_evento = e.Data
+and (r.numeroa = e.N1 or r.numeroa = e.N2 or r.numeroa = e.N3 or r.numeroa = e.N4 or r.numeroa = e.N5)
+and r.ruota = e.ruota
+where e.data>getDate()-30000
+--and e.ruota = 'BA'
+group by r.data_evento,r.ruota 
+;
+
+select e.* from psd_estr_estrazioni e
+where e.data>getDate()-30000
+and ((e.ruota = 'BA' and (e.N1 in (1,2,3,4,5,6,7,8,9,10) or e.N2 in (1,2,3,4,5,6,7,8,9,10) or e.N3 in (1,2,3,4,5,6,7,8,9,10) or e.N4 in (1,2,3,4,5) or e.N5 in (1,2,3,4,5))) 
+	 or
+	 (e.ruota = 'CA' and (e.N1 in (1,2,3,4,5,6,7,8,9,10) or e.N2 in (1,2,3,4,5,6,7,8,9,10) or e.N3 in (1,2,3,4,5,6,7,8,9,10) or e.N4 in (1,2,3,4,5) or e.N5 in (1,2,3,4,5))) 
+	 or
+	 (e.ruota = 'FI' and (e.N1 in (1,2,3,4,5,6,7,8,9,10) or e.N2 in (1,2,3,4,5,6,7,8,9,10) or e.N3 in (1,2,3,4,5,6,7,8,9,10) or e.N4 in (1,2,3,4,5) or e.N5 in (1,2,3,4,5))) 
+	 or
+	 (e.ruota = 'GE' and (e.N1 in (1,2,3,4,5,6,7,8,9,10) or e.N2 in (1,2,3,4,5,6,7,8,9,10) or e.N3 in (1,2,3,4,5,6,7,8,9,10) or e.N4 in (1,2,3,4,5) or e.N5 in (1,2,3,4,5))) 
+	 or
+	 (e.ruota = 'MI' and (e.N1 in (1,2,3,4,5,6,7,8,9,10) or e.N2 in (1,2,3,4,5,6,7,8,9,10) or e.N3 in (1,2,3,4,5,6,7,8,9,10) or e.N4 in (1,2,3,4,5) or e.N5 in (1,2,3,4,5))) 
+	 or
+	 (e.ruota = 'NA' and (e.N1 in (1,2,3,4,5,6,7,8,9,10) or e.N2 in (1,2,3,4,5,6,7,8,9,10) or e.N3 in (1,2,3,4,5,6,7,8,9,10) or e.N4 in (1,2,3,4,5) or e.N5 in (1,2,3,4,5))) 
+	 or
+	 (e.ruota = 'PA' and (e.N1 in (1,2,3,4,5,6,7,8,9,10) or e.N2 in (1,2,3,4,5,6,7,8,9,10) or e.N3 in (1,2,3,4,5,6,7,8,9,10) or e.N4 in (1,2,3,4,5) or e.N5 in (1,2,3,4,5))) 
+	 or
+	 (e.ruota = 'RM' and (e.N1 in (1,2,3,4,5,6,7,8,9,10) or e.N2 in (1,2,3,4,5,6,7,8,9,10) or e.N3 in (1,2,3,4,5,6,7,8,9,10) or e.N4 in (1,2,3,4,5) or e.N5 in (1,2,3,4,5))) 
+	 or
+	 (e.ruota = 'TO' and (e.N1 in (1,2,3,4,5,6,7,8,9,10) or e.N2 in (1,2,3,4,5,6,7,8,9,10) or e.N3 in (1,2,3,4,5,6,7,8,9,10) or e.N4 in (1,2,3,4,5) or e.N5 in (1,2,3,4,5))) 
+	 or
+	 (e.ruota = 'VE' and (e.N1 in (1,2,3,4,5,6,7,8,9,10) or e.N2 in (1,2,3,4,5,6,7,8,9,10) or e.N3 in (1,2,3,4,5,6,7,8,9,10) or e.N4 in (1,2,3,4,5) or e.N5 in (1,2,3,4,5))) 
+	 or
+	 (e.ruota = 'NZ' and (e.N1 in (1,2,3,4,5,6,7,8,9,10) or e.N2 in (1,2,3,4,5,6,7,8,9,10) or e.N3 in (1,2,3,4,5,6,7,8,9,10) or e.N4 in (1,2,3,4,5) or e.N5 in (1,2,3,4,5))) 
+)
+--and e.ruota = 'BA'
+;
