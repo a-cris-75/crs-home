@@ -1,4 +1,4 @@
-﻿using System;
+﻿   using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -60,6 +60,55 @@ namespace Crs.Home.ApocalypsData
                             "(IDESTRAZIONE,NUMERO,RUOTA,DATA,N1,N2,N3,N4,N5)    " +
                             "VALUES (%d,%d,%s,%u,%d,%d,%d,%d,%d)                ";
                         res1 = conn.ExecNonQueryWithTransaction(dbconn, transaction, sql, id, id, estr.Ruota, estr.Data, estr.N1, estr.N2, estr.N3, estr.N4, estr.N5);
+
+
+                        if (res1)
+                            transaction.Commit();
+                        else transaction.Rollback();
+                    }
+                }
+
+                return res1;
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error UpdateEstrazioni: " + ex.Message);
+                return false;
+            }
+        }
+
+        public static bool InsertEstrazioniRuota(Estrazione estr, bool checkIfExists)
+        {
+            try
+            {
+                string sql = "";
+                DbFactory conn = new DbFactory(connectionString, providerName);
+
+                bool res1 = false;
+                //-- viene passato nel caso della sincronizzazione del db
+                
+                bool toins = true;
+                if (checkIfExists)
+                {
+                    sql = "SELECT * FROM PSD_ESTR_ESTRAZIONI WHERE RUOTA = %s AND DATA = %u";
+                    if (conn.ExecuteSql(sql, estr.Ruota, estr.Data).Rows.Count > 0)
+                    {
+                        toins = false;
+                    }
+                }
+
+                if (toins)
+                {
+                    using (DbConnection dbconn = conn.GetConnection())
+                    {
+                        dbconn.Open();
+                        DbTransaction transaction = dbconn.BeginTransaction();
+                        //
+                        sql = "INSERT INTO PSD_ESTR_ESTRAZIONI               " +
+                            "(IDESTRAZIONE,NUMERO,RUOTA,DATA,N1,N2,N3,N4,N5)    " +
+                            "VALUES (%d,%d,%s,%u,%d,%d,%d,%d,%d)                ";
+                        res1 = conn.ExecNonQueryWithTransaction(dbconn, transaction, sql, estr.SeqAnno, estr.SeqAnno, estr.Ruota, estr.Data
+                            , estr.Numeri[0], estr.Numeri[1], estr.Numeri[2], estr.Numeri[3], estr.Numeri[4]);
 
 
                         if (res1)

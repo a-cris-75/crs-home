@@ -25,24 +25,24 @@ namespace Crs.Home.ApocalypsApp
         {
             try
             {
-                string DB_SECTION = CRSIniFile.GetPropertyValue(APPConstants.SEC_APPL, APPConstants.PROP_DBSECTION);
-                APPGlobalInfo.CONNECTION_STRING = CRSIniFile.GetConnectionStringFromIni(DB_SECTION);
-                APPGlobalInfo.PROVIDER_NAME = CRSIniFile.GetProviderFromIni(DB_SECTION);
+                //string DB_SECTION = CRSIniFile.GetPropertyValue(APPConstants.SEC_APPL, APPConstants.PROP_DBSECTION);
+                //APPGlobalInfo.CONNECTION_STRING = CRSIniFile.GetConnectionStringFromIni(DB_SECTION);
+                //APPGlobalInfo.PROVIDER_NAME = CRSIniFile.GetProviderFromIni(DB_SECTION);
                             
-                APPGlobalInfo.IMPORT_FILE_PATH = CRSIniFile.GetPropertyValue(APPConstants.SEC_FILE_IMPORT, APPConstants.PROP_IMPORTFILENAME);
-                APPGlobalInfo.IMPORT_FILE_URL = CRSIniFile.GetPropertyValue(APPConstants.SEC_FILE_IMPORT, APPConstants.PROP_IMPORTFILEWEBURL);
-                APPGlobalInfo.IMPORT_FILE_TYPE = CRSIniFile.GetPropertyValue(APPConstants.SEC_FILE_IMPORT, APPConstants.PROP_IMPORTFILETYPE);
-                APPGlobalInfo.USER= CRSIniFile.GetPropertyValue(APPConstants.SEC_APPL, APPConstants.PROP_USER);
+                //APPGlobalInfo.IMPORT_FILE_PATH = CRSIniFile.GetPropertyValue(APPConstants.SEC_FILE_IMPORT, APPConstants.PROP_IMPORTFILENAME);
+                //APPGlobalInfo.IMPORT_FILE_URL = CRSIniFile.GetPropertyValue(APPConstants.SEC_FILE_IMPORT, APPConstants.PROP_IMPORTFILEWEBURL);
+                //APPGlobalInfo.IMPORT_FILE_TYPE = CRSIniFile.GetPropertyValue(APPConstants.SEC_FILE_IMPORT, APPConstants.PROP_IMPORTFILETYPE);
+                //APPGlobalInfo.USER= CRSIniFile.GetPropertyValue(APPConstants.SEC_APPL, APPConstants.PROP_USER);
                 
 
-                string sdt1 = CRSIniFile.GetPropertyValue(APPConstants.SEC_APP_PARAMS, APPConstants.PROP_DATAINIZIO);
-                if(string.IsNullOrEmpty(sdt1))
-                    sdt1 = DateTime.Now.AddDays(-90).ToShortDateString();
-                string sdt2 = CRSIniFile.GetPropertyValue(APPConstants.SEC_APP_PARAMS, APPConstants.PROP_DATAFINE);
-                if (string.IsNullOrEmpty(sdt2))
-                    sdt2 = DateTime.Now.ToShortDateString();
-                APPGlobalInfo.DATA_INIZIO = Convert.ToDateTime(sdt1);
-                APPGlobalInfo.DATA_FINE = Convert.ToDateTime(sdt2);
+                //string sdt1 = CRSIniFile.GetPropertyValue(APPConstants.SEC_APP_PARAMS, APPConstants.PROP_DATAINIZIO);
+                //if(string.IsNullOrEmpty(sdt1))
+                //    sdt1 = DateTime.Now.AddDays(-90).ToShortDateString();
+                //string sdt2 = CRSIniFile.GetPropertyValue(APPConstants.SEC_APP_PARAMS, APPConstants.PROP_DATAFINE);
+                //if (string.IsNullOrEmpty(sdt2))
+                //    sdt2 = DateTime.Now.ToShortDateString();
+                //APPGlobalInfo.DATA_INIZIO = Convert.ToDateTime(sdt1);
+                //APPGlobalInfo.DATA_FINE = Convert.ToDateTime(sdt2);
             }
             catch { }
         }

@@ -1,4 +1,5 @@
 ﻿
+using Crs.Home.ApocalypsData.DataEntities;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -11,19 +12,19 @@ using System.Threading.Tasks;
 
 namespace Crs.Home.ApocalypsData
 {
-    public class Estrazione
-    {
-        public DateTime Data { get; set; }
-        public string Ruota { get; set; }
-        public List<int> Numeri { get; set; }
+    //public class Estrazione
+    //{
+    //    public DateTime Data { get; set; }
+    //    public string Ruota { get; set; }
+    //    public List<int> Numeri { get; set; }
 
-        public Estrazione(DateTime data, string ruota, List<int> numeri)
-        {
-            Data = data;
-            Ruota = ruota;
-            Numeri = numeri;
-        }
-    }
+    //    public Estrazione(DateTime data, string ruota, List<int> numeri)
+    //    {
+    //        Data = data;
+    //        Ruota = ruota;
+    //        Numeri = numeri;
+    //    }
+    //}
 
     public class ParametriModello
     {
@@ -387,7 +388,7 @@ namespace Crs.Home.ApocalypsData
         //}
 
 
-        public int CalcolaBonus(int numero, string ruota, DateTime dataTarget, List<string> regoleAttivate = null)
+        public int CalcolaBonus(int numero, string ruota, DateTime dataTarget, List<string>? regoleAttivate = null)
         {
             int bonus = 0;
             var estrRuota = estrazioni

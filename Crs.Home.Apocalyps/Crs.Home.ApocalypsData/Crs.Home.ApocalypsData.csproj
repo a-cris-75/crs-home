@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\crs-base\Crs.Base.CommonControlsLibrary\Crs.Base.CommonControlsLibrary.csproj" />
     <ProjectReference Include="..\..\..\crs-base\Crs.Base.CommonUtilsLibrary\Crs.Base.CommonUtilsLibrary.csproj" />
     <ProjectReference Include="..\..\..\crs-base\Crs.Base.DBaseLibrary\Crs.Base.DBaseLibrary.csproj" />
   </ItemGroup>
