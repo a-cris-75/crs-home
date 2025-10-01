@@ -1317,24 +1317,25 @@ namespace Crs.Home.ApocalypsData
     // Caricatore CSV (invariato)
     public static class CaricatoreEstrazioni
     {
-        public static List<Estrazione> CaricaDaCSV(string filePath)
+        public static List<Estrazione> CaricaDaCSV(string filePath, string configfields)
         {
             var estrazioni = new List<Estrazione>();
             var culture = CultureInfo.GetCultureInfo("it-IT");
 
             try
             {
+                bool b = DbDataAccess.GetSeqFieldds(configfields, out int seqdt, out int seqruota, out int seqanno, out int seqnum1);
                 var lines = File.ReadAllLines(filePath);
                 foreach (var line in lines.Skip(1))
                 {
                     var parts = line.Split(';');
                     if (parts.Length < 3) continue;
 
-                    if (DateTime.TryParseExact(parts[0], "dd/MM/yyyy", culture, DateTimeStyles.None, out DateTime data))
+                    if (DateTime.TryParseExact(parts[seqdt], "dd/MM/yyyy", culture, DateTimeStyles.None, out DateTime data))
                     {
-                        string ruota = parts[1];
-                        var numeri = parts[2].Split(',').Select(int.Parse).ToList();
-                        estrazioni.Add(new Estrazione(data, ruota, numeri));
+                        string ruota = parts[seqruota];
+                        var numeri = parts[seqnum1].Split(',').Select(int.Parse).ToList();
+                        estrazioni.Add(new Estrazione(data, ruota, 0, numeri));
                     }
                 }
             }
@@ -1430,7 +1431,7 @@ namespace Crs.Home.ApocalypsData
     {
         static void Main(string[] args)
         {
-            var estrazioni = CaricatoreEstrazioni.CaricaDaCSV("estrazioni.csv");
+            var estrazioni = CaricatoreEstrazioni.CaricaDaCSV("estrazioni.csv", "data;ruota;numeri");
 
             if (estrazioni.Count == 0)
             {
