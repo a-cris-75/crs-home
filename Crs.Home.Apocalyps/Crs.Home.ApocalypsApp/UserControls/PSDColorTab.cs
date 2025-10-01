@@ -104,7 +104,7 @@ namespace Crs.Home.ApocalypsApp.UserControls
                     {
                         c.Enabled = false;
                         if (c is CheckBox)
-                            (CheckBox)c.Checked = false;
+                            (c as CheckBox).Checked = false;
                     }
 
                 }
@@ -127,7 +127,7 @@ namespace Crs.Home.ApocalypsApp.UserControls
                     {
                         c.Enabled = false;
                         if (c is CheckBox)
-                            (CheckBox)c.Checked = false;
+                            (c as CheckBox).Checked = false;
                     }
                 }
             }
