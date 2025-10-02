@@ -1325,7 +1325,7 @@ namespace Crs.Home.ApocalypsData
 
             try
             {
-                bool b = DbDataAccess.GetSeqFieldds(configfields, out int seqdt, out int seqruota, out int seqanno, out int seqnum1);
+                bool b = DbDataAccess.GetSeqFields(configfields, out int seqdt, out int seqruota, out int seqanno, out int seqnum1);
                 var lines = File.ReadAllLines(filePath);
                 foreach (var line in lines.Skip(1))
                 {

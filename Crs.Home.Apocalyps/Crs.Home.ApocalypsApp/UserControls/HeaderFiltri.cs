@@ -34,10 +34,10 @@ namespace Crs.Home.ApocalypsApp.UserControls
         private void BtnImporta_Click(object sender, EventArgs e)
         {
             bool formatoSingolaRiga = radioFormatoSingolaRiga.Checked;
-            ApriDialogImportazione(formatoSingolaRiga);
+            ApriDialogImportazione(formatoSingolaRiga, txtSeqFields.Text, txtFormatDate.Text);
         }
 
-        private void ApriDialogImportazione(bool formatoSingolaRiga)
+        private void ApriDialogImportazione(bool formatoSingolaRiga, string seqfields, string patterndate)
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
@@ -47,12 +47,12 @@ namespace Crs.Home.ApocalypsApp.UserControls
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     string filePath = openFileDialog.FileName;
-                    ImportaDatiDaFile(filePath, formatoSingolaRiga);
+                    ImportaDatiDaFile(filePath, formatoSingolaRiga, seqfields, patterndate);
                 }
             }
         }
 
-        private void ImportaDatiDaFile(string filePath, bool formatoSingolaRiga)
+        private void ImportaDatiDaFile(string filePath, bool formatoSingolaRiga, string seqfields, string patterndate)
         {
             try
             {
@@ -60,6 +60,8 @@ namespace Crs.Home.ApocalypsApp.UserControls
                 var estrazioniImportate = formatoSingolaRiga ?
                     ImportaFormatoSingolaRiga(filePath) :
                     ImportaFormatoMultiplaRiga(filePath);
+                int filetype = formatoSingolaRiga ? 1 : 2;
+                List<Estrazione> lste = DbDataAccess.ReadFileEstrSeq(filePath, filetype, seqfields, patterndate, out string resread);
 
                 // Qui puoi salvare nel database o processare i dati
                 MessageBox.Show($"Importate {estrazioniImportate.Count} estrazioni dal file!",
@@ -112,6 +114,8 @@ namespace Crs.Home.ApocalypsApp.UserControls
             // Simula l'importazione formato multipla riga (una per ruota per estrazione)
             var estrazioni = new System.Collections.Generic.List<Estrazione>();
             string[] ruote = { "BA", "CA", "FI", "GE", "MI", "NA", "PA", "RO", "TO", "VE", "NZ" };
+            
+            
 
             Random rnd = new Random();
             for (int i = 0; i < 5; i++) // 5 estrazioni
@@ -148,13 +152,12 @@ namespace Crs.Home.ApocalypsApp.UserControls
             // Pulisci la griglia esistente
             GrigliaDestinazione.Rows.Clear();
 
-            // Simula il caricamento dati basato sul range di date
             DateTime dataInizio = dateTimeInizio.Value;
             DateTime dataFine = dateTimeFine.Value;
 
             ParametriCondivisi.Estrazioni = new System.Collections.Generic.List<Estrazione>();
 
-            List<Estrazione> lstBA =  DbDataAccess.GetEstrazioniSuRuota(dataInizio,dataFine, "BA");
+            List<Estrazione> lstBA = DbDataAccess.GetEstrazioniSuRuota(dataInizio,dataFine, "BA");
             List<Estrazione> lstCA = DbDataAccess.GetEstrazioniSuRuota(dataInizio, dataFine, "CA");
             List<Estrazione> lstFI = DbDataAccess.GetEstrazioniSuRuota(dataInizio, dataFine, "FI");
             List<Estrazione> lstGE = DbDataAccess.GetEstrazioniSuRuota(dataInizio, dataFine, "GE");
@@ -179,31 +182,101 @@ namespace Crs.Home.ApocalypsApp.UserControls
             lst.AddRange(lstVE);
             lst.AddRange(lstNZ);
 
-            ParametriCondivisi.Estrazioni = lst;
+            List<string> err = new List<string>();
 
-            foreach(Estrazione e in lst)
+            ParametriCondivisi.Estrazioni = lst;
+            int idx = 0;
+            foreach(Estrazione e in lstBA)
             {
                 object[] riga = new object[57];
                 riga[0] = e.Data.ToString("dd/MM/yyyy");
                 riga[1] = e.SeqAnno.ToString();
-                
-            }
-
-            
-            Random rnd = new Random();
-            for (int i = 0; i < 15; i++)
-            {
-                object[] riga = new object[57];
-                riga[0] = dataInizio.AddDays(i).ToString("dd/MM/yyyy");
-                riga[1] = 1000 + i;
-
-                for (int j = 2; j < 57; j++)
-                {
-                    riga[j] = rnd.Next(1, 91);
-                }
-
+                riga = SetRowRuota(riga, e.Data, e, err);
+                riga = SetRowRuota(riga, e.Data, lstCA[idx], err);
+                riga = SetRowRuota(riga, e.Data, lstFI[idx], err);
+                riga = SetRowRuota(riga, e.Data, lstGE[idx], err);
+                riga = SetRowRuota(riga, e.Data, lstMI[idx], err);
+                riga = SetRowRuota(riga, e.Data, lstNA[idx], err);
+                riga = SetRowRuota(riga, e.Data, lstPA[idx], err);
+                riga = SetRowRuota(riga, e.Data, lstRM[idx], err);
+                riga = SetRowRuota(riga, e.Data, lstTO[idx], err);
+                riga = SetRowRuota(riga, e.Data, lstVE[idx], err);
+                riga = SetRowRuota(riga, e.Data, lstNZ[idx], err);
                 GrigliaDestinazione.Rows.Add(riga);
+                idx++;
             }
+
+            if (err.Any())
+            {
+                btnCaricaDati.BackColor = Color.Red;
+                toolTip1.SetToolTip(btnCaricaDati, "Errori nel caricamento:\n" + string.Join("\n", err));
+            }
+            //Random rnd = new Random();
+            //for (int i = 0; i < 15; i++)
+            //{
+            //    object[] riga = new object[57];
+            //    riga[0] = dataInizio.AddDays(i).ToString("dd/MM/yyyy");
+            //    riga[1] = 1000 + i;
+
+            //    for (int j = 2; j < 57; j++)
+            //    {
+            //        riga[j] = rnd.Next(1, 91);
+            //    }
+
+            //    GrigliaDestinazione.Rows.Add(riga);
+            //}
+        }
+
+        private object[] SetRowRuota(object[] riga, DateTime dt, Estrazione e, List<string> err)
+        {
+            int startidx = 2;
+            if (e.Data == dt)
+            {
+                switch (e.Ruota)
+                {
+                    case "BA":
+                        startidx = 2;
+                        break;
+                    case "CA":
+                        startidx = 7;
+                        break;
+                    case "FI":
+                        startidx = 12;
+                        break;
+                    case "GE":
+                        startidx = 17;
+                        break;
+                    case "MI":
+                        startidx = 22;
+                        break;
+                    case "NA":
+                        startidx = 27;
+                        break;
+                    case "PA":
+                        startidx = 32;
+                        break;
+                    case "RM":
+                        startidx = 37;
+                        break;
+                    case "TO":
+                        startidx = 42;
+                        break;
+                    case "VE":
+                        startidx = 47;
+                        break;
+                    case "NZ":
+                        startidx = 52;
+                        break;
+                }
+            }
+            else err.Add(dt.ToShortDateString() + " " + e.Ruota);
+
+            riga[startidx] = e.Numeri[0];
+            riga[startidx+1] = e.Numeri[1];
+            riga[startidx+2] = e.Numeri[2];
+            riga[startidx+3] = e.Numeri[3];
+            riga[startidx+4] = e.Numeri[4];
+            return riga;
         }
     }
 

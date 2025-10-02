@@ -90,7 +90,7 @@ namespace Crs.Home.ApocalypsData
             return res;
         }
 
-        public static bool GetSeqFieldds(string seqfields, out int  seqdt,  out int seqruota, out int seqanno, out int seqnum1 )
+        public static bool GetSeqFields(string seqfields, out int  seqdt,  out int seqruota, out int seqanno, out int seqnum1 )
         {
             bool res = true;
             seqdt = -1;
@@ -175,7 +175,7 @@ namespace Crs.Home.ApocalypsData
                 // file con data ruota e 5 estratti
                 if (filetype == COSTANTS.TYPE_FILE_ESTRAZIONI_2_DATA_RUOTA_ESTR)
                 {
-                    bool seqok = GetSeqFieldds(seqfields, out int seqdt, out int seqruota, out int seqanno, out int seqnum1);
+                    bool seqok = GetSeqFields(seqfields, out int seqdt, out int seqruota, out int seqanno, out int seqnum1);
                     foreach (string s in file)
                     {
                         string stmp = s.Substring(0, s.IndexOf('\t'));
@@ -212,7 +212,7 @@ namespace Crs.Home.ApocalypsData
                 // file con data, numero estrazione,e 55 numeri estratti (per 10+1 ruote) senza identificativo di ruota
                 if (filetype == COSTANTS.TYPE_FILE_ESTRAZIONI_1_TUTTE_LE_RUOTE)
                 {
-                    bool seqok = GetSeqFieldds(seqfields, out int seqdt, out int seqruota, out int seqanno, out int seqnum1);
+                    bool seqok = GetSeqFields(seqfields, out int seqdt, out int seqruota, out int seqanno, out int seqnum1);
 
                     int idxAnno = 1;
                     foreach (string s in file)

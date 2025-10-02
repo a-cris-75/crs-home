@@ -24,6 +24,7 @@
 
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             dateTimeInizio = new DateTimePicker();
             dateTimeFine = new DateTimePicker();
             btnCaricaDati = new Button();
@@ -33,6 +34,11 @@
             groupBoxFormato = new GroupBox();
             label1 = new Label();
             label2 = new Label();
+            toolTip1 = new ToolTip(components);
+            txtFormatDate = new TextBox();
+            txtSeqFields = new TextBox();
+            label3 = new Label();
+            label4 = new Label();
             groupBoxFormato.SuspendLayout();
             SuspendLayout();
             // 
@@ -57,11 +63,11 @@
             // btnCaricaDati
             // 
             btnCaricaDati.BackColor = Color.SteelBlue;
-            btnCaricaDati.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            btnCaricaDati.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             btnCaricaDati.ForeColor = Color.White;
-            btnCaricaDati.Location = new Point(320, 15);
+            btnCaricaDati.Location = new Point(320, 5);
             btnCaricaDati.Name = "btnCaricaDati";
-            btnCaricaDati.Size = new Size(90, 30);
+            btnCaricaDati.Size = new Size(90, 44);
             btnCaricaDati.TabIndex = 4;
             btnCaricaDati.Text = "Carica Dati";
             btnCaricaDati.UseVisualStyleBackColor = false;
@@ -70,11 +76,11 @@
             // btnImporta
             // 
             btnImporta.BackColor = Color.DeepSkyBlue;
-            btnImporta.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            btnImporta.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             btnImporta.ForeColor = Color.White;
-            btnImporta.Location = new Point(795, 16);
+            btnImporta.Location = new Point(795, 5);
             btnImporta.Name = "btnImporta";
-            btnImporta.Size = new Size(100, 30);
+            btnImporta.Size = new Size(100, 44);
             btnImporta.TabIndex = 6;
             btnImporta.Text = "Importa da File";
             btnImporta.UseVisualStyleBackColor = false;
@@ -83,7 +89,7 @@
             // radioFormatoSingolaRiga
             // 
             radioFormatoSingolaRiga.Checked = true;
-            radioFormatoSingolaRiga.Font = new Font("Segoe UI", 9F);
+            radioFormatoSingolaRiga.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             radioFormatoSingolaRiga.Location = new Point(10, 15);
             radioFormatoSingolaRiga.Name = "radioFormatoSingolaRiga";
             radioFormatoSingolaRiga.Size = new Size(170, 20);
@@ -93,7 +99,7 @@
             // 
             // radioFormatoMultiplaRiga
             // 
-            radioFormatoMultiplaRiga.Font = new Font("Segoe UI", 9F);
+            radioFormatoMultiplaRiga.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             radioFormatoMultiplaRiga.Location = new Point(180, 15);
             radioFormatoMultiplaRiga.Name = "radioFormatoMultiplaRiga";
             radioFormatoMultiplaRiga.Size = new Size(180, 20);
@@ -104,8 +110,8 @@
             // 
             groupBoxFormato.Controls.Add(radioFormatoSingolaRiga);
             groupBoxFormato.Controls.Add(radioFormatoMultiplaRiga);
-            groupBoxFormato.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
-            groupBoxFormato.Location = new Point(420, 5);
+            groupBoxFormato.Font = new Font("Segoe UI", 8F, FontStyle.Bold, GraphicsUnit.Point);
+            groupBoxFormato.Location = new Point(420, 3);
             groupBoxFormato.Name = "groupBoxFormato";
             groupBoxFormato.Size = new Size(369, 44);
             groupBoxFormato.TabIndex = 5;
@@ -115,7 +121,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             label1.Location = new Point(10, 21);
             label1.Name = "label1";
             label1.Size = new Size(25, 15);
@@ -125,16 +131,54 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            label2.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             label2.Location = new Point(170, 21);
             label2.Name = "label2";
             label2.Size = new Size(18, 15);
             label2.TabIndex = 2;
             label2.Text = "A:";
             // 
+            // txtFormatDate
+            // 
+            txtFormatDate.Location = new Point(501, 52);
+            txtFormatDate.Name = "txtFormatDate";
+            txtFormatDate.Size = new Size(88, 23);
+            txtFormatDate.TabIndex = 7;
+            txtFormatDate.Text = "dd/mm/yyyy";
+            // 
+            // txtSeqFields
+            // 
+            txtSeqFields.Location = new Point(660, 52);
+            txtSeqFields.Name = "txtSeqFields";
+            txtSeqFields.Size = new Size(129, 23);
+            txtSeqFields.TabIndex = 8;
+            txtSeqFields.Text = "data,seq,numeri,ruota";
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(421, 55);
+            label3.Name = "label3";
+            label3.Size = new Size(78, 15);
+            label3.TabIndex = 9;
+            label3.Text = "Formato data";
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(593, 55);
+            label4.Name = "label4";
+            label4.Size = new Size(65, 15);
+            label4.TabIndex = 10;
+            label4.Text = "Seq. campi";
+            // 
             // HeaderFiltri
             // 
             BackColor = Color.LightSkyBlue;
+            Controls.Add(label4);
+            Controls.Add(label3);
+            Controls.Add(txtSeqFields);
+            Controls.Add(txtFormatDate);
             Controls.Add(label1);
             Controls.Add(dateTimeInizio);
             Controls.Add(label2);
@@ -144,10 +188,15 @@
             Controls.Add(btnImporta);
             Name = "HeaderFiltri";
             Padding = new Padding(10);
-            Size = new Size(935, 62);
+            Size = new Size(935, 88);
             groupBoxFormato.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
+        private ToolTip toolTip1;
+        private TextBox txtFormatDate;
+        private TextBox txtSeqFields;
+        private Label label3;
+        private Label label4;
     }
 }
