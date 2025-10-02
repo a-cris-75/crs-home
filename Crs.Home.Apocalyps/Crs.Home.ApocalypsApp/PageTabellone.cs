@@ -19,7 +19,7 @@ namespace Crs.Home.ApocalypsApp
             InitializeColonneGriglia();
 
             // Aggiungi dati di esempio
-            AggiungiDatiEsempio();
+            //AggiungiDatiEsempio();
 
             // Applica colorazione alternata alle colonne delle ruote
             ColoraColonneRuote();

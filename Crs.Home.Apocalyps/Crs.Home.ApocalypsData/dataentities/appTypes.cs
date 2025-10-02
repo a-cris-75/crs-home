@@ -21,6 +21,19 @@ namespace Crs.Home.ApocalypsData.DataEntities
         }
     }
 
+    public static class ParametriCondivisi
+    {
+        public static DateTime DataInizioAnalisi { get; set; } = DateTime.MinValue;
+        public static DateTime DataFineAnalisi { get; set; } = DateTime.MinValue;
+        public static  List<Estrazione> Estrazioni = new List<Estrazione>();
+    }
+
+    public class Periodo
+    {
+        public DateTime DataInizio { get; set; }
+        public DateTime DataFine { get; set; }
+    }
+
 
     #region CLASSI USATE IN GENOMA
     public class NumeroRegola1{

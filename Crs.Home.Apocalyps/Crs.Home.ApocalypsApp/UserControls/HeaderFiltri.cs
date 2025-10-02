@@ -152,6 +152,44 @@ namespace Crs.Home.ApocalypsApp.UserControls
             DateTime dataInizio = dateTimeInizio.Value;
             DateTime dataFine = dateTimeFine.Value;
 
+            ParametriCondivisi.Estrazioni = new System.Collections.Generic.List<Estrazione>();
+
+            List<Estrazione> lstBA =  DbDataAccess.GetEstrazioniSuRuota(dataInizio,dataFine, "BA");
+            List<Estrazione> lstCA = DbDataAccess.GetEstrazioniSuRuota(dataInizio, dataFine, "CA");
+            List<Estrazione> lstFI = DbDataAccess.GetEstrazioniSuRuota(dataInizio, dataFine, "FI");
+            List<Estrazione> lstGE = DbDataAccess.GetEstrazioniSuRuota(dataInizio, dataFine, "GE");
+            List<Estrazione> lstMI = DbDataAccess.GetEstrazioniSuRuota(dataInizio, dataFine, "MI");
+            List<Estrazione> lstNA = DbDataAccess.GetEstrazioniSuRuota(dataInizio, dataFine, "NA");
+            List<Estrazione> lstPA = DbDataAccess.GetEstrazioniSuRuota(dataInizio, dataFine, "PA");
+            List<Estrazione> lstRM = DbDataAccess.GetEstrazioniSuRuota(dataInizio, dataFine, "RM");
+            List<Estrazione> lstTO = DbDataAccess.GetEstrazioniSuRuota(dataInizio, dataFine, "TO");
+            List<Estrazione> lstVE = DbDataAccess.GetEstrazioniSuRuota(dataInizio, dataFine, "VE");
+            List<Estrazione> lstNZ = DbDataAccess.GetEstrazioniSuRuota(dataInizio, dataFine, "NZ");
+
+            List<Estrazione> lst = new List<Estrazione>();
+            lst.AddRange(lstBA);
+            lst.AddRange(lstCA);
+            lst.AddRange(lstFI);
+            lst.AddRange(lstGE);
+            lst.AddRange(lstMI);
+            lst.AddRange(lstNA);
+            lst.AddRange(lstPA);    
+            lst.AddRange(lstRM);
+            lst.AddRange(lstTO);
+            lst.AddRange(lstVE);
+            lst.AddRange(lstNZ);
+
+            ParametriCondivisi.Estrazioni = lst;
+
+            foreach(Estrazione e in lst)
+            {
+                object[] riga = new object[57];
+                riga[0] = e.Data.ToString("dd/MM/yyyy");
+                riga[1] = e.SeqAnno.ToString();
+                
+            }
+
+            
             Random rnd = new Random();
             for (int i = 0; i < 15; i++)
             {

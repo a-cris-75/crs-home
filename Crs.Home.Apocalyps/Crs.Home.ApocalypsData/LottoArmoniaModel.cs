@@ -578,19 +578,20 @@ namespace Crs.Home.ApocalypsData
             //int B_fisica = CalcolaBonusFisica(numero, ruota, dataTarget);
             int B_fisica = CalcolaBonusFisicaCompleto(numero, ruota, dataTarget);
 
-
-            if (B_dec > 0) regoleAttivate.Add("Decina");
-            if (B_FA > 0) regoleAttivate.Add("FiguraAntifigura");
-            if (B_pol > 0) regoleAttivate.Add("Polarizzazione");
-            if (B_rit > 0) regoleAttivate.Add("Ritardo");
-            if (B_arm > 0) regoleAttivate.Add("Armonia");
-            if (B_diff > 0) regoleAttivate.Add("DifferenzaRitardi");
-            if (B_9 > 0) regoleAttivate.Add("AutoAttrazione9");
-            if (B_ir > 0) regoleAttivate.Add("InterRuota");
-            if (B_temp > 0) regoleAttivate.Add("Temporale");
-            if (B_seq > 0) regoleAttivate.Add("Sequenza");
-            if (B_fisica > 0) regoleAttivate.Add("Fisica");
-
+            if (regoleAttivate != null)
+            {
+                if (B_dec > 0) regoleAttivate.Add("Decina");
+                if (B_FA > 0) regoleAttivate.Add("FiguraAntifigura");
+                if (B_pol > 0) regoleAttivate.Add("Polarizzazione");
+                if (B_rit > 0) regoleAttivate.Add("Ritardo");
+                if (B_arm > 0) regoleAttivate.Add("Armonia");
+                if (B_diff > 0) regoleAttivate.Add("DifferenzaRitardi");
+                if (B_9 > 0) regoleAttivate.Add("AutoAttrazione9");
+                if (B_ir > 0) regoleAttivate.Add("InterRuota");
+                if (B_temp > 0) regoleAttivate.Add("Temporale");
+                if (B_seq > 0) regoleAttivate.Add("Sequenza");
+                if (B_fisica > 0) regoleAttivate.Add("Fisica");
+            }
             double bonus_moltiplicativo =
                 (B_dec / 10.0 + 1) *
                 (B_FA / 10.0 + 1) *

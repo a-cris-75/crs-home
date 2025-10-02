@@ -713,6 +713,24 @@ namespace Crs.Home.ApocalypsData
             catch { }
             return res;
         }
+        public static List<Estrazione> GetEstrazioniSuRuota(DateTime dt1, DateTime dt2, string ruota)
+        {
+            List<Estrazione> res = new List<Estrazione>();
+            try
+            {
+                string sql = " SELECT * FROM PSD_ESTR_ESTRAZIONI WHERE DATA BETWEEN %u AND %u and RUOTA = %s ";
+                DbFactory conn = new DbFactory(connectionString, providerName);
+                List<PSD_ESTR_ESTRAZIONI>  lstres = conn.ExecuteSql<PSD_ESTR_ESTRAZIONI>(sql, dt1, dt2, ruota);
+                foreach (PSD_ESTR_ESTRAZIONI r in lstres)
+                {
+                    Estrazione e = new Estrazione(r.Data, r.Ruota, r.Numero, new List<int>() { r.N1, r.N2, r.N3, r.N4, r.N5 });
+                    res.Add(e);
+                }
+            }
+            catch { }
+            return res;
+        }
+
         /// <summary>
         ///  Restituisce le n estrazioni dalla data dtBegin, in avanti o indietro. 
         ///  Non è necessario che in dtBegin esista un'estrazione.
