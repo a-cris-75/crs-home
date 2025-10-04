@@ -9,7 +9,6 @@
         private System.Windows.Forms.SplitContainer splitContainer;
         private System.Windows.Forms.DataGridView grigliaEstrazioni;
         private System.Windows.Forms.Label lblTitoloFiltri;
-        private System.Windows.Forms.Button btnFiltra;
         private System.Windows.Forms.Label lblTitoloPannelli;
 
         protected override void Dispose(bool disposing)
@@ -24,8 +23,8 @@
         private void InitializeComponent()
         {
             panelFiltri = new Panel();
+            headerTabellone1 = new Crs.Home.ApocalypsApp.UserControls.HeaderTabellone();
             lblTitoloFiltri = new Label();
-            btnFiltra = new Button();
             panelCentrale = new Panel();
             grigliaEstrazioni = new DataGridView();
             panelDestra = new Panel();
@@ -44,36 +43,35 @@
             // panelFiltri
             // 
             panelFiltri.BackColor = Color.Gainsboro;
+            panelFiltri.Controls.Add(headerTabellone1);
             panelFiltri.Controls.Add(lblTitoloFiltri);
-            panelFiltri.Controls.Add(btnFiltra);
             panelFiltri.Dock = DockStyle.Top;
             panelFiltri.Location = new Point(0, 0);
             panelFiltri.Name = "panelFiltri";
-            panelFiltri.Padding = new Padding(10);
-            panelFiltri.Size = new Size(1000, 60);
+            panelFiltri.Size = new Size(1209, 68);
             panelFiltri.TabIndex = 1;
+            // 
+            // headerTabellone1
+            // 
+            headerTabellone1.BackColor = Color.LightSkyBlue;
+            headerTabellone1.Dock = DockStyle.Fill;
+            headerTabellone1.GrigliaDestinazione = null;
+            headerTabellone1.Location = new Point(0, 0);
+            headerTabellone1.Name = "headerTabellone1";
+            headerTabellone1.Padding = new Padding(10);
+            headerTabellone1.Size = new Size(1209, 68);
+            headerTabellone1.TabIndex = 2;
             // 
             // lblTitoloFiltri
             // 
             lblTitoloFiltri.AutoSize = true;
-            lblTitoloFiltri.Font = new Font("Arial", 10F, FontStyle.Bold);
-            lblTitoloFiltri.Location = new Point(10, 20);
+            lblTitoloFiltri.Font = new Font("Arial", 10F, FontStyle.Bold, GraphicsUnit.Point);
+            lblTitoloFiltri.Location = new Point(3, 13);
             lblTitoloFiltri.Name = "lblTitoloFiltri";
             lblTitoloFiltri.Size = new Size(112, 16);
             lblTitoloFiltri.TabIndex = 0;
             lblTitoloFiltri.Text = "Filtri Estrazioni";
-            // 
-            // btnFiltra
-            // 
-            btnFiltra.BackColor = Color.SteelBlue;
-            btnFiltra.ForeColor = Color.White;
-            btnFiltra.Location = new Point(150, 15);
-            btnFiltra.Name = "btnFiltra";
-            btnFiltra.Size = new Size(100, 30);
-            btnFiltra.TabIndex = 1;
-            btnFiltra.Text = "Applica Filtri";
-            btnFiltra.UseVisualStyleBackColor = false;
-            btnFiltra.Click += BtnFiltra_Click;
+            lblTitoloFiltri.Visible = false;
             // 
             // panelCentrale
             // 
@@ -83,7 +81,7 @@
             panelCentrale.Location = new Point(0, 0);
             panelCentrale.Name = "panelCentrale";
             panelCentrale.Padding = new Padding(5);
-            panelCentrale.Size = new Size(800, 540);
+            panelCentrale.Size = new Size(967, 532);
             panelCentrale.TabIndex = 0;
             // 
             // grigliaEstrazioni
@@ -95,7 +93,7 @@
             grigliaEstrazioni.Location = new Point(5, 5);
             grigliaEstrazioni.Name = "grigliaEstrazioni";
             grigliaEstrazioni.ReadOnly = true;
-            grigliaEstrazioni.Size = new Size(790, 530);
+            grigliaEstrazioni.Size = new Size(957, 522);
             grigliaEstrazioni.TabIndex = 0;
             // 
             // panelDestra
@@ -107,16 +105,16 @@
             panelDestra.Location = new Point(0, 0);
             panelDestra.Name = "panelDestra";
             panelDestra.Padding = new Padding(5);
-            panelDestra.Size = new Size(195, 540);
+            panelDestra.Size = new Size(237, 532);
             panelDestra.TabIndex = 0;
             // 
             // lblTitoloPannelli
             // 
             lblTitoloPannelli.Dock = DockStyle.Top;
-            lblTitoloPannelli.Font = new Font("Arial", 9F, FontStyle.Bold);
+            lblTitoloPannelli.Font = new Font("Arial", 9F, FontStyle.Bold, GraphicsUnit.Point);
             lblTitoloPannelli.Location = new Point(5, 5);
             lblTitoloPannelli.Name = "lblTitoloPannelli";
-            lblTitoloPannelli.Size = new Size(185, 25);
+            lblTitoloPannelli.Size = new Size(227, 25);
             lblTitoloPannelli.TabIndex = 0;
             lblTitoloPannelli.Text = "Pannelli Colori";
             lblTitoloPannelli.TextAlign = ContentAlignment.MiddleCenter;
@@ -124,7 +122,7 @@
             // splitContainer
             // 
             splitContainer.Dock = DockStyle.Fill;
-            splitContainer.Location = new Point(0, 60);
+            splitContainer.Location = new Point(0, 68);
             splitContainer.Name = "splitContainer";
             // 
             // splitContainer.Panel1
@@ -134,8 +132,8 @@
             // splitContainer.Panel2
             // 
             splitContainer.Panel2.Controls.Add(panelDestra);
-            splitContainer.Size = new Size(1000, 540);
-            splitContainer.SplitterDistance = 800;
+            splitContainer.Size = new Size(1209, 532);
+            splitContainer.SplitterDistance = 967;
             splitContainer.SplitterWidth = 5;
             splitContainer.TabIndex = 0;
             // 
@@ -145,7 +143,7 @@
             Controls.Add(splitContainer);
             Controls.Add(panelFiltri);
             Name = "PageTabellone";
-            Size = new Size(1000, 600);
+            Size = new Size(1209, 600);
             panelFiltri.ResumeLayout(false);
             panelFiltri.PerformLayout();
             panelCentrale.ResumeLayout(false);
@@ -157,5 +155,6 @@
             splitContainer.ResumeLayout(false);
             ResumeLayout(false);
         }
+        private UserControls.HeaderTabellone headerTabellone1;
     }
 }

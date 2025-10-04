@@ -13,14 +13,31 @@ namespace Crs.Home.ApocalypsApp
         private List<RisultatoAnalisi> risultati = new List<RisultatoAnalisi>();
         private decimal budgetDisponibile = 1000m;
 
-        
+
 
         public PageAnalisi()
         {
             InitializeComponent();
+            //InizializzaColonneGriglia();
             InizializzaDatiEsempio();
             AggiornaGriglia();
         }
+
+        private void InizializzaColonneGriglia()
+        {
+            grigliaRisultati.Columns.Add("Intervallo", "Intervallo Date");
+            grigliaRisultati.Columns.Add("Estrazioni", "N° Estrazioni");
+            grigliaRisultati.Columns.Add("NumeriGiocati", "Numeri Giocati");
+            grigliaRisultati.Columns.Add("NumeriVinti", "Numeri Vinti");
+            grigliaRisultati.Columns.Add("AmbiVinti", "Ambi Vinti");
+            grigliaRisultati.Columns.Add("TerniVinti", "Terni Vinti");
+            grigliaRisultati.Columns.Add("InvestimentoMin", "Invest. Minimo");
+            grigliaRisultati.Columns.Add("Guadagno", "Guadagno");
+            grigliaRisultati.Columns.Add("InvestimentoProp", "Invest. Proposto");
+            grigliaRisultati.Columns.Add("GuadagnoProp", "Guadagno Proposto");
+        }
+
+
 
         private void InizializzaDatiEsempio()
         {
@@ -129,23 +146,23 @@ namespace Crs.Home.ApocalypsApp
 
         private void AggiornaGriglia()
         {
-            grigliaRisultati.Rows.Clear();
-
-            foreach (var risultato in risultati)
-            {
-                grigliaRisultati.Rows.Add(
-                    risultato.Intervallo,
-                    risultato.NumeroEstrazioni,
-                    risultato.NumeriGiocati,
-                    risultato.NumeriVinti,
-                    risultato.AmbiVinti,
-                    risultato.TerniVinti,
-                    risultato.InvestimentoMinimo.ToString("C2"),
-                    risultato.Guadagno.ToString("C2"),
-                    risultato.InvestimentoProposto.ToString("C2"),
-                    risultato.GuadagnoProposto.ToString("C2")
-                );
-            }
+            //grigliaRisultati.Rows.Clear();
+            grigliaRisultati.DataSource = risultati;
+            //foreach (var risultato in risultati)
+            //{
+            //    grigliaRisultati.Rows.Add(
+            //        risultato.Intervallo,
+            //        risultato.NumeroEstrazioni,
+            //        risultato.NumeriGiocati,
+            //        risultato.NumeriVinti,
+            //        risultato.AmbiVinti,
+            //        risultato.TerniVinti,
+            //        risultato.InvestimentoMinimo.ToString("C2"),
+            //        risultato.Guadagno.ToString("C2"),
+            //        risultato.InvestimentoProposto.ToString("C2"),
+            //        risultato.GuadagnoProposto.ToString("C2")
+            //    );
+            //}
 
             // Calcola totali
             CalcolaTotali();

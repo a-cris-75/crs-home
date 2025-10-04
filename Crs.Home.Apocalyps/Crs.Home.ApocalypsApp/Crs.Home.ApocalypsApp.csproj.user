@@ -13,7 +13,7 @@
     <Compile Update="PageTabellone.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="UserControls\HeaderFiltri.cs">
+    <Compile Update="UserControls\HeaderTabellone.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="UserControls\PannelloColori.cs">
