@@ -199,7 +199,7 @@ namespace Crs.Home.ApocalypsData
 
                         List<int> nums = new List<int>();
                         string ruota = lst[seqruota];
-                        if (COSTANTS.RUOTA_NAZIONALE.Contains(e.Ruota))
+                        if (COSTANTS.RUOTA_NAZIONALE.Contains(ruota))
                             ruota = "NZ";
                         nums[0] = Convert.ToInt32(lst[seqnum1 + 0]);
                         nums[1] = Convert.ToInt32(lst[seqnum1 + 1]);
