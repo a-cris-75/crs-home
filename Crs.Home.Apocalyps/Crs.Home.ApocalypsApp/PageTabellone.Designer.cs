@@ -53,7 +53,6 @@
             // 
             // headerTabellone1
             // 
-            headerTabellone1.BackColor = Color.LightSkyBlue;
             headerTabellone1.Dock = DockStyle.Fill;
             headerTabellone1.GrigliaDestinazione = null;
             headerTabellone1.Location = new Point(0, 0);

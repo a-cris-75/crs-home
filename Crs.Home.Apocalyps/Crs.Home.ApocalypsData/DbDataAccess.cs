@@ -169,13 +169,19 @@ namespace Crs.Home.ApocalypsData
             resRead = "Lettura OK";
             try
             {
-                
-
                 List<string> file = File.ReadAllLines(filename).ToList<string>();
+                // rimuovo l'intestazione se presente
+                while (file.Any() && (file.First().ToLower().Contains("ruota") || file.First().ToLower().Contains("data") || file.First().ToLower().Contains("lotto")))
+                {
+                    file.RemoveAt(0);
+                }
+
                 // file con data ruota e 5 estratti
                 if (filetype == COSTANTS.TYPE_FILE_ESTRAZIONI_2_DATA_RUOTA_ESTR)
                 {
                     bool seqok = GetSeqFields(seqfields, out int seqdt, out int seqruota, out int seqanno, out int seqnum1);
+
+                    
                     foreach (string s in file)
                     {
                         string stmp = s.Substring(0, s.IndexOf('\t'));
@@ -193,8 +199,8 @@ namespace Crs.Home.ApocalypsData
 
                         List<int> nums = new List<int>();
                         string ruota = lst[seqruota];
-                        //if (COSTANTS.RUOTA_NAZIONALE.Contains(e.Ruota))
-                        //    e.Ruota = "NZ";
+                        if (COSTANTS.RUOTA_NAZIONALE.Contains(e.Ruota))
+                            ruota = "NZ";
                         nums[0] = Convert.ToInt32(lst[seqnum1 + 0]);
                         nums[1] = Convert.ToInt32(lst[seqnum1 + 1]);
                         nums[2] = Convert.ToInt32(lst[seqnum1 + 2]);
