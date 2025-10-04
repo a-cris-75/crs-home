@@ -14,13 +14,13 @@ namespace Crs.Home.ApocalypsData
 {
     public static class DbDataAccess
     {
-        private static string connectionString = Parameters.ConnectionString;
+        //private static string connectionString = Parameters.ConnectionString;
         private static string providerName = Parameters.ProviderName;
+        private static string connectionString = Parameters.GetConnStringProvider_fromJson("LOCALDB", out providerName, out string formatdateDB);
 
-
-        public static List<PSD_ESTR_ESTRAZIONI> ReadFileEstr(string filename, int filetype, out string resRead)
+        public static List<ESTRAZIONI> ReadFileEstr(string filename, int filetype, out string resRead)
         {
-            List<PSD_ESTR_ESTRAZIONI> res = new List<PSD_ESTR_ESTRAZIONI>();
+            List<ESTRAZIONI> res = new List<ESTRAZIONI>();
             resRead = "Lettura OK";
             try
             {
@@ -33,7 +33,7 @@ namespace Crs.Home.ApocalypsData
                         string stmp = s.Substring(0, s.IndexOf('\t'));
                         string[] lst = s.Split(new Char[] { ' ', ',', ';', '\t' }, StringSplitOptions.RemoveEmptyEntries);
 
-                        PSD_ESTR_ESTRAZIONI e = new PSD_ESTR_ESTRAZIONI();
+                        ESTRAZIONI e = new ESTRAZIONI();
 
                         string pattern = "yyyy/MM/dd";
 
@@ -68,7 +68,7 @@ namespace Crs.Home.ApocalypsData
                         string stmp = s.Substring(0, s.IndexOf(' '));
                         string[] lst = s.Split(new Char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
 
-                        PSD_ESTR_ESTRAZIONI e = new PSD_ESTR_ESTRAZIONI();
+                        ESTRAZIONI e = new ESTRAZIONI();
                         e.Data = Convert.ToDateTime(lst[0].Trim());
                         e.IDEstrazione = Convert.ToInt32(lst[1].Trim());
                         e.Numero = e.IDEstrazione;
@@ -251,15 +251,15 @@ namespace Crs.Home.ApocalypsData
         }
 
 
-        public static List<PSD_ESTR_ESTRAZIONI> RecalcNumEstr(List<PSD_ESTR_ESTRAZIONI> estr)
+        public static List<ESTRAZIONI> RecalcNumEstr(List<ESTRAZIONI> estr)
         {
             try
             {
                 estr = estr.OrderBy(X => X.Data).ToList();
-                PSD_ESTR_ESTRAZIONI[] aestr = estr.ToArray<PSD_ESTR_ESTRAZIONI>();
+                ESTRAZIONI[] aestr = estr.ToArray<ESTRAZIONI>();
                 int idx = 0;
                 int num = 1;
-                foreach (PSD_ESTR_ESTRAZIONI e in estr)
+                foreach (ESTRAZIONI e in estr)
                 {
                     if (idx > 0 && e.Data != aestr[idx - 1].Data)
                         num++;
@@ -274,42 +274,19 @@ namespace Crs.Home.ApocalypsData
             return estr;
         }
 
-        public static void ImportDB(List<PSD_ESTR_ESTRAZIONI> estr)
+      
+        public static List<LOTTO> EstrToLotto(List<ESTRAZIONI> estr)
         {
-            try
-            {
-                DateTime lastdt = DbDataAccess.GetLastDataEstrImported();
-                List<PSD_ESTR_ESTRAZIONI> lstestr = estr.Where(X => X.Data > lastdt).ToList();
-
-                foreach (PSD_ESTR_ESTRAZIONI e in lstestr)
-                {
-                    DbDataUpdate.InsertEstrazioniRuota(e, false);
-                    DbDataUpdate.InsertGemelli(e, false);
-                }
-
-                lastdt = DbDataAccess.GetLastDataLottoImported();
-                lstestr = estr.Where(X => X.Data > lastdt).ToList();
-                List<PSD_ESTR_LOTTO> lotto = EstrToLotto(lstestr);
-                foreach (PSD_ESTR_LOTTO l in lotto)
-                    DbDataUpdate.InsertEstrazioni(l, false);
-
-            }
-            catch { }
-            //return res;
-        }
-
-        private static List<PSD_ESTR_LOTTO> EstrToLotto(List<PSD_ESTR_ESTRAZIONI> estr)
-        {
-            List<PSD_ESTR_LOTTO> res = new List<PSD_ESTR_LOTTO>();
+            List<LOTTO> res = new List<LOTTO>();
             DateTime dtprev = DateTime.MinValue;
             //bool isfirst = true;
-            PSD_ESTR_LOTTO l = new PSD_ESTR_LOTTO();
+            LOTTO l = new LOTTO();
 
             estr = estr.OrderBy(X => X.Data).ToList();
-            PSD_ESTR_ESTRAZIONI[] aestr = estr.ToArray<PSD_ESTR_ESTRAZIONI>();
+            ESTRAZIONI[] aestr = estr.ToArray<ESTRAZIONI>();
 
             int idx = 0;
-            foreach (PSD_ESTR_ESTRAZIONI e in estr)
+            foreach (ESTRAZIONI e in estr)
             {
                 l.Data = e.Data;
                 l.Numero = e.Numero;
@@ -406,13 +383,13 @@ namespace Crs.Home.ApocalypsData
                     if (aestr[idx + 1].Data != e.Data)
                     {
                         res.Add(l);
-                        l = new PSD_ESTR_LOTTO();
+                        l = new LOTTO();
                     }
                 }
                 else
                 {
                     res.Add(l);
-                    l = new PSD_ESTR_LOTTO();
+                    l = new LOTTO();
                 }
 
                 idx++;
@@ -420,12 +397,12 @@ namespace Crs.Home.ApocalypsData
             return res;
         }
 
-        private static List<PSD_ESTR_LOTTO> EstrToLotto(List<Estrazione> estr)
+        public static List<LOTTO> EstrToLotto(List<Estrazione> estr)
         {
-            List<PSD_ESTR_LOTTO> res = new List<PSD_ESTR_LOTTO>();
+            List<LOTTO> res = new List<LOTTO>();
             DateTime dtprev = DateTime.MinValue;
             //bool isfirst = true;
-            PSD_ESTR_LOTTO l = new PSD_ESTR_LOTTO();
+            LOTTO l = new LOTTO();
 
             estr = estr.OrderBy(X => X.Data).ToList();
             //Estrazione[] aestr = estr.ToArray<Estrazione>();
@@ -543,20 +520,20 @@ namespace Crs.Home.ApocalypsData
         /// ATTENZIONE: non funziona con sql server CE
         /// </summary>
         /// <returns></returns>
-        public static PSD_ESTR_LOTTO GetLastEstrImported()
+        public static LOTTO GetLastEstrImported()
         {
-            List<PSD_ESTR_LOTTO> estr = new List<PSD_ESTR_LOTTO>();
+            List<LOTTO> estr = new List<LOTTO>();
             //string sql = "SELECT coalesce(MAX(DATA),0) AS MAXDATE FROM PSD_ESTR_LOTTO ";
             string sql = 
-                "SELECT * from  PSD_ESTR_LOTTO                              " + 
+                "SELECT * from  LOTTO                              " + 
                 "   where data =                                            " +
-                "    (select coalesce( max(data),0) FROM PSD_ESTR_LOTTO )   " ;
+                "    (select coalesce( max(data),0) FROM LOTTO )   " ;
 
             try
             {
 
                 DbFactory conn = new DbFactory(connectionString, providerName);
-                estr = conn.ExecuteSql<PSD_ESTR_LOTTO>(sql);
+                estr = conn.ExecuteSql<LOTTO>(sql);
                 //DataRow r = conn.GetSingleRow(sql);
             }
             catch { }
@@ -565,7 +542,7 @@ namespace Crs.Home.ApocalypsData
 
         public static DateTime GetLastDataLottoImported()
         {
-            string sql = "SELECT coalesce(MAX(DATA),0) AS MAXDATE FROM PSD_ESTR_LOTTO ";
+            string sql = "SELECT coalesce(MAX(DATA),0) AS MAXDATE FROM LOTTO ";
             DateTime res = DateTime.MinValue;
             try
             {
@@ -579,7 +556,7 @@ namespace Crs.Home.ApocalypsData
 
         public static DateTime GetLastDataEstrImported()
         {
-            string sql = "SELECT coalesce(MAX(DATA),0) AS MAXDATE FROM PSD_ESTR_ESTRAZIONI ";
+            string sql = "SELECT coalesce(MAX(DATA),0) AS MAXDATE FROM ESTRAZIONI ";
             DateTime res = DateTime.MinValue;
             try
             {
@@ -610,7 +587,7 @@ namespace Crs.Home.ApocalypsData
             int res = 0;
             try
             {
-                string sql = " SELECT count(*) FROM PSD_ESTR_LOTTO WHERE DATA BETWEEN %u AND %u";
+                string sql = " SELECT count(*) FROM LOTTO WHERE DATA BETWEEN %u AND %u";
                 DbFactory conn = new DbFactory(connectionString, providerName);
                 res = Convert.ToInt32(conn.GetExecuteScalar(sql, dt1, dt2));
             }
@@ -632,20 +609,20 @@ namespace Crs.Home.ApocalypsData
             try
             {
                 // l'estrazione potrebbe non eseistere nella data esatta
-                string sql = "SELECT * FROM PSD_ESTR_LOTTO WHERE DATA >= %u and DATA <=%u ";
+                string sql = "SELECT * FROM LOTTO WHERE DATA >= %u and DATA <=%u ";
                 DbFactory conn = new DbFactory(connectionString, providerName);
 
-                List<PSD_ESTR_LOTTO> e = new List<PSD_ESTR_LOTTO>();
+                List<LOTTO> e = new List<LOTTO>();
                 if(deltanumestr>0)
-                    e = conn.ExecuteSql<PSD_ESTR_LOTTO>(sql + " order by DATA" , dtFrom, dtFrom.AddDays(7));
+                    e = conn.ExecuteSql<LOTTO>(sql + " order by DATA" , dtFrom, dtFrom.AddDays(7));
                 else
-                    e = conn.ExecuteSql<PSD_ESTR_LOTTO>(sql + "order by DATA desc", dtFrom.AddDays(-7), dtFrom);
+                    e = conn.ExecuteSql<LOTTO>(sql + "order by DATA desc", dtFrom.AddDays(-7), dtFrom);
 
                 if (e.Count > 0)
                 {
                     num = e.First().Numero;
-                    sql = "SELECT * FROM PSD_ESTR_LOTTO WHERE NUMERO = %d";
-                    e = conn.ExecuteSql<PSD_ESTR_LOTTO>(sql, num + deltanumestr);
+                    sql = "SELECT * FROM LOTTO WHERE NUMERO = %d";
+                    e = conn.ExecuteSql<LOTTO>(sql, num + deltanumestr);
                     if (e.Count > 0) res = Convert.ToDateTime(e.First().Data);
                 }
                
@@ -658,15 +635,15 @@ namespace Crs.Home.ApocalypsData
         /// </summary>
         /// <param name="dt1"></param>
         /// <returns></returns>
-        public static PSD_ESTR_LOTTO GetEstrazione(DateTime dt1)
+        public static LOTTO GetEstrazione(DateTime dt1)
         {
-            List<PSD_ESTR_LOTTO> lst = new List<PSD_ESTR_LOTTO>();
-            PSD_ESTR_LOTTO res = new PSD_ESTR_LOTTO();
+            List<LOTTO> lst = new List<LOTTO>();
+            LOTTO res = new LOTTO();
             try
             {
-                string sql = " SELECT * FROM PSD_ESTR_LOTTO WHERE DATA = %u";
+                string sql = " SELECT * FROM LOTTO WHERE DATA = %u";
                 DbFactory conn = new DbFactory(connectionString, providerName);
-                lst = conn.ExecuteSql<PSD_ESTR_LOTTO>(sql, dt1);
+                lst = conn.ExecuteSql<LOTTO>(sql, dt1);
                 if (lst.Count > 0) res = lst.First();
             }
             catch { }
@@ -679,16 +656,16 @@ namespace Crs.Home.ApocalypsData
         /// <param name="dt1"></param>
         /// <param name="dt2"></param>
         /// <returns></returns>
-        public static List<PSD_ESTR_LOTTO> GetEstrazioni(DateTime dt1, DateTime dt2)
+        public static List<LOTTO> GetEstrazioni(DateTime dt1, DateTime dt2)
         {
-            List<PSD_ESTR_LOTTO> res = new List<PSD_ESTR_LOTTO>();
+            List<LOTTO> res = new List<LOTTO>();
             try
             {
-                string sql = " SELECT * FROM PSD_ESTR_LOTTO WHERE DATA BETWEEN %u AND %u";
+                string sql = " SELECT * FROM LOTTO WHERE DATA BETWEEN %u AND %u";
                 DbFactory conn = new DbFactory(connectionString, providerName);
-                res = conn.ExecuteSql<PSD_ESTR_LOTTO>(sql, dt1, dt2);
+                res = conn.ExecuteSql<LOTTO>(sql, dt1, dt2);
                 int idx = 1;
-                foreach (PSD_ESTR_LOTTO e in res)
+                foreach (LOTTO e in res)
                 {
                     e.Numero = idx;
                     idx++;
@@ -698,20 +675,20 @@ namespace Crs.Home.ApocalypsData
             return res; 
         }
 
-        public static List<PSD_ESTR_ESTRAZIONI> GetEstrazioniSuRuote(DateTime dt1, DateTime dt2)
+        public static List<ESTRAZIONI> GetEstrazioniSuRuote(DateTime dt1, DateTime dt2)
         {
-            List<PSD_ESTR_ESTRAZIONI> res = new List<PSD_ESTR_ESTRAZIONI>();
+            List<ESTRAZIONI> res = new List<ESTRAZIONI>();
             try
             {
-                string sql = " SELECT * FROM PSD_ESTR_ESTRAZIONI WHERE DATA BETWEEN %u AND %u ORDER BY NUMERO,RUOTA ";
+                string sql = " SELECT * FROM ESTRAZIONI WHERE DATA BETWEEN %u AND %u ORDER BY NUMERO,RUOTA ";
                 DbFactory conn = new DbFactory(connectionString, providerName);
-                res = conn.ExecuteSql<PSD_ESTR_ESTRAZIONI>(sql, dt1, dt2);
+                res = conn.ExecuteSql<ESTRAZIONI>(sql, dt1, dt2);
 
                 int idx = 1;
                 List<int> resdistinct = res.Select(X => X.IDEstrazione).Distinct().ToList().OrderBy(X=>X).ToList();
                 foreach (int r in resdistinct)
                 {
-                    foreach(PSD_ESTR_ESTRAZIONI e in res.Where(X=>X.IDEstrazione == r).ToList())
+                    foreach(ESTRAZIONI e in res.Where(X=>X.IDEstrazione == r).ToList())
                         e.Numero = idx;
                     idx++;
                 }
@@ -724,10 +701,10 @@ namespace Crs.Home.ApocalypsData
             List<Estrazione> res = new List<Estrazione>();
             try
             {
-                string sql = " SELECT * FROM PSD_ESTR_ESTRAZIONI WHERE DATA BETWEEN %u AND %u and RUOTA = %s ";
+                string sql = " SELECT * FROM ESTRAZIONI WHERE DATA BETWEEN %u AND %u and RUOTA = %s ";
                 DbFactory conn = new DbFactory(connectionString, providerName);
-                List<PSD_ESTR_ESTRAZIONI>  lstres = conn.ExecuteSql<PSD_ESTR_ESTRAZIONI>(sql, dt1, dt2, ruota);
-                foreach (PSD_ESTR_ESTRAZIONI r in lstres)
+                List<ESTRAZIONI>  lstres = conn.ExecuteSql<ESTRAZIONI>(sql, dt1, dt2, ruota);
+                foreach (ESTRAZIONI r in lstres)
                 {
                     Estrazione e = new Estrazione(r.Data, r.Ruota, r.Numero, new List<int>() { r.N1, r.N2, r.N3, r.N4, r.N5 });
                     res.Add(e);
@@ -744,28 +721,28 @@ namespace Crs.Home.ApocalypsData
         /// <param name="dtBegin"></param>
         /// <param name="numEstrPrec"></param>
         /// <returns></returns>
-        public static List<PSD_ESTR_LOTTO> GetEstrazioniDelta(DateTime dtBegin, int deltanumestr)
+        public static List<LOTTO> GetEstrazioniDelta(DateTime dtBegin, int deltanumestr)
         {
-            List<PSD_ESTR_LOTTO> res = new List<PSD_ESTR_LOTTO>();
+            List<LOTTO> res = new List<LOTTO>();
             try
             {
 
                 // l'estrazione potrebbe non eseistede nella data esatta
-                string sql = " SELECT * FROM PSD_ESTR_LOTTO WHERE DATA >= %u and DATA <=%u ";
+                string sql = " SELECT * FROM LOTTO WHERE DATA >= %u and DATA <=%u ";
                 DbFactory conn = new DbFactory(connectionString, providerName);
 
-                List<PSD_ESTR_LOTTO> e = new List<PSD_ESTR_LOTTO>();
+                List<LOTTO> e = new List<LOTTO>();
                 if (deltanumestr > 0)
-                    e = conn.ExecuteSql<PSD_ESTR_LOTTO>(sql + " order by DATA", dtBegin, dtBegin.AddDays(7));
+                    e = conn.ExecuteSql<LOTTO>(sql + " order by DATA", dtBegin, dtBegin.AddDays(7));
                 else
-                    e = conn.ExecuteSql<PSD_ESTR_LOTTO>(sql + "order by DATA desc", dtBegin.AddDays(-7), dtBegin);
+                    e = conn.ExecuteSql<LOTTO>(sql + "order by DATA desc", dtBegin.AddDays(-7), dtBegin);
 
                 if (e.Count > 0)
                 {
                     int num = e.First().Numero;
-                    sql = " SELECT * FROM PSD_ESTR_LOTTO WHERE NUMERO >= %d and NUMERO<=%d";
-                    if (deltanumestr > 0) res = conn.ExecuteSql<PSD_ESTR_LOTTO>(sql, num, num + deltanumestr);
-                    else res = conn.ExecuteSql<PSD_ESTR_LOTTO>(sql, num - deltanumestr, num);
+                    sql = " SELECT * FROM LOTTO WHERE NUMERO >= %d and NUMERO<=%d";
+                    if (deltanumestr > 0) res = conn.ExecuteSql<LOTTO>(sql, num, num + deltanumestr);
+                    else res = conn.ExecuteSql<LOTTO>(sql, num - deltanumestr, num);
                 }
 
             }
@@ -835,7 +812,7 @@ namespace Crs.Home.ApocalypsData
             {
                 string sql = "SELECT r.*,e.*                                " +
                             //"   ,count(*) as OCCORRENZE                     " +
-                            " FROM psd_estr_estrazioni e                    " +
+                            " FROM estrazioni e                    " +
                             " JOIN psd_reg_r1 r ON r.data_evento = e.Data   " +
                             //"  AND(r.numeroa = e.N1 OR r.numeroa = e.N2 OR  " +
                             //"      r.numeroa = e.N3 OR r.numeroa = e.N4 OR  " +
@@ -860,7 +837,7 @@ namespace Crs.Home.ApocalypsData
         public static List<PSD_ESTR_SUCCESSI> GetResR1NoDbTable(DateTime dt1, DateTime dt2, List<string> ruote, PSD_PARAMETRI_R1 paramsR1)
         {
             List<PSD_ESTR_SUCCESSI> res = new List<PSD_ESTR_SUCCESSI>();
-            List<PSD_ESTR_ESTRAZIONI> estr = GetEstrazioniSuRuote(dt1, dt2);
+            List<ESTRAZIONI> estr = GetEstrazioniSuRuote(dt1, dt2);
             foreach (string r in ruote)
             {
                 List<PSD_ESTR_SUCCESSI> resR = GetResR1Ruota(estr, r, paramsR1.ACCOPPIATE_DEC.Where(X => X.Contains(r)).First(), paramsR1);
@@ -872,27 +849,27 @@ namespace Crs.Home.ApocalypsData
             return res;
         }
 
-        public static List<PSD_ESTR_SUCCESSI> GetResR1Ruota(List<PSD_ESTR_ESTRAZIONI> estr, string ruota, string accopiataDec, PSD_PARAMETRI_R1 paramsR1)
+        public static List<PSD_ESTR_SUCCESSI> GetResR1Ruota(List<ESTRAZIONI> estr, string ruota, string accopiataDec, PSD_PARAMETRI_R1 paramsR1)
         {
             List<PSD_ESTR_SUCCESSI> lstres = new List<PSD_ESTR_SUCCESSI>();
             string R1 = accopiataDec.Substring(0, 2);
             string R2 = accopiataDec.Substring(3, 2);
-            List<PSD_ESTR_ESTRAZIONI> estrR1 = estr.Where(X => X.Ruota == R1).ToList();
-            List<PSD_ESTR_ESTRAZIONI> estrR2 = estr.Where(X => X.Ruota == R2).ToList();
-            List<PSD_ESTR_ESTRAZIONI> estrR = estr.Where(X => X.Ruota == ruota).ToList();
+            List<ESTRAZIONI> estrR1 = estr.Where(X => X.Ruota == R1).ToList();
+            List<ESTRAZIONI> estrR2 = estr.Where(X => X.Ruota == R2).ToList();
+            List<ESTRAZIONI> estrR = estr.Where(X => X.Ruota == ruota).ToList();
             lstres = AddPrevisioniR1(ruota, paramsR1, R1, R2, estrR1, estrR2, estrR, true);
 
             return lstres;
         }
 
-        public static List<PSD_ESTR_SUCCESSI> GetPrevR1Ruota(List<PSD_ESTR_ESTRAZIONI> estr, int numEstrSegnale, int numSegnale, int idSegnale,string ruota, string accopiataDec, PSD_PARAMETRI_R1 paramsR1)
+        public static List<PSD_ESTR_SUCCESSI> GetPrevR1Ruota(List<ESTRAZIONI> estr, int numEstrSegnale, int numSegnale, int idSegnale,string ruota, string accopiataDec, PSD_PARAMETRI_R1 paramsR1)
         {
             List<PSD_ESTR_SUCCESSI> lstres = new List<PSD_ESTR_SUCCESSI>();
             string R1 = accopiataDec.Substring(0, 2);
             string R2 = accopiataDec.Substring(3, 2);
-            List<PSD_ESTR_ESTRAZIONI> estrR1 = estr.Where(X => X.Ruota == R1 && X.Numero <= numEstrSegnale && X.Numero >= numEstrSegnale - paramsR1.COLPI.Count()).ToList();
-            List<PSD_ESTR_ESTRAZIONI> estrR2 = estr.Where(X => X.Ruota == R2 && X.Numero <= numEstrSegnale && X.Numero >= numEstrSegnale - paramsR1.COLPI.Count()).ToList();
-            List<PSD_ESTR_ESTRAZIONI> estrR = estr.Where(X => X.Ruota == ruota && X.Numero <= numEstrSegnale && X.Numero >= numEstrSegnale - paramsR1.COLPI.Count()).ToList();
+            List<ESTRAZIONI> estrR1 = estr.Where(X => X.Ruota == R1 && X.Numero <= numEstrSegnale && X.Numero >= numEstrSegnale - paramsR1.COLPI.Count()).ToList();
+            List<ESTRAZIONI> estrR2 = estr.Where(X => X.Ruota == R2 && X.Numero <= numEstrSegnale && X.Numero >= numEstrSegnale - paramsR1.COLPI.Count()).ToList();
+            List<ESTRAZIONI> estrR = estr.Where(X => X.Ruota == ruota && X.Numero <= numEstrSegnale && X.Numero >= numEstrSegnale - paramsR1.COLPI.Count()).ToList();
             lstres = AddPrevisioniR1(ruota, paramsR1, R1, R2, estrR1, estrR2, estrR, false);
             //PSD_ESTR_SEGNALI segn = AddSegnaleR1(ruota, numSegnale, paramsR1, estr.Where(X => X.Ruota == ruota && X.Numero <= numEstrSegnale).FirstOrDefault(), idSegnale, 0 )
             return lstres;
@@ -911,14 +888,14 @@ namespace Crs.Home.ApocalypsData
         /// <param name="estrR"></param>
         private static List<PSD_ESTR_SUCCESSI> AddPrevisioniR1(string ruota, PSD_PARAMETRI_R1 paramsR1
             , string R1, string R2
-            , List<PSD_ESTR_ESTRAZIONI> estrR1, List<PSD_ESTR_ESTRAZIONI> estrR2, List<PSD_ESTR_ESTRAZIONI> estrR
+            , List<ESTRAZIONI> estrR1, List<ESTRAZIONI> estrR2, List<ESTRAZIONI> estrR
             , bool addOnlyIfSucc)
         {
             List<PSD_ESTR_SUCCESSI> lstres = new List<PSD_ESTR_SUCCESSI>();
             // PER OGNI RUOTA, per ogni estrazione
-            foreach (PSD_ESTR_ESTRAZIONI eR1 in estrR1)
+            foreach (ESTRAZIONI eR1 in estrR1)
             {
-                PSD_ESTR_ESTRAZIONI eR2 = estrR2.Where(X => X.IDEstrazione == eR1.IDEstrazione).FirstOrDefault();
+                ESTRAZIONI eR2 = estrR2.Where(X => X.IDEstrazione == eR1.IDEstrazione).FirstOrDefault();
                 if (eR2 != null && eR1.IDEstrazione > 0)
                 {
                     int nD, nI;
@@ -935,7 +912,7 @@ namespace Crs.Home.ApocalypsData
 
         public static PSD_ESTR_SEGNALI AddSegnaleR1(string ruota, int numSegnale
             , DateTime dataSegnale
-            , PSD_ESTR_ESTRAZIONI estrSegnale
+            , ESTRAZIONI estrSegnale
             , int idSegnale,int idCalcolo,List<PSD_ESTR_SUCCESSI> listaPrevisioni
             //, float parValSatSoglia, int parDistOrbitSat
             )
@@ -969,7 +946,7 @@ namespace Crs.Home.ApocalypsData
 
         private static void GetPrevDIR1(string ruota, PSD_PARAMETRI_R1 paramsR1
             , string R1, string R2 
-            , PSD_ESTR_ESTRAZIONI eR1, PSD_ESTR_ESTRAZIONI eR2
+            , ESTRAZIONI eR1, ESTRAZIONI eR2
             , out int nD, out int nI)
         {
             int posdec1 = Convert.ToInt32(paramsR1.POS_DEC_R12.First().Substring(0, 1));
@@ -1004,12 +981,12 @@ namespace Crs.Home.ApocalypsData
         }
 
         private static void AddItemDIR1(string ruota, List<PSD_ESTR_SUCCESSI> lstres, 
-            List<PSD_ESTR_ESTRAZIONI> estrR, PSD_ESTR_ESTRAZIONI eR1, 
+            List<ESTRAZIONI> estrR, ESTRAZIONI eR1, 
             int nD, int nI, int colpo,
             bool addOnlyIfSucc)
         {
             //List<PSD_ESTR_SUCCESSI> res = new List<PSD_ESTR_SUCCESSI>();
-            PSD_ESTR_ESTRAZIONI e = null;
+            ESTRAZIONI e = null;
             if(addOnlyIfSucc)
                 e = estrR.Where(x => x.Numero == eR1.Numero + colpo 
                                                  && ((nD > 0) && (x.N1 == nD || x.N2 == nD || x.N3 == nD || x.N4 == nD || x.N5 == nD) ||
@@ -1089,9 +1066,9 @@ namespace Crs.Home.ApocalypsData
             }
         }
 
-        private static void AddPrevR1(string ruota, List<PSD_ESTR_SUCCESSI> lstres, List<PSD_ESTR_ESTRAZIONI> estrR, PSD_ESTR_ESTRAZIONI eR1, int nD, int nI, int colpo)
+        private static void AddPrevR1(string ruota, List<PSD_ESTR_SUCCESSI> lstres, List<ESTRAZIONI> estrR, ESTRAZIONI eR1, int nD, int nI, int colpo)
         {
-            PSD_ESTR_ESTRAZIONI e = estrR.Where(x => x.Numero == eR1.Numero + colpo).FirstOrDefault();
+            ESTRAZIONI e = estrR.Where(x => x.Numero == eR1.Numero + colpo).FirstOrDefault();
             if (e != null && e.IDEstrazione > 0)
             //if (le.Count > 0)
             {
@@ -1210,7 +1187,7 @@ namespace Crs.Home.ApocalypsData
                 string sql = "SELECT                                        " +
                            sel +
                             "   ,count(*) AS OCCORRENZE_GROUPBY             " +
-                            " FROM psd_estr_estrazioni e                    " +
+                            " FROM estrazioni e                    " +
                             " JOIN psd_reg_r1 r ON r.data_evento = e.Data   " +
                             "  AND r.ruota = e.ruota                        " +
                             " WHERE e.data BETWEEN @dt AND @dt              " +
@@ -1248,7 +1225,7 @@ namespace Crs.Home.ApocalypsData
             try
             {
                 string sql = "SELECT e.*                                    " +
-                            " FROM psd_estr_estrazioni e                    " +
+                            " FROM estrazioni e                    " +
                             " WHERE e.data BETWEEN @dt AND @dt              " +
                             where + 
                             " ORDER BY e.numero,e.ruota                     ";
@@ -1309,7 +1286,7 @@ namespace Crs.Home.ApocalypsData
                 string sql = "SELECT                                        " +
                            sel +
                             "   ,count(*) AS Occorrenze                     " +
-                            " FROM psd_estr_estrazioni e                    " +
+                            " FROM estrazioni e                    " +
                             " WHERE e.data BETWEEN @dt AND @dt              " +
                             where +
                             grpby;
@@ -1366,7 +1343,7 @@ namespace Crs.Home.ApocalypsData
             try
             {
                 string sql = "SELECT e.*                                    " +
-                            " FROM psd_estr_estrazioni e                    " +
+                            " FROM estrazioni e                    " +
                             " WHERE e.data BETWEEN @dt AND @dt              " +
                             where;
 
@@ -1430,7 +1407,7 @@ namespace Crs.Home.ApocalypsData
                 string sql = "SELECT                                        " +
                            sel +
                             "   ,count(*) AS OCCORRENZE_GROUPBY             " +
-                            " FROM psd_estr_estrazioni e                    " +
+                            " FROM estrazioni e                    " +
                             " WHERE e.data BETWEEN @dt AND @dt              " +
                             where +
                             grpby;

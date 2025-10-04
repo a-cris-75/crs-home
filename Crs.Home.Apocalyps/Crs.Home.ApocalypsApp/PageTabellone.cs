@@ -93,7 +93,7 @@ namespace Crs.Home.ApocalypsApp
                 // Stile per tutte le celle delle ruote
                 colonna.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 colonna.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                colonna.DefaultCellStyle.Font = new Font("Arial", 8, FontStyle.Bold);
+                colonna.DefaultCellStyle.Font = new Font("Calibri", 10, FontStyle.Bold);
             }
 
             // Stile per le colonne base

@@ -96,7 +96,7 @@ namespace Crs.Home.ApocalypsApp
 
         public static PSD_PARAMETRI_R1 PARAMETRI_R1 = new PSD_PARAMETRI_R1();
         public static List<PSD_ESTR_SUCCESSI> LST_SUCCESSI = new List<PSD_ESTR_SUCCESSI>();
-        public static List<PSD_ESTR_LOTTO> LST_ESTRAZIONI = new List<PSD_ESTR_LOTTO>();
+        public static List<LOTTO> LST_ESTRAZIONI = new List<LOTTO>();
         public static List<PSD_CALCS> LST_CALCOLI = new List<PSD_CALCS>();
         public static int NUM_ESTR_GROUP = 35;
         public static int NUM_OCC_GROUP = 150;

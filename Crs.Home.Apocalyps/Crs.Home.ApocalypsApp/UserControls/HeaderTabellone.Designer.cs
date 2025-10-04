@@ -39,6 +39,7 @@
             txtSeqFields = new TextBox();
             label3 = new Label();
             label4 = new Label();
+            chkSaveToDb = new CheckBox();
             groupBoxFormato.SuspendLayout();
             SuspendLayout();
             // 
@@ -172,9 +173,20 @@
             label4.TabIndex = 10;
             label4.Text = "Seq. campi";
             // 
+            // chkSaveToDb
+            // 
+            chkSaveToDb.AutoSize = true;
+            chkSaveToDb.Location = new Point(1207, 24);
+            chkSaveToDb.Name = "chkSaveToDb";
+            chkSaveToDb.Size = new Size(86, 19);
+            chkSaveToDb.TabIndex = 11;
+            chkSaveToDb.Text = "Salva su DB";
+            chkSaveToDb.UseVisualStyleBackColor = true;
+            // 
             // HeaderTabellone
             // 
             BackColor = Color.LightSteelBlue;
+            Controls.Add(chkSaveToDb);
             Controls.Add(label4);
             Controls.Add(label3);
             Controls.Add(txtSeqFields);
@@ -188,7 +200,7 @@
             Controls.Add(btnImporta);
             Name = "HeaderTabellone";
             Padding = new Padding(10);
-            Size = new Size(1217, 66);
+            Size = new Size(1343, 66);
             groupBoxFormato.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
@@ -198,5 +210,6 @@
         private TextBox txtSeqFields;
         private Label label3;
         private Label label4;
+        private CheckBox chkSaveToDb;
     }
 }

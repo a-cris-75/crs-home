@@ -34,10 +34,10 @@ namespace Crs.Home.ApocalypsApp.UserControls
         private void BtnImporta_Click(object sender, EventArgs e)
         {
             bool formatoSingolaRiga = radioFormatoSingolaRiga.Checked;
-            ApriDialogImportazione(formatoSingolaRiga, txtSeqFields.Text, txtFormatDate.Text);
+            ApriDialogImportazione(formatoSingolaRiga, txtSeqFields.Text, txtFormatDate.Text, chkSaveToDb.Checked);
         }
 
-        private void ApriDialogImportazione(bool formatoSingolaRiga, string seqfields, string patterndate)
+        private void ApriDialogImportazione(bool formatoSingolaRiga, string seqfields, string patterndate, bool savetodb)
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
@@ -47,25 +47,48 @@ namespace Crs.Home.ApocalypsApp.UserControls
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     string filePath = openFileDialog.FileName;
-                    ImportaDatiDaFile(filePath, formatoSingolaRiga, seqfields, patterndate);
+                    ImportaDatiDaFile(filePath, formatoSingolaRiga, seqfields, patterndate, savetodb);
                 }
             }
         }
 
-        private void ImportaDatiDaFile(string filePath, bool formatoSingolaRiga, string seqfields, string patterndate)
+        private void ImportaDatiDaFile(string filePath, bool formatoSingolaRiga, string seqfields, string patterndate, bool savetodb)
         {
             try
             {
-                // Simula l'importazione dei dati
-                var estrazioniImportate = formatoSingolaRiga ?
-                    ImportaFormatoSingolaRiga(filePath) :
-                    ImportaFormatoMultiplaRiga(filePath);
+                //// Simula l'importazione dei dati
+                //var estrazioniImportate = formatoSingolaRiga ?
+                //    ImportaFormatoSingolaRiga(filePath) :
+                //    ImportaFormatoMultiplaRiga(filePath);
                 int filetype = formatoSingolaRiga ? 1 : 2;
                 List<Estrazione> lste = DbDataAccess.ReadFileEstrSeq(filePath, filetype, seqfields, patterndate, out string resread);
 
                 // Qui puoi salvare nel database o processare i dati
-                MessageBox.Show($"Importate {estrazioniImportate.Count} estrazioni dal file!",
+                MessageBox.Show($"Importate {lste.Count} estrazioni dal file!",
                     "Importazione Completata", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                if (savetodb)
+                {
+                    DateTime lastdate = DbDataAccess.GetLastDataEstrImported();
+                    if(lste.Where(X=>X.Data==lastdate).Any())
+                    {
+                        DialogResult r= MessageBox.Show($"Attenzione! L'ultima data presente a DB è {lastdate.ToShortDateString()}. Non verranno importate estrazioni con questa data o precedenti.",
+                            "Attenzione", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        bool isok = true; bool isokall = true;
+                        if (r== DialogResult.OK)
+                        {
+                            DbDataUpdate.ImportDB(lste);
+                        }
+
+                        if(isokall)
+                            MessageBox.Show($"Importate {lste.Where(X => X.Data > lastdate).Count()} estrazioni a DB!",
+                                "Importazione Completata", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        else
+                            MessageBox.Show($"Errore nell'importazione a DB!",
+                                "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                
 
                 OnImportazioneCompletata?.Invoke(this, EventArgs.Empty);
             }
@@ -157,7 +180,7 @@ namespace Crs.Home.ApocalypsApp.UserControls
 
             ParametriCondivisi.Estrazioni = new System.Collections.Generic.List<Estrazione>();
 
-            List<Estrazione> lstBA = DbDataAccess.GetEstrazioniSuRuota(dataInizio,dataFine, "BA");
+            List<Estrazione> lstBA = DbDataAccess.GetEstrazioniSuRuota(dataInizio, dataFine, "BA");
             List<Estrazione> lstCA = DbDataAccess.GetEstrazioniSuRuota(dataInizio, dataFine, "CA");
             List<Estrazione> lstFI = DbDataAccess.GetEstrazioniSuRuota(dataInizio, dataFine, "FI");
             List<Estrazione> lstGE = DbDataAccess.GetEstrazioniSuRuota(dataInizio, dataFine, "GE");

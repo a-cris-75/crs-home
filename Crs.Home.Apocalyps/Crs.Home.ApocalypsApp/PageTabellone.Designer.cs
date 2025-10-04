@@ -53,6 +53,7 @@
             // 
             // headerTabellone1
             // 
+            headerTabellone1.BackColor = Color.LightSteelBlue;
             headerTabellone1.Dock = DockStyle.Fill;
             headerTabellone1.GrigliaDestinazione = null;
             headerTabellone1.Location = new Point(0, 0);
@@ -110,7 +111,7 @@
             // lblTitoloPannelli
             // 
             lblTitoloPannelli.Dock = DockStyle.Top;
-            lblTitoloPannelli.Font = new Font("Arial", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblTitoloPannelli.Font = new Font("Calibri", 10F, FontStyle.Bold, GraphicsUnit.Point);
             lblTitoloPannelli.Location = new Point(5, 5);
             lblTitoloPannelli.Name = "lblTitoloPannelli";
             lblTitoloPannelli.Size = new Size(227, 25);

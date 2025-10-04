@@ -17,7 +17,7 @@ namespace Crs.Home.ApocalypsData.DataEntities
         public string Descrizione { set; get; }
     }
 
-    public class PSD_ESTR_LOTTO
+    public class LOTTO
     {
         public DateTime Data { set; get; }
         public int Numero { set; get; }
@@ -162,7 +162,7 @@ namespace Crs.Home.ApocalypsData.DataEntities
         public float NZ5 { set; get; }
     }
 
-    public class PSD_ESTR_ESTRAZIONI
+    public class ESTRAZIONI
     {
         public int IDEstrazione { set; get; }
         public DateTime Data { set; get; }
@@ -177,7 +177,7 @@ namespace Crs.Home.ApocalypsData.DataEntities
         
     }
 
-    public class PSD_ESTR_GEMELLI
+    public class GEMELLI
     {
         public int IDEstrazione { set; get; }
         public DateTime Data { set; get; }
@@ -185,7 +185,7 @@ namespace Crs.Home.ApocalypsData.DataEntities
         public string Ruota { set; get; }
     }
    
-    public class PSD_ESTR_SEGNALI: PSD_ESTR_ESTRAZIONI
+    public class PSD_ESTR_SEGNALI: ESTRAZIONI
     {
         // VALORE DEL NUMERO ESTRATTO associato al segnale, ce ne potrebbe essere più d'uno
         public int NumeroSegnaleA { set; get; }
@@ -198,7 +198,7 @@ namespace Crs.Home.ApocalypsData.DataEntities
         public List<PSD_ESTR_SUCCESSI> ListaPrevisioni { set; get; }
     }
     // identifica i numeri previsti effettivamante estratti 
-    public class PSD_ESTR_SUCCESSI: PSD_ESTR_ESTRAZIONI
+    public class PSD_ESTR_SUCCESSI: ESTRAZIONI
     {
         public int NumeroA { set; get; }
         public int NumeroB { set; get; }

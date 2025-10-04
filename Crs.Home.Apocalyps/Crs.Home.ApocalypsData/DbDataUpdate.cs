@@ -13,8 +13,9 @@ namespace Crs.Home.ApocalypsData
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger
                             (System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        private static string connectionString = Parameters.ConnectionString;
         private static string providerName = Parameters.ProviderName;
+        private static string connectionString = Parameters.GetConnStringProvider_fromJson("LOCALDB", out providerName, out string formatdateDB);
+
 
         public static void Init(string connstring, string PROVIDER)
         {
@@ -23,7 +24,7 @@ namespace Crs.Home.ApocalypsData
         }
 
         // insieme dei metodi per modifica dati tabelle db
-        public static bool InsertEstrazioniRuota(PSD_ESTR_ESTRAZIONI estr, bool checkIfExists)
+        public static bool InsertEstrazioniRuota(ESTRAZIONI estr, bool checkIfExists)
         {
             try
             {
@@ -36,13 +37,13 @@ namespace Crs.Home.ApocalypsData
 
                 if (estr.IDEstrazione <= 0)
                 {
-                    id = conn.GetMaxFieldVal("PSD_ESTR_ESTRAZIONI", "NUMERO") + 1;
+                    id = conn.GetMaxFieldVal("ESTRAZIONI", "NUMERO") + 1;
                 }
 
                 bool toins = true;
                 if (checkIfExists)
                 {
-                    sql = "SELECT * FROM PSD_ESTR_ESTRAZIONI WHERE RUOTA = %s AND DATA = %u";
+                    sql = "SELECT * FROM ESTRAZIONI WHERE RUOTA = %s AND DATA = %u";
                     if (conn.ExecuteSql(sql, estr.Ruota, estr.Data).Rows.Count > 0)
                     {
                         toins = false;
@@ -56,7 +57,7 @@ namespace Crs.Home.ApocalypsData
                         dbconn.Open();
                         DbTransaction transaction = dbconn.BeginTransaction();
                         //
-                        sql = "INSERT INTO PSD_ESTR_ESTRAZIONI               " +
+                        sql = "INSERT INTO ESTRAZIONI               " +
                             "(IDESTRAZIONE,NUMERO,RUOTA,DATA,N1,N2,N3,N4,N5)    " +
                             "VALUES (%d,%d,%s,%u,%d,%d,%d,%d,%d)                ";
                         res1 = conn.ExecNonQueryWithTransaction(dbconn, transaction, sql, id, id, estr.Ruota, estr.Data, estr.N1, estr.N2, estr.N3, estr.N4, estr.N5);
@@ -90,7 +91,7 @@ namespace Crs.Home.ApocalypsData
                 bool toins = true;
                 if (checkIfExists)
                 {
-                    sql = "SELECT * FROM PSD_ESTR_ESTRAZIONI WHERE RUOTA = %s AND DATA = %u";
+                    sql = "SELECT * FROM ESTRAZIONI WHERE RUOTA = %s AND DATA = %u";
                     if (conn.ExecuteSql(sql, estr.Ruota, estr.Data).Rows.Count > 0)
                     {
                         toins = false;
@@ -104,7 +105,7 @@ namespace Crs.Home.ApocalypsData
                         dbconn.Open();
                         DbTransaction transaction = dbconn.BeginTransaction();
                         //
-                        sql = "INSERT INTO PSD_ESTR_ESTRAZIONI               " +
+                        sql = "INSERT INTO ESTRAZIONI               " +
                             "(IDESTRAZIONE,NUMERO,RUOTA,DATA,N1,N2,N3,N4,N5)    " +
                             "VALUES (%d,%d,%s,%u,%d,%d,%d,%d,%d)                ";
                         res1 = conn.ExecNonQueryWithTransaction(dbconn, transaction, sql, estr.SeqAnno, estr.SeqAnno, estr.Ruota, estr.Data
@@ -126,7 +127,7 @@ namespace Crs.Home.ApocalypsData
             }
         }
 
-        public static bool InsertEstrazioni(PSD_ESTR_LOTTO estr, bool checkIfExists)
+        public static bool InsertEstrazioni(LOTTO estr, bool checkIfExists)
         {
             try
             {
@@ -139,13 +140,13 @@ namespace Crs.Home.ApocalypsData
 
                 if (estr.Numero <= 0)
                 {
-                    id = conn.GetMaxFieldVal("PSD_ESTR_LOTTO", "NUMERO") + 1;
+                    id = conn.GetMaxFieldVal("LOTTO", "NUMERO") + 1;
                 }
 
                 bool toins = true;
                 if (checkIfExists)
                 {
-                    sql = "SELECT * FROM PSD_ESTR_LOTTO WHERE DATA = %u";
+                    sql = "SELECT * FROM LOTTO WHERE DATA = %u";
                     if (conn.ExecuteSql(sql, estr.Data).Rows.Count > 0)
                     {
                         toins = false;
@@ -159,7 +160,7 @@ namespace Crs.Home.ApocalypsData
                         dbconn.Open();
                         DbTransaction transaction = dbconn.BeginTransaction();
                         //
-                        sql = "INSERT INTO PSD_ESTR_LOTTO                       " +
+                        sql = "INSERT INTO LOTTO                       " +
                             "(IDESTRAZIONE,NUMERO,DATA                          " +
                             "   ,BA1,BA2,BA3,BA4,BA5                            " +
                             "   ,CA1,CA2,CA3,CA4,CA5                            " +
@@ -216,7 +217,7 @@ namespace Crs.Home.ApocalypsData
             }
         }
 
-        public static bool InsertGemelli(PSD_ESTR_ESTRAZIONI estr, bool checkIfExists)
+        public static bool InsertGemelli(ESTRAZIONI estr, bool checkIfExists)
         {
             try
             {
@@ -241,7 +242,7 @@ namespace Crs.Home.ApocalypsData
                 bool toins = true;
                 if (checkIfExists)
                 {
-                    sql = "SELECT * FROM PSD_ESTR_GEMELLI WHERE DATA = %u AND RUOTA=%s";
+                    sql = "SELECT * FROM GEMELLI WHERE DATA = %u AND RUOTA=%s";
                     if (conn.ExecuteSql(sql, estr.Data, estr.Ruota).Rows.Count > 0)
                     {
                         toins = false;
@@ -255,7 +256,7 @@ namespace Crs.Home.ApocalypsData
                         dbconn.Open();
                         DbTransaction transaction = dbconn.BeginTransaction();
                         //
-                        sql = "INSERT INTO PSD_ESTR_GEMELLI     " +
+                        sql = "INSERT INTO GEMELLI     " +
                             "(RUOTA,GEMELLO,DATA)               " +
                             "VALUES (%s,%d,%u)                  ";
 
@@ -278,7 +279,134 @@ namespace Crs.Home.ApocalypsData
             }
         }
 
-        public static bool InsertR1(PSD_ESTR_ESTRAZIONI estrToSearch, int num1, int tipoFreq, int colpo, int posDecR1R2, string acc)
+        public static bool InsertGemelli(Estrazione estr, bool checkIfExists)
+        {
+            try
+            {
+                string sql = "";
+                DbFactory conn = new DbFactory(connectionString, providerName);
+
+                bool res1 = false;
+
+                List<int> gem = new List<int>();
+
+                int N1 = estr.Numeri[0];
+                int N2 = estr.Numeri[1];            
+                int N3 = estr.Numeri[2];
+                int N4 = estr.Numeri[3];
+                int N5 = estr.Numeri[4];
+
+                if (N1 > 10 && N1.ToString().Substring(0, 1) == N1.ToString().Substring(1))
+                    gem.Add(N1);
+                if (N2 > 10 && N2.ToString().Substring(0, 1) == N2.ToString().Substring(1))
+                    gem.Add(N2);
+                if (N3 > 10 && N3.ToString().Substring(0, 1) == N3.ToString().Substring(1))
+                    gem.Add(N3);
+                if (N4 > 10 && N4.ToString().Substring(0, 1) == N4.ToString().Substring(1))
+                    gem.Add(N4);
+                if (N5 > 10 && N5.ToString().Substring(0, 1) == N5.ToString().Substring(1))
+                    gem.Add(N5);
+
+                bool toins = true;
+                if (checkIfExists)
+                {
+                    sql = "SELECT * FROM GEMELLI WHERE DATA = %u AND RUOTA=%s";
+                    if (conn.ExecuteSql(sql, estr.Data, estr.Ruota).Rows.Count > 0)
+                    {
+                        toins = false;
+                    }
+                }
+
+                if (toins)
+                {
+                    using (DbConnection dbconn = conn.GetConnection())
+                    {
+                        dbconn.Open();
+                        DbTransaction transaction = dbconn.BeginTransaction();
+                        //
+                        sql = "INSERT INTO GEMELLI     " +
+                            "(RUOTA,GEMELLO,DATA)               " +
+                            "VALUES (%s,%d,%u)                  ";
+
+                        foreach (int g in gem)
+                        {
+                            res1 = conn.ExecNonQueryWithTransaction(dbconn, transaction, sql, estr.Ruota, g, estr.Data);
+                            if (res1)
+                                transaction.Commit();
+                            else transaction.Rollback();
+                        }
+                    }
+                }
+
+                return res1;
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error UpdateEstrazioni: " + ex.Message);
+                return false;
+            }
+        }
+
+
+        public static void ImportDB(List<ESTRAZIONI> estr)
+        {
+            try
+            {
+                DateTime lastdt = DbDataAccess.GetLastDataEstrImported();
+                List<ESTRAZIONI> lstestr = estr.Where(X => X.Data > lastdt).ToList();
+
+                foreach (ESTRAZIONI e in lstestr)
+                {
+                    DbDataUpdate.InsertEstrazioniRuota(e, false);
+                    DbDataUpdate.InsertGemelli(e, false);
+                }
+
+                lastdt = DbDataAccess.GetLastDataLottoImported();
+                lstestr = estr.Where(X => X.Data > lastdt).ToList();
+                List<LOTTO> lotto = DbDataAccess.EstrToLotto(lstestr);
+                foreach (LOTTO l in lotto)
+                    DbDataUpdate.InsertEstrazioni(l, false);
+
+            }
+            catch { }
+            //return res;
+        }
+
+        public static bool ImportDB(List<Estrazione> estr)
+        {
+            bool res = true;
+            try
+            {
+                DateTime lastdt = DbDataAccess.GetLastDataEstrImported();
+                List<Estrazione> lstestr = estr.Where(X => X.Data > lastdt).ToList();
+
+                foreach (Estrazione e in lstestr)
+                {
+                    bool re =DbDataUpdate.InsertEstrazioniRuota(e, false);
+                    bool rg = DbDataUpdate.InsertGemelli(e, false);
+
+                    if(!re || !rg) res = false;
+                }
+
+                bool resl = true;
+                lastdt = DbDataAccess.GetLastDataLottoImported();
+                lstestr = estr.Where(X => X.Data > lastdt).ToList();
+                List<LOTTO> lotto = DbDataAccess.EstrToLotto(lstestr);
+                foreach (LOTTO l in lotto)
+                {
+                    bool r = DbDataUpdate.InsertEstrazioni(l, false);
+                    if(!r) resl = false;
+                }
+
+                res = res && resl;
+
+            }
+            catch { res = false; }
+            return res;
+        }
+
+
+        public static bool InsertR1(ESTRAZIONI estrToSearch, int num1, int tipoFreq, int colpo, int posDecR1R2, string acc)
         {
             DbFactory conn = new DbFactory(connectionString, providerName);
             bool res1 = false;
