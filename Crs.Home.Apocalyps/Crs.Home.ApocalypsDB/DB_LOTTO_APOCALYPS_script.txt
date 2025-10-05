@@ -3,30 +3,27 @@
 -- Host      : LOCALHOST\SQLEXPRESS
 -- Database  : DB_CRISVAIO
 -- Version   : Microsoft SQL Server  9.00.2047.00
-
+drop table ESTRAZIONI
 CREATE TABLE ESTRAZIONI (
-  Estrazioni int NOT NULL,
   Numero int NULL,
-  Data smalldatetime NULL,
-  Ruota int NULL,
+  Data datetime not NULL,
+  Ruota nvarchar(5) not NULL,
   N1 int NULL,
   N2 int NULL,
   N3 int NULL,
   N4 int NULL,
-  N5 int NULL,
-  IdEstrazione int NULL
+  N5 int NULL
 )
 GO
 
 --
 -- Definition for table Gemelli : 
 --
-
+drop table Gemelli
 CREATE TABLE Gemelli (
-  Gemelli int NOT NULL,
-  Ruota int NULL,
-  Gemello int NULL,
-  Data smalldatetime NULL
+  Ruota nvarchar(5) not NULL,
+  Gemello int not NULL,
+  Data datetime not NULL
 )
 GO
 
@@ -34,9 +31,9 @@ GO
 --
 -- Definition for table Lotto : 
 --
-
+drop table Lotto
 CREATE TABLE Lotto (
-  DATA smalldatetime NOT NULL,
+  DATA datetime NOT NULL,
   Numero int NULL,
   BA1 int NULL,
   BA2 int NULL,
@@ -88,6 +85,11 @@ CREATE TABLE Lotto (
   VE3 int NULL,
   VE4 int NULL,
   VE5 int NULL,
+  NZ1 int NULL,
+  NZ2 int NULL,
+  NZ3 int NULL,
+  NZ4 int NULL,
+  NZ5 int NULL,
   IdEstrazione int NULL
 )
 GO
@@ -96,10 +98,10 @@ GO
 --
 -- Definition for table PREVISIONI : 
 --
-
+drop table Previsioni
 CREATE TABLE PREVISIONI (
-  Data_Previsione smalldatetime NOT NULL,
-  Ruota int NOT NULL,
+  Data_Previsione datetime NOT NULL,
+  Ruota nvarchar(5) NOT NULL,
   Previsione int NOT NULL,
   Num_Estrazione_Succ int NULL,
   Tipo_Frequenza int NULL,
@@ -122,15 +124,15 @@ GO
 --
 -- Definition for table Regola1 : 
 --
-
+drop table Regola1
 CREATE TABLE Regola1 (
-  Data_Evento smalldatetime NOT NULL,
-  Ruota int NOT NULL,
+  Data_Evento datetime NOT NULL,
+  Ruota nvarchar(5) NOT NULL,
   NumeroA int NOT NULL,
   Tipo_Frequenza int NOT NULL,
   Num_Estrazione_Succ int NOT NULL,
   Regola1 int NULL,
-  Data_Numero smalldatetime NULL,
+  Data_Numero datetime NULL,
   Accoppiata int NULL,
   NumeroB int NULL,
   Frequenza int NULL,
@@ -144,7 +146,7 @@ GO
 --
 -- Definition for table Ruote : 
 --
-
+drop table Ruote
 CREATE TABLE Ruote (
   Ruote int NOT NULL,
   Descrizione varchar(50) COLLATE Latin1_General_CI_AS NULL,
@@ -154,37 +156,28 @@ CREATE TABLE Ruote (
 )
 GO
 
-
-
-CREATE UNIQUE NONCLUSTERED INDEX AK_IdEstr ON ESTRAZIONI
-  (IdEstrazione, Ruota)
-WITH (
-  PAD_INDEX = OFF,
-  IGNORE_DUP_KEY = OFF,
-  DROP_EXISTING = OFF,
-  STATISTICS_NORECOMPUTE = OFF,
-  SORT_IN_TEMPDB = OFF,
-  ONLINE = OFF,
-  ALLOW_ROW_LOCKS = ON,
-  ALLOW_PAGE_LOCKS = ON)
-GO
-
-CREATE UNIQUE NONCLUSTERED INDEX Data_Ruota ON ESTRAZIONI
-  (Data, Ruota)
-WITH (
-  PAD_INDEX = OFF,
-  IGNORE_DUP_KEY = OFF,
-  DROP_EXISTING = OFF,
-  STATISTICS_NORECOMPUTE = OFF,
-  SORT_IN_TEMPDB = OFF,
-  ONLINE = OFF,
-  ALLOW_ROW_LOCKS = ON,
-  ALLOW_PAGE_LOCKS = ON)
+CREATE TABLE REGOLA1_DECINE (
+  Data_Evento smalldatetime NOT NULL,
+  Ruota nvarchar(5) NOT NULL,
+  NumeroA int NOT NULL,
+  Tipo_Frequenza int NOT NULL,
+  Num_Estrazione_Succ int NOT NULL,
+  Regola1_Decine int NULL,
+  Data_Numero smalldatetime NULL,
+  Accoppiata int NULL,
+  NumeroB int NULL,
+  DecinaA int NULL,
+  DecinaB int NULL,
+  Frequenza int NULL,
+  Volte int NULL,
+  Distanza_Accoppiata int NULL,
+  Distanza_Ruota int NULL
+)
 GO
 
 ALTER TABLE ESTRAZIONI
 ADD CONSTRAINT PK_ESTRAZIONI 
-PRIMARY KEY CLUSTERED (Estrazioni)
+PRIMARY KEY CLUSTERED (Data,Ruota)
 WITH (
   PAD_INDEX = OFF,
   IGNORE_DUP_KEY = OFF,
@@ -195,7 +188,7 @@ GO
 
 ALTER TABLE Gemelli
 ADD CONSTRAINT PK_Gemelli 
-PRIMARY KEY CLUSTERED (Gemelli)
+PRIMARY KEY CLUSTERED (Ruota,Gemello,Data)
 WITH (
   PAD_INDEX = OFF,
   IGNORE_DUP_KEY = OFF,
@@ -254,22 +247,4 @@ GO
 --
 -- Role Membership
 --
-
-EXEC sp_addrolemember 'db_owner', 'Admin'
-GO
-
-EXEC sp_addrolemember 'db_ddladmin', 'Admin'
-GO
-
-EXEC sp_addrolemember 'db_owner', 'LGUserDB'
-GO
-
-EXEC sp_addrolemember 'db_ddladmin', 'LGUserDB'
-GO
-
-EXEC sp_addrolemember 'db_ddladmin', 'SuperLogin'
-GO
-
-EXEC sp_addrolemember 'db_owner', 'SuperLogin'
-GO
 

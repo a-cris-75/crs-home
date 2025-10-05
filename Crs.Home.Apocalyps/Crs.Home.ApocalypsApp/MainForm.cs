@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 
 namespace Crs.Home.ApocalypsApp
-{   
+{
     public partial class MainForm : Form
     {
         private PageTabellone pageTabellone;
@@ -43,10 +43,10 @@ namespace Crs.Home.ApocalypsApp
 
         private void UpdateButtonStyles(bool isTabelloneActive)
         {
-            btnTabellone.BackColor = isTabelloneActive ? Color.SteelBlue : Color.LightGray;
+            btnTabellone.BackColor = isTabelloneActive ? Color.LightSteelBlue : Color.WhiteSmoke;
             btnTabellone.ForeColor = isTabelloneActive ? Color.White : Color.Black;
 
-            btnAnalisi.BackColor = !isTabelloneActive ? Color.SteelBlue : Color.LightGray;
+            btnAnalisi.BackColor = !isTabelloneActive ? Color.LightSteelBlue : Color.WhiteSmoke;
             btnAnalisi.ForeColor = !isTabelloneActive ? Color.White : Color.Black;
         }
 
@@ -118,6 +118,12 @@ namespace Crs.Home.ApocalypsApp
         private void BtnAnalisi_Click(object sender, EventArgs e)
         {
             ShowPageAnalisi();
+        }
+
+        private void btnSettings_Click(object sender, EventArgs e)
+        {
+            Form f = new FormSettings();
+            DialogResult r = f.ShowDialog();
         }
     }
 }

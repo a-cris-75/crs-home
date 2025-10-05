@@ -106,9 +106,9 @@ namespace Crs.Home.ApocalypsData
                         DbTransaction transaction = dbconn.BeginTransaction();
                         //
                         sql = "INSERT INTO ESTRAZIONI               " +
-                            "(IDESTRAZIONE,NUMERO,RUOTA,DATA,N1,N2,N3,N4,N5)    " +
-                            "VALUES (%d,%d,%s,%u,%d,%d,%d,%d,%d)                ";
-                        res1 = conn.ExecNonQueryWithTransaction(dbconn, transaction, sql, estr.SeqAnno, estr.SeqAnno, estr.Ruota, estr.Data
+                            "(NUMERO,RUOTA,DATA,N1,N2,N3,N4,N5)    " +
+                            "VALUES (%d,%s,%u,%d,%d,%d,%d,%d)                ";
+                        res1 = conn.ExecNonQueryWithTransaction(dbconn, transaction, sql, estr.SeqAnno, estr.Ruota, estr.Data
                             , estr.Numeri[0], estr.Numeri[1], estr.Numeri[2], estr.Numeri[3], estr.Numeri[4]);
 
 

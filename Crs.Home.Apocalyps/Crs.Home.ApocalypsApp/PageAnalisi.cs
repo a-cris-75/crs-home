@@ -237,6 +237,7 @@ namespace Crs.Home.ApocalypsApp
         {
             try
             {
+                
                 // Ottieni le ruote selezionate
                 List<string> ruoteSelezionate = OttieniRuoteSelezionate();
 
@@ -259,6 +260,7 @@ namespace Crs.Home.ApocalypsApp
                     return;
                 }
 
+                this.Cursor = Cursors.WaitCursor;
                 // Prepara i risultati
                 List<RisultatoAnalisi> nuoviRisultati = new List<RisultatoAnalisi>();
 
@@ -296,6 +298,8 @@ namespace Crs.Home.ApocalypsApp
                 risultati = nuoviRisultati;
                 AggiornaGriglia();
 
+                this.Cursor = Cursors.Default;
+
                 MessageBox.Show($"Analisi completata! Processate {nuoviRisultati.Count} periodi.",
                               "Analisi Completata", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -303,6 +307,7 @@ namespace Crs.Home.ApocalypsApp
             {
                 MessageBox.Show($"Errore durante l'analisi: {ex.Message}",
                               "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.Cursor = Cursors.Default;
             }
         }
 
@@ -370,7 +375,7 @@ namespace Crs.Home.ApocalypsApp
         {
             // Questo metodo dovrebbe recuperare le estrazioni dal database o dalla fonte dati
             // Per ora restituisco una lista vuota - tu implementerai la logica specifica
-            return new List<Estrazione>();
+            return ParametriCondivisi.Estrazioni.Where(X=>X.Ruota.Equals(ruota) && X.Data >= dataInizio && X.Data < dataFine).ToList();
         }
 
         private void ProcessaRisultatoPrevisione(List<RisultatoAnalisi> risultati, Periodo periodo,

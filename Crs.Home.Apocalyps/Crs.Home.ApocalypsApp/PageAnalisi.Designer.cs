@@ -24,19 +24,19 @@ namespace Crs.Home.ApocalypsApp
         //------------------------
         // Aggiungi questi controlli all'header:
 
-        private System.Windows.Forms.GroupBox groupBoxRuote;
-        private System.Windows.Forms.CheckBox chkBari;
-        private System.Windows.Forms.CheckBox chkCagliari;
-        private System.Windows.Forms.CheckBox chkFirenze;
-        private System.Windows.Forms.CheckBox chkGenova;
-        private System.Windows.Forms.CheckBox chkMilano;
-        private System.Windows.Forms.CheckBox chkNapoli;
-        private System.Windows.Forms.CheckBox chkPalermo;
-        private System.Windows.Forms.CheckBox chkRoma;
-        private System.Windows.Forms.CheckBox chkTorino;
-        private System.Windows.Forms.CheckBox chkVenezia;
-        private System.Windows.Forms.CheckBox chkNazionale;
-        private System.Windows.Forms.Button btnAvviaAnalisi;
+        //private System.Windows.Forms.GroupBox groupBoxRuote;
+        //private System.Windows.Forms.CheckBox chkBari;
+        //private System.Windows.Forms.CheckBox chkCagliari;
+        //private System.Windows.Forms.CheckBox chkFirenze;
+        //private System.Windows.Forms.CheckBox chkGenova;
+        //private System.Windows.Forms.CheckBox chkMilano;
+        //private System.Windows.Forms.CheckBox chkNapoli;
+        //private System.Windows.Forms.CheckBox chkPalermo;
+        //private System.Windows.Forms.CheckBox chkRoma;
+        //private System.Windows.Forms.CheckBox chkTorino;
+        //private System.Windows.Forms.CheckBox chkVenezia;
+        //private System.Windows.Forms.CheckBox chkNazionale;
+        //private System.Windows.Forms.Button btnAvviaAnalisi;
         private System.Windows.Forms.Label lblPeriodoAnalisi;
         private System.Windows.Forms.Label lblDataInizio;
         private System.Windows.Forms.Label lblDataFine;
@@ -59,20 +59,21 @@ namespace Crs.Home.ApocalypsApp
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle10 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle11 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle12 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle13 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle27 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle28 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle29 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle30 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle31 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle32 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle33 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle34 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle35 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle36 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle37 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle38 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle39 = new DataGridViewCellStyle();
             panelHeader = new Panel();
+            btnStartModello = new Button();
             groupBoxRaggruppamento = new GroupBox();
             radioSettimana = new RadioButton();
             radioMese = new RadioButton();
@@ -84,8 +85,6 @@ namespace Crs.Home.ApocalypsApp
             btnEsporta = new Button();
             panelContenuto = new Panel();
             grigliaRisultati = new DataGridView();
-            risultatoAnalisiBindingSource = new BindingSource(components);
-            lblTotali = new Label();
             intervalloDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             dataInizioDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             dataFineDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
@@ -98,6 +97,19 @@ namespace Crs.Home.ApocalypsApp
             guadagnoDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             investimentoPropostoDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             guadagnoPropostoDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            risultatoAnalisiBindingSource = new BindingSource(components);
+            lblTotali = new Label();
+            chkBari = new CheckBox();
+            chkCagliari = new CheckBox();
+            chkFirenze = new CheckBox();
+            chkGenova = new CheckBox();
+            chkMilano = new CheckBox();
+            chkNapoli = new CheckBox();
+            chkPalermo = new CheckBox();
+            chkRoma = new CheckBox();
+            chkTorino = new CheckBox();
+            chkVenezia = new CheckBox();
+            chkNazionale = new CheckBox();
             panelHeader.SuspendLayout();
             groupBoxRaggruppamento.SuspendLayout();
             groupBoxBudget.SuspendLayout();
@@ -110,6 +122,18 @@ namespace Crs.Home.ApocalypsApp
             // panelHeader
             // 
             panelHeader.BackColor = Color.FromArgb(192, 255, 192);
+            panelHeader.Controls.Add(chkNazionale);
+            panelHeader.Controls.Add(chkVenezia);
+            panelHeader.Controls.Add(chkTorino);
+            panelHeader.Controls.Add(chkRoma);
+            panelHeader.Controls.Add(chkPalermo);
+            panelHeader.Controls.Add(chkNapoli);
+            panelHeader.Controls.Add(chkMilano);
+            panelHeader.Controls.Add(chkGenova);
+            panelHeader.Controls.Add(chkFirenze);
+            panelHeader.Controls.Add(chkCagliari);
+            panelHeader.Controls.Add(chkBari);
+            panelHeader.Controls.Add(btnStartModello);
             panelHeader.Controls.Add(groupBoxRaggruppamento);
             panelHeader.Controls.Add(groupBoxBudget);
             panelHeader.Controls.Add(btnAggiorna);
@@ -121,6 +145,19 @@ namespace Crs.Home.ApocalypsApp
             panelHeader.Padding = new Padding(10);
             panelHeader.Size = new Size(1358, 68);
             panelHeader.TabIndex = 1;
+            // 
+            // btnStartModello
+            // 
+            btnStartModello.BackColor = Color.LightSteelBlue;
+            btnStartModello.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            btnStartModello.ForeColor = Color.White;
+            btnStartModello.Location = new Point(541, 11);
+            btnStartModello.Name = "btnStartModello";
+            btnStartModello.Size = new Size(120, 44);
+            btnStartModello.TabIndex = 4;
+            btnStartModello.Text = "Avvia analisi";
+            btnStartModello.UseVisualStyleBackColor = false;
+            btnStartModello.Click += BtnAvviaAnalisi_Click;
             // 
             // groupBoxRaggruppamento
             // 
@@ -204,10 +241,10 @@ namespace Crs.Home.ApocalypsApp
             // 
             // btnAggiorna
             // 
-            btnAggiorna.BackColor = Color.SteelBlue;
+            btnAggiorna.BackColor = Color.LightSteelBlue;
             btnAggiorna.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             btnAggiorna.ForeColor = Color.White;
-            btnAggiorna.Location = new Point(512, 12);
+            btnAggiorna.Location = new Point(667, 11);
             btnAggiorna.Name = "btnAggiorna";
             btnAggiorna.Size = new Size(120, 44);
             btnAggiorna.TabIndex = 2;
@@ -220,7 +257,7 @@ namespace Crs.Home.ApocalypsApp
             btnEsporta.BackColor = Color.DarkOrange;
             btnEsporta.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             btnEsporta.ForeColor = Color.White;
-            btnEsporta.Location = new Point(642, 12);
+            btnEsporta.Location = new Point(797, 11);
             btnEsporta.Name = "btnEsporta";
             btnEsporta.Size = new Size(100, 44);
             btnEsporta.TabIndex = 3;
@@ -246,14 +283,14 @@ namespace Crs.Home.ApocalypsApp
             grigliaRisultati.AutoGenerateColumns = false;
             grigliaRisultati.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
             grigliaRisultati.BackgroundColor = Color.White;
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = SystemColors.Control;
-            dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            grigliaRisultati.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle27.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle27.BackColor = SystemColors.Control;
+            dataGridViewCellStyle27.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle27.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle27.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle27.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle27.WrapMode = DataGridViewTriState.True;
+            grigliaRisultati.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle27;
             grigliaRisultati.ColumnHeadersHeight = 27;
             grigliaRisultati.Columns.AddRange(new DataGridViewColumn[] { intervalloDataGridViewTextBoxColumn, dataInizioDataGridViewTextBoxColumn, dataFineDataGridViewTextBoxColumn, numeroEstrazioniDataGridViewTextBoxColumn, numeriGiocatiDataGridViewTextBoxColumn, numeriVintiDataGridViewTextBoxColumn, ambiVintiDataGridViewTextBoxColumn, terniVintiDataGridViewTextBoxColumn, investimentoMinimoDataGridViewTextBoxColumn, guadagnoDataGridViewTextBoxColumn, investimentoPropostoDataGridViewTextBoxColumn, guadagnoPropostoDataGridViewTextBoxColumn });
             grigliaRisultati.DataSource = risultatoAnalisiBindingSource;
@@ -264,6 +301,137 @@ namespace Crs.Home.ApocalypsApp
             grigliaRisultati.ReadOnly = true;
             grigliaRisultati.Size = new Size(1348, 497);
             grigliaRisultati.TabIndex = 0;
+            // 
+            // intervalloDataGridViewTextBoxColumn
+            // 
+            intervalloDataGridViewTextBoxColumn.DataPropertyName = "Intervallo";
+            dataGridViewCellStyle28.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            intervalloDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle28;
+            intervalloDataGridViewTextBoxColumn.FillWeight = 200F;
+            intervalloDataGridViewTextBoxColumn.HeaderText = "Intervallo";
+            intervalloDataGridViewTextBoxColumn.Name = "intervalloDataGridViewTextBoxColumn";
+            intervalloDataGridViewTextBoxColumn.ReadOnly = true;
+            intervalloDataGridViewTextBoxColumn.Width = 81;
+            // 
+            // dataInizioDataGridViewTextBoxColumn
+            // 
+            dataInizioDataGridViewTextBoxColumn.DataPropertyName = "DataInizio";
+            dataGridViewCellStyle29.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataInizioDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle29;
+            dataInizioDataGridViewTextBoxColumn.FillWeight = 150F;
+            dataInizioDataGridViewTextBoxColumn.HeaderText = "DataInizio";
+            dataInizioDataGridViewTextBoxColumn.Name = "dataInizioDataGridViewTextBoxColumn";
+            dataInizioDataGridViewTextBoxColumn.ReadOnly = true;
+            dataInizioDataGridViewTextBoxColumn.Width = 84;
+            // 
+            // dataFineDataGridViewTextBoxColumn
+            // 
+            dataFineDataGridViewTextBoxColumn.DataPropertyName = "DataFine";
+            dataGridViewCellStyle30.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataFineDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle30;
+            dataFineDataGridViewTextBoxColumn.FillWeight = 150F;
+            dataFineDataGridViewTextBoxColumn.HeaderText = "DataFine";
+            dataFineDataGridViewTextBoxColumn.Name = "dataFineDataGridViewTextBoxColumn";
+            dataFineDataGridViewTextBoxColumn.ReadOnly = true;
+            dataFineDataGridViewTextBoxColumn.Width = 78;
+            // 
+            // numeroEstrazioniDataGridViewTextBoxColumn
+            // 
+            numeroEstrazioniDataGridViewTextBoxColumn.DataPropertyName = "NumeroEstrazioni";
+            dataGridViewCellStyle31.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            numeroEstrazioniDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle31;
+            numeroEstrazioniDataGridViewTextBoxColumn.FillWeight = 80F;
+            numeroEstrazioniDataGridViewTextBoxColumn.HeaderText = "Num Estrazioni";
+            numeroEstrazioniDataGridViewTextBoxColumn.Name = "numeroEstrazioniDataGridViewTextBoxColumn";
+            numeroEstrazioniDataGridViewTextBoxColumn.ReadOnly = true;
+            numeroEstrazioniDataGridViewTextBoxColumn.Width = 112;
+            // 
+            // numeriGiocatiDataGridViewTextBoxColumn
+            // 
+            numeriGiocatiDataGridViewTextBoxColumn.DataPropertyName = "NumeriGiocati";
+            dataGridViewCellStyle32.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            numeriGiocatiDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle32;
+            numeriGiocatiDataGridViewTextBoxColumn.HeaderText = "Num Giocati";
+            numeriGiocatiDataGridViewTextBoxColumn.Name = "numeriGiocatiDataGridViewTextBoxColumn";
+            numeriGiocatiDataGridViewTextBoxColumn.ReadOnly = true;
+            numeriGiocatiDataGridViewTextBoxColumn.Width = 99;
+            // 
+            // numeriVintiDataGridViewTextBoxColumn
+            // 
+            numeriVintiDataGridViewTextBoxColumn.DataPropertyName = "NumeriVinti";
+            dataGridViewCellStyle33.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            numeriVintiDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle33;
+            numeriVintiDataGridViewTextBoxColumn.FillWeight = 80F;
+            numeriVintiDataGridViewTextBoxColumn.HeaderText = "Num Vinti";
+            numeriVintiDataGridViewTextBoxColumn.Name = "numeriVintiDataGridViewTextBoxColumn";
+            numeriVintiDataGridViewTextBoxColumn.ReadOnly = true;
+            numeriVintiDataGridViewTextBoxColumn.Width = 86;
+            // 
+            // ambiVintiDataGridViewTextBoxColumn
+            // 
+            ambiVintiDataGridViewTextBoxColumn.DataPropertyName = "AmbiVinti";
+            dataGridViewCellStyle34.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            ambiVintiDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle34;
+            ambiVintiDataGridViewTextBoxColumn.FillWeight = 80F;
+            ambiVintiDataGridViewTextBoxColumn.HeaderText = "Ambi Vinti";
+            ambiVintiDataGridViewTextBoxColumn.Name = "ambiVintiDataGridViewTextBoxColumn";
+            ambiVintiDataGridViewTextBoxColumn.ReadOnly = true;
+            ambiVintiDataGridViewTextBoxColumn.Width = 88;
+            // 
+            // terniVintiDataGridViewTextBoxColumn
+            // 
+            terniVintiDataGridViewTextBoxColumn.DataPropertyName = "TerniVinti";
+            dataGridViewCellStyle35.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            terniVintiDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle35;
+            terniVintiDataGridViewTextBoxColumn.FillWeight = 80F;
+            terniVintiDataGridViewTextBoxColumn.HeaderText = "Terni Vinti";
+            terniVintiDataGridViewTextBoxColumn.Name = "terniVintiDataGridViewTextBoxColumn";
+            terniVintiDataGridViewTextBoxColumn.ReadOnly = true;
+            terniVintiDataGridViewTextBoxColumn.Width = 85;
+            // 
+            // investimentoMinimoDataGridViewTextBoxColumn
+            // 
+            investimentoMinimoDataGridViewTextBoxColumn.DataPropertyName = "InvestimentoMinimo";
+            dataGridViewCellStyle36.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            investimentoMinimoDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle36;
+            investimentoMinimoDataGridViewTextBoxColumn.FillWeight = 150F;
+            investimentoMinimoDataGridViewTextBoxColumn.HeaderText = "Investimento Minimo";
+            investimentoMinimoDataGridViewTextBoxColumn.Name = "investimentoMinimoDataGridViewTextBoxColumn";
+            investimentoMinimoDataGridViewTextBoxColumn.ReadOnly = true;
+            investimentoMinimoDataGridViewTextBoxColumn.Width = 146;
+            // 
+            // guadagnoDataGridViewTextBoxColumn
+            // 
+            guadagnoDataGridViewTextBoxColumn.DataPropertyName = "Guadagno";
+            dataGridViewCellStyle37.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            guadagnoDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle37;
+            guadagnoDataGridViewTextBoxColumn.FillWeight = 120F;
+            guadagnoDataGridViewTextBoxColumn.HeaderText = "Guadagno";
+            guadagnoDataGridViewTextBoxColumn.Name = "guadagnoDataGridViewTextBoxColumn";
+            guadagnoDataGridViewTextBoxColumn.ReadOnly = true;
+            guadagnoDataGridViewTextBoxColumn.Width = 87;
+            // 
+            // investimentoPropostoDataGridViewTextBoxColumn
+            // 
+            investimentoPropostoDataGridViewTextBoxColumn.DataPropertyName = "InvestimentoProposto";
+            dataGridViewCellStyle38.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            investimentoPropostoDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle38;
+            investimentoPropostoDataGridViewTextBoxColumn.FillWeight = 150F;
+            investimentoPropostoDataGridViewTextBoxColumn.HeaderText = "Investimento Proposto";
+            investimentoPropostoDataGridViewTextBoxColumn.Name = "investimentoPropostoDataGridViewTextBoxColumn";
+            investimentoPropostoDataGridViewTextBoxColumn.ReadOnly = true;
+            investimentoPropostoDataGridViewTextBoxColumn.Width = 152;
+            // 
+            // guadagnoPropostoDataGridViewTextBoxColumn
+            // 
+            guadagnoPropostoDataGridViewTextBoxColumn.DataPropertyName = "GuadagnoProposto";
+            dataGridViewCellStyle39.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            guadagnoPropostoDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle39;
+            guadagnoPropostoDataGridViewTextBoxColumn.FillWeight = 150F;
+            guadagnoPropostoDataGridViewTextBoxColumn.HeaderText = "Guadagno Proposto";
+            guadagnoPropostoDataGridViewTextBoxColumn.Name = "guadagnoPropostoDataGridViewTextBoxColumn";
+            guadagnoPropostoDataGridViewTextBoxColumn.ReadOnly = true;
+            guadagnoPropostoDataGridViewTextBoxColumn.Width = 138;
             // 
             // risultatoAnalisiBindingSource
             // 
@@ -282,136 +450,115 @@ namespace Crs.Home.ApocalypsApp
             lblTotali.Text = "Totali:";
             lblTotali.TextAlign = ContentAlignment.MiddleLeft;
             // 
-            // intervalloDataGridViewTextBoxColumn
+            // chkBari
             // 
-            intervalloDataGridViewTextBoxColumn.DataPropertyName = "Intervallo";
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            intervalloDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle2;
-            intervalloDataGridViewTextBoxColumn.FillWeight = 200F;
-            intervalloDataGridViewTextBoxColumn.HeaderText = "Intervallo";
-            intervalloDataGridViewTextBoxColumn.Name = "intervalloDataGridViewTextBoxColumn";
-            intervalloDataGridViewTextBoxColumn.ReadOnly = true;
-            intervalloDataGridViewTextBoxColumn.Width = 81;
+            chkBari.AutoSize = true;
+            chkBari.Location = new Point(936, 11);
+            chkBari.Name = "chkBari";
+            chkBari.Size = new Size(41, 19);
+            chkBari.TabIndex = 5;
+            chkBari.Text = "BA";
+            chkBari.UseVisualStyleBackColor = true;
             // 
-            // dataInizioDataGridViewTextBoxColumn
+            // chkCagliari
             // 
-            dataInizioDataGridViewTextBoxColumn.DataPropertyName = "DataInizio";
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataInizioDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle3;
-            dataInizioDataGridViewTextBoxColumn.FillWeight = 150F;
-            dataInizioDataGridViewTextBoxColumn.HeaderText = "DataInizio";
-            dataInizioDataGridViewTextBoxColumn.Name = "dataInizioDataGridViewTextBoxColumn";
-            dataInizioDataGridViewTextBoxColumn.ReadOnly = true;
-            dataInizioDataGridViewTextBoxColumn.Width = 84;
+            chkCagliari.AutoSize = true;
+            chkCagliari.Location = new Point(983, 11);
+            chkCagliari.Name = "chkCagliari";
+            chkCagliari.Size = new Size(42, 19);
+            chkCagliari.TabIndex = 6;
+            chkCagliari.Text = "CA";
+            chkCagliari.UseVisualStyleBackColor = true;
             // 
-            // dataFineDataGridViewTextBoxColumn
+            // chkFirenze
             // 
-            dataFineDataGridViewTextBoxColumn.DataPropertyName = "DataFine";
-            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataFineDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle4;
-            dataFineDataGridViewTextBoxColumn.FillWeight = 150F;
-            dataFineDataGridViewTextBoxColumn.HeaderText = "DataFine";
-            dataFineDataGridViewTextBoxColumn.Name = "dataFineDataGridViewTextBoxColumn";
-            dataFineDataGridViewTextBoxColumn.ReadOnly = true;
-            dataFineDataGridViewTextBoxColumn.Width = 78;
+            chkFirenze.AutoSize = true;
+            chkFirenze.Location = new Point(1030, 11);
+            chkFirenze.Name = "chkFirenze";
+            chkFirenze.Size = new Size(35, 19);
+            chkFirenze.TabIndex = 7;
+            chkFirenze.Text = "FI";
+            chkFirenze.UseVisualStyleBackColor = true;
             // 
-            // numeroEstrazioniDataGridViewTextBoxColumn
+            // chkGenova
             // 
-            numeroEstrazioniDataGridViewTextBoxColumn.DataPropertyName = "NumeroEstrazioni";
-            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            numeroEstrazioniDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle5;
-            numeroEstrazioniDataGridViewTextBoxColumn.FillWeight = 80F;
-            numeroEstrazioniDataGridViewTextBoxColumn.HeaderText = "Num Estrazioni";
-            numeroEstrazioniDataGridViewTextBoxColumn.Name = "numeroEstrazioniDataGridViewTextBoxColumn";
-            numeroEstrazioniDataGridViewTextBoxColumn.ReadOnly = true;
-            numeroEstrazioniDataGridViewTextBoxColumn.Width = 112;
+            chkGenova.AutoSize = true;
+            chkGenova.Location = new Point(1077, 11);
+            chkGenova.Name = "chkGenova";
+            chkGenova.Size = new Size(40, 19);
+            chkGenova.TabIndex = 8;
+            chkGenova.Text = "GE";
+            chkGenova.UseVisualStyleBackColor = true;
             // 
-            // numeriGiocatiDataGridViewTextBoxColumn
+            // chkMilano
             // 
-            numeriGiocatiDataGridViewTextBoxColumn.DataPropertyName = "NumeriGiocati";
-            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            numeriGiocatiDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle6;
-            numeriGiocatiDataGridViewTextBoxColumn.HeaderText = "Num Giocati";
-            numeriGiocatiDataGridViewTextBoxColumn.Name = "numeriGiocatiDataGridViewTextBoxColumn";
-            numeriGiocatiDataGridViewTextBoxColumn.ReadOnly = true;
-            numeriGiocatiDataGridViewTextBoxColumn.Width = 99;
+            chkMilano.AutoSize = true;
+            chkMilano.Location = new Point(1124, 11);
+            chkMilano.Name = "chkMilano";
+            chkMilano.Size = new Size(40, 19);
+            chkMilano.TabIndex = 9;
+            chkMilano.Text = "MI";
+            chkMilano.UseVisualStyleBackColor = true;
             // 
-            // numeriVintiDataGridViewTextBoxColumn
+            // chkNapoli
             // 
-            numeriVintiDataGridViewTextBoxColumn.DataPropertyName = "NumeriVinti";
-            dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            numeriVintiDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle7;
-            numeriVintiDataGridViewTextBoxColumn.FillWeight = 80F;
-            numeriVintiDataGridViewTextBoxColumn.HeaderText = "Num Vinti";
-            numeriVintiDataGridViewTextBoxColumn.Name = "numeriVintiDataGridViewTextBoxColumn";
-            numeriVintiDataGridViewTextBoxColumn.ReadOnly = true;
-            numeriVintiDataGridViewTextBoxColumn.Width = 86;
+            chkNapoli.AutoSize = true;
+            chkNapoli.Location = new Point(1171, 11);
+            chkNapoli.Name = "chkNapoli";
+            chkNapoli.Size = new Size(43, 19);
+            chkNapoli.TabIndex = 10;
+            chkNapoli.Text = "NA";
+            chkNapoli.UseVisualStyleBackColor = true;
             // 
-            // ambiVintiDataGridViewTextBoxColumn
+            // chkPalermo
             // 
-            ambiVintiDataGridViewTextBoxColumn.DataPropertyName = "AmbiVinti";
-            dataGridViewCellStyle8.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            ambiVintiDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle8;
-            ambiVintiDataGridViewTextBoxColumn.FillWeight = 80F;
-            ambiVintiDataGridViewTextBoxColumn.HeaderText = "Ambi Vinti";
-            ambiVintiDataGridViewTextBoxColumn.Name = "ambiVintiDataGridViewTextBoxColumn";
-            ambiVintiDataGridViewTextBoxColumn.ReadOnly = true;
-            ambiVintiDataGridViewTextBoxColumn.Width = 88;
+            chkPalermo.AutoSize = true;
+            chkPalermo.Location = new Point(936, 36);
+            chkPalermo.Name = "chkPalermo";
+            chkPalermo.Size = new Size(40, 19);
+            chkPalermo.TabIndex = 11;
+            chkPalermo.Text = "PA";
+            chkPalermo.UseVisualStyleBackColor = true;
             // 
-            // terniVintiDataGridViewTextBoxColumn
+            // chkRoma
             // 
-            terniVintiDataGridViewTextBoxColumn.DataPropertyName = "TerniVinti";
-            dataGridViewCellStyle9.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            terniVintiDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle9;
-            terniVintiDataGridViewTextBoxColumn.FillWeight = 80F;
-            terniVintiDataGridViewTextBoxColumn.HeaderText = "Terni Vinti";
-            terniVintiDataGridViewTextBoxColumn.Name = "terniVintiDataGridViewTextBoxColumn";
-            terniVintiDataGridViewTextBoxColumn.ReadOnly = true;
-            terniVintiDataGridViewTextBoxColumn.Width = 85;
+            chkRoma.AutoSize = true;
+            chkRoma.Location = new Point(984, 36);
+            chkRoma.Name = "chkRoma";
+            chkRoma.Size = new Size(44, 19);
+            chkRoma.TabIndex = 12;
+            chkRoma.Text = "RM";
+            chkRoma.UseVisualStyleBackColor = true;
             // 
-            // investimentoMinimoDataGridViewTextBoxColumn
+            // chkTorino
             // 
-            investimentoMinimoDataGridViewTextBoxColumn.DataPropertyName = "InvestimentoMinimo";
-            dataGridViewCellStyle10.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            investimentoMinimoDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle10;
-            investimentoMinimoDataGridViewTextBoxColumn.FillWeight = 150F;
-            investimentoMinimoDataGridViewTextBoxColumn.HeaderText = "Investimento Minimo";
-            investimentoMinimoDataGridViewTextBoxColumn.Name = "investimentoMinimoDataGridViewTextBoxColumn";
-            investimentoMinimoDataGridViewTextBoxColumn.ReadOnly = true;
-            investimentoMinimoDataGridViewTextBoxColumn.Width = 146;
+            chkTorino.AutoSize = true;
+            chkTorino.Location = new Point(1030, 36);
+            chkTorino.Name = "chkTorino";
+            chkTorino.Size = new Size(41, 19);
+            chkTorino.TabIndex = 13;
+            chkTorino.Text = "TO";
+            chkTorino.UseVisualStyleBackColor = true;
             // 
-            // guadagnoDataGridViewTextBoxColumn
+            // chkVenezia
             // 
-            guadagnoDataGridViewTextBoxColumn.DataPropertyName = "Guadagno";
-            dataGridViewCellStyle11.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            guadagnoDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle11;
-            guadagnoDataGridViewTextBoxColumn.FillWeight = 120F;
-            guadagnoDataGridViewTextBoxColumn.HeaderText = "Guadagno";
-            guadagnoDataGridViewTextBoxColumn.Name = "guadagnoDataGridViewTextBoxColumn";
-            guadagnoDataGridViewTextBoxColumn.ReadOnly = true;
-            guadagnoDataGridViewTextBoxColumn.Width = 87;
+            chkVenezia.AutoSize = true;
+            chkVenezia.Location = new Point(1077, 36);
+            chkVenezia.Name = "chkVenezia";
+            chkVenezia.Size = new Size(39, 19);
+            chkVenezia.TabIndex = 14;
+            chkVenezia.Text = "VE";
+            chkVenezia.UseVisualStyleBackColor = true;
             // 
-            // investimentoPropostoDataGridViewTextBoxColumn
+            // chkNazionale
             // 
-            investimentoPropostoDataGridViewTextBoxColumn.DataPropertyName = "InvestimentoProposto";
-            dataGridViewCellStyle12.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            investimentoPropostoDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle12;
-            investimentoPropostoDataGridViewTextBoxColumn.FillWeight = 150F;
-            investimentoPropostoDataGridViewTextBoxColumn.HeaderText = "Investimento Proposto";
-            investimentoPropostoDataGridViewTextBoxColumn.Name = "investimentoPropostoDataGridViewTextBoxColumn";
-            investimentoPropostoDataGridViewTextBoxColumn.ReadOnly = true;
-            investimentoPropostoDataGridViewTextBoxColumn.Width = 152;
-            // 
-            // guadagnoPropostoDataGridViewTextBoxColumn
-            // 
-            guadagnoPropostoDataGridViewTextBoxColumn.DataPropertyName = "GuadagnoProposto";
-            dataGridViewCellStyle13.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            guadagnoPropostoDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle13;
-            guadagnoPropostoDataGridViewTextBoxColumn.FillWeight = 150F;
-            guadagnoPropostoDataGridViewTextBoxColumn.HeaderText = "Guadagno Proposto";
-            guadagnoPropostoDataGridViewTextBoxColumn.Name = "guadagnoPropostoDataGridViewTextBoxColumn";
-            guadagnoPropostoDataGridViewTextBoxColumn.ReadOnly = true;
-            guadagnoPropostoDataGridViewTextBoxColumn.Width = 138;
+            chkNazionale.AutoSize = true;
+            chkNazionale.Location = new Point(1123, 36);
+            chkNazionale.Name = "chkNazionale";
+            chkNazionale.Size = new Size(42, 19);
+            chkNazionale.TabIndex = 15;
+            chkNazionale.Text = "NZ";
+            chkNazionale.UseVisualStyleBackColor = true;
             // 
             // PageAnalisi
             // 
@@ -421,6 +568,7 @@ namespace Crs.Home.ApocalypsApp
             Name = "PageAnalisi";
             Size = new Size(1358, 600);
             panelHeader.ResumeLayout(false);
+            panelHeader.PerformLayout();
             groupBoxRaggruppamento.ResumeLayout(false);
             groupBoxRaggruppamento.PerformLayout();
             groupBoxBudget.ResumeLayout(false);
@@ -443,6 +591,18 @@ namespace Crs.Home.ApocalypsApp
         private DataGridViewTextBoxColumn guadagnoDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn investimentoPropostoDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn guadagnoPropostoDataGridViewTextBoxColumn;
+        private Button btnStartModello;
+        private CheckBox chkNapoli;
+        private CheckBox chkMilano;
+        private CheckBox chkGenova;
+        private CheckBox chkFirenze;
+        private CheckBox chkCagliari;
+        private CheckBox chkBari;
+        private CheckBox chkNazionale;
+        private CheckBox chkVenezia;
+        private CheckBox chkTorino;
+        private CheckBox chkRoma;
+        private CheckBox chkPalermo;
 
         //private void InizializzaColonneGriglia()
         //{

@@ -201,11 +201,11 @@ namespace Crs.Home.ApocalypsData
                         string ruota = lst[seqruota];
                         if (COSTANTS.RUOTA_NAZIONALE.Contains(ruota))
                             ruota = "NZ";
-                        nums[0] = Convert.ToInt32(lst[seqnum1 + 0]);
-                        nums[1] = Convert.ToInt32(lst[seqnum1 + 1]);
-                        nums[2] = Convert.ToInt32(lst[seqnum1 + 2]);
-                        nums[3] = Convert.ToInt32(lst[seqnum1 + 3]);
-                        nums[4] = Convert.ToInt32(lst[seqnum1 + 4]);
+                        nums.Add(Convert.ToInt32(lst[seqnum1 + 0]));
+                        nums.Add(Convert.ToInt32(lst[seqnum1 + 1]));
+                        nums.Add(Convert.ToInt32(lst[seqnum1 + 2]));
+                        nums.Add(Convert.ToInt32(lst[seqnum1 + 3]));
+                        nums.Add(Convert.ToInt32(lst[seqnum1 + 4]));
                         int idseqanno = 0;
                         if(seqanno>=0)                             
                             idseqanno = Convert.ToInt32(lst[seqanno]);
@@ -402,97 +402,129 @@ namespace Crs.Home.ApocalypsData
             List<LOTTO> res = new List<LOTTO>();
             DateTime dtprev = DateTime.MinValue;
             //bool isfirst = true;
-            LOTTO l = new LOTTO();
+            
 
-            estr = estr.OrderBy(X => X.Data).ToList();
+            //estr = estr.OrderBy(X => X.Data).ToList();
             //Estrazione[] aestr = estr.ToArray<Estrazione>();
 
-            int idx = 0;
-            foreach (Estrazione e in estr)
-            {
-                l.Data = e.Data;
-                l.Numero = e.SeqAnno;
+            List<(DateTime, int)> ldt = estr.Select(X => (X.Data,X.SeqAnno)).Distinct().OrderBy(X => X.Data).ToList();
 
-                switch (e.Ruota)
+            //bool bca = false; bool bfi = false; bool bba = false; bool bge = false;
+            //bool bmi = false; bool bna = false; bool bpa = false; bool brm = false;
+            //bool bto = false; bool bve = false; bool bnz = false;
+            int idx = 0;
+            DateTime dtprec = DateTime.MinValue;
+            if(estr.Any())
+                dtprec = estr.First().Data;
+            //foreach (Estrazione e in estr)
+            foreach ((DateTime, int) edt in ldt)
+            {
+                LOTTO l = new LOTTO();
+                l.Data = edt.Item1;
+                l.Numero = edt.Item2;
+
+                List<Estrazione> estrd = estr.Where(X=> X.Data == edt.Item1).ToList();
+
+                //while (dtprec==e.Data)// !bba || !bca || !bfi || !bge || !bmi || !bna || !bpa || !brm || !bto || !bve || !bnz)
+                foreach (Estrazione e in estrd)
                 {
-                    case "BA":
-                        l.BA1 = e.Numeri[0];
-                        l.BA2 = e.Numeri[1];
-                        l.BA3 = e.Numeri[2];
-                        l.BA4 = e.Numeri[3];
-                        l.BA5 = e.Numeri[4];
-                        break;
-                    case "CA":
-                        l.CA1 = e.Numeri[0];
-                        l.CA2 = e.Numeri[1];
-                        l.CA3 = e.Numeri[2];
-                        l.CA4 = e.Numeri[3];
-                        l.CA5 = e.Numeri[4];
-                        break;
-                    case "FI":
-                        l.FI1 = e.Numeri[0];
-                        l.FI2 = e.Numeri[1];
-                        l.FI3 = e.Numeri[2];
-                        l.FI4 = e.Numeri[3];
-                        l.FI5 = e.Numeri[4];
-                        break;
-                    case "GE":
-                        l.GE1 = e.Numeri[0];
-                        l.GE2 = e.Numeri[1];
-                        l.GE3 = e.Numeri[2];
-                        l.GE4 = e.Numeri[3];
-                        l.GE5 = e.Numeri[4];
-                        break;
-                    case "MI":
-                        l.MI1 = e.Numeri[0];
-                        l.MI2 = e.Numeri[1];
-                        l.MI3 = e.Numeri[2];
-                        l.MI4 = e.Numeri[3];
-                        l.MI5 = e.Numeri[4];
-                        break;
-                    case "NA":
-                        l.NA1 = e.Numeri[0];
-                        l.NA2 = e.Numeri[1];
-                        l.NA3 = e.Numeri[2];
-                        l.NA4 = e.Numeri[3];
-                        l.NA5 = e.Numeri[4];
-                        break;
-                    case "PA":
-                        l.PA1 = e.Numeri[0];
-                        l.PA2 = e.Numeri[1];
-                        l.PA3 = e.Numeri[2];
-                        l.PA4 = e.Numeri[3];
-                        l.PA5 = e.Numeri[4];
-                        break;
-                    case "RM":
-                        l.RM1 = e.Numeri[0];
-                        l.RM2 = e.Numeri[1];
-                        l.RM3 = e.Numeri[2];
-                        l.RM4 = e.Numeri[3];
-                        l.RM5 = e.Numeri[4];
-                        break;
-                    case "TO":
-                        l.TO1 = e.Numeri[0];
-                        l.TO2 = e.Numeri[1];
-                        l.TO3 = e.Numeri[2];
-                        l.TO4 = e.Numeri[3];
-                        l.TO5 = e.Numeri[4];
-                        break;
-                    case "VE":
-                        l.VE1 = e.Numeri[0];
-                        l.VE2 = e.Numeri[1];
-                        l.VE3 = e.Numeri[2];
-                        l.VE4 = e.Numeri[3];
-                        l.VE5 = e.Numeri[4];
-                        break;
-                    case "NZ":
-                        l.NZ1 = e.Numeri[0];
-                        l.NZ2 = e.Numeri[1];
-                        l.NZ3 = e.Numeri[2];
-                        l.NZ4 = e.Numeri[3];
-                        l.NZ5 = e.Numeri[4];
-                        break;
+                    switch (e.Ruota)
+                    {
+                        case "BA":
+                            l.BA1 = e.Numeri[0];
+                            l.BA2 = e.Numeri[1];
+                            l.BA3 = e.Numeri[2];
+                            l.BA4 = e.Numeri[3];
+                            l.BA5 = e.Numeri[4];
+                            //bca = true;
+                            break;
+                        case "CA":
+                            l.CA1 = e.Numeri[0];
+                            l.CA2 = e.Numeri[1];
+                            l.CA3 = e.Numeri[2];
+                            l.CA4 = e.Numeri[3];
+                            l.CA5 = e.Numeri[4];
+                            //bca = true;
+                            break;
+                        case "FI":
+                            l.FI1 = e.Numeri[0];
+                            l.FI2 = e.Numeri[1];
+                            l.FI3 = e.Numeri[2];
+                            l.FI4 = e.Numeri[3];
+                            l.FI5 = e.Numeri[4];
+                            //bfi = true;
+                            break;
+                        case "GE":
+                            l.GE1 = e.Numeri[0];
+                            l.GE2 = e.Numeri[1];
+                            l.GE3 = e.Numeri[2];
+                            l.GE4 = e.Numeri[3];
+                            l.GE5 = e.Numeri[4];
+                            //bge = true;
+                            break;
+                        case "MI":
+                            l.MI1 = e.Numeri[0];
+                            l.MI2 = e.Numeri[1];
+                            l.MI3 = e.Numeri[2];
+                            l.MI4 = e.Numeri[3];
+                            l.MI5 = e.Numeri[4];
+                            //bmi = true;
+                            break;
+                        case "NA":
+                            l.NA1 = e.Numeri[0];
+                            l.NA2 = e.Numeri[1];
+                            l.NA3 = e.Numeri[2];
+                            l.NA4 = e.Numeri[3];
+                            l.NA5 = e.Numeri[4];
+                            //bna = true;
+                            break;
+                        case "PA":
+                            l.PA1 = e.Numeri[0];
+                            l.PA2 = e.Numeri[1];
+                            l.PA3 = e.Numeri[2];
+                            l.PA4 = e.Numeri[3];
+                            l.PA5 = e.Numeri[4];
+                            //bpa = true;
+                            break;
+                        case "RM":
+                            l.RM1 = e.Numeri[0];
+                            l.RM2 = e.Numeri[1];
+                            l.RM3 = e.Numeri[2];
+                            l.RM4 = e.Numeri[3];
+                            l.RM5 = e.Numeri[4];
+                            //brm = true;
+                            break;
+                        case "TO":
+                            l.TO1 = e.Numeri[0];
+                            l.TO2 = e.Numeri[1];
+                            l.TO3 = e.Numeri[2];
+                            l.TO4 = e.Numeri[3];
+                            l.TO5 = e.Numeri[4];
+                            //bto = true;
+                            break;
+                        case "VE":
+                            l.VE1 = e.Numeri[0];
+                            l.VE2 = e.Numeri[1];
+                            l.VE3 = e.Numeri[2];
+                            l.VE4 = e.Numeri[3];
+                            l.VE5 = e.Numeri[4];
+                            //bve = true;
+                            break;
+                        case "NZ":
+                            l.NZ1 = e.Numeri[0];
+                            l.NZ2 = e.Numeri[1];
+                            l.NZ3 = e.Numeri[2];
+                            l.NZ4 = e.Numeri[3];
+                            l.NZ5 = e.Numeri[4];
+                            //bnz = true;
+                            break;
+                    }
                 }
+                //bca = false; bfi = false; bba = false; bge = false;
+                //bmi = false; bna = false; bpa = false; brm = false;
+                //bto = false; bve = false; bnz = false;
+                //dtprec = e.Data;
+
                 res.Add(l);
 
                 //if (aestr.Count() > idx + 1)

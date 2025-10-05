@@ -15,10 +15,16 @@ namespace Crs.Home.ApocalypsApp.UserControls
             InitializeComponent();
         }
 
+        public void SetUltimaDataImportata(DateTime dt)
+        {
+            lblLastDate.Text = "Ultima data importata: " + dt.ToShortDateString();
+        }
+
         public event EventHandler OnImportazioneCompletata;
 
         private void BtnCaricaDati_Click(object sender, EventArgs e)
         {
+            
             if (GrigliaDestinazione != null)
             {
                 // Simula il caricamento dati
@@ -29,12 +35,14 @@ namespace Crs.Home.ApocalypsApp.UserControls
             {
                 MessageBox.Show("Griglia di destinazione non impostata!", "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+           
         }
 
         private void BtnImporta_Click(object sender, EventArgs e)
         {
-            bool formatoSingolaRiga = radioFormatoSingolaRiga.Checked;
-            ApriDialogImportazione(formatoSingolaRiga, txtSeqFields.Text, txtFormatDate.Text, chkSaveToDb.Checked);
+            //bool formatoSingolaRiga = radioFormatoSingolaRiga.Checked;
+            //ApriDialogImportazione(formatoSingolaRiga, txtSeqFields.Text, txtFormatDate.Text, chkSaveToDb.Checked);
+            ApriDialogImportazione(Parameters.TypeFieldsFile == COSTANTS.TYPE_FILE_ESTRAZIONI_1_TUTTE_LE_RUOTE, Parameters.SeqFields, Parameters.FormatDateFile, Parameters.SaveToDb);
         }
 
         private void ApriDialogImportazione(bool formatoSingolaRiga, string seqfields, string patterndate, bool savetodb)
@@ -43,6 +51,7 @@ namespace Crs.Home.ApocalypsApp.UserControls
             {
                 openFileDialog.Filter = "File di testo (*.txt)|*.txt|Tutti i file (*.*)|*.*";
                 openFileDialog.Title = "Seleziona file estrazioni";
+                openFileDialog.InitialDirectory = Path.GetDirectoryName(Parameters.PathFileStoricoEstrazioni);
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
@@ -54,33 +63,41 @@ namespace Crs.Home.ApocalypsApp.UserControls
 
         private void ImportaDatiDaFile(string filePath, bool formatoSingolaRiga, string seqfields, string patterndate, bool savetodb)
         {
+            this.Cursor = Cursors.WaitCursor;
             try
             {
                 //// Simula l'importazione dei dati
                 //var estrazioniImportate = formatoSingolaRiga ?
                 //    ImportaFormatoSingolaRiga(filePath) :
                 //    ImportaFormatoMultiplaRiga(filePath);
-                int filetype = formatoSingolaRiga ? 1 : 2;
+                int filetype = formatoSingolaRiga ? 2 : 1;
                 List<Estrazione> lste = DbDataAccess.ReadFileEstrSeq(filePath, filetype, seqfields, patterndate, out string resread);
+
+                string ssavedb = "";
+                if (savetodb)
+                    ssavedb = "\nContinua con inserimento dati su DB..";
 
                 // Qui puoi salvare nel database o processare i dati
                 MessageBox.Show($"Importate {lste.Count} estrazioni dal file!",
-                    "Importazione Completata", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    "Importazione Completata" + ssavedb, MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 if (savetodb)
                 {
                     DateTime lastdate = DbDataAccess.GetLastDataEstrImported();
-                    if(lste.Where(X=>X.Data==lastdate).Any())
+                    DateTime lastdatel = DbDataAccess.GetLastDataLottoImported();
+                    if (lste.Where(X => X.Data > lastdate || X.Data > lastdatel).Any())
                     {
-                        DialogResult r= MessageBox.Show($"Attenzione! L'ultima data presente a DB è {lastdate.ToShortDateString()}. Non verranno importate estrazioni con questa data o precedenti.",
+                        DateTime mind = lastdatel;
+                        if (lastdate < lastdatel) mind = lastdate;
+                        DialogResult r = MessageBox.Show($"Attenzione! L'ultima data presente a DB è {mind.ToShortDateString()}. Non verranno importate estrazioni con questa data o precedenti.",
                             "Attenzione", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         bool isok = true; bool isokall = true;
-                        if (r== DialogResult.OK)
+                        if (r == DialogResult.OK)
                         {
                             DbDataUpdate.ImportDB(lste);
                         }
 
-                        if(isokall)
+                        if (isokall)
                             MessageBox.Show($"Importate {lste.Where(X => X.Data > lastdate).Count()} estrazioni a DB!",
                                 "Importazione Completata", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         else
@@ -88,7 +105,7 @@ namespace Crs.Home.ApocalypsApp.UserControls
                                 "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
-                
+
 
                 OnImportazioneCompletata?.Invoke(this, EventArgs.Empty);
             }
@@ -96,7 +113,9 @@ namespace Crs.Home.ApocalypsApp.UserControls
             {
                 MessageBox.Show($"Errore durante l'importazione: {ex.Message}",
                     "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.Cursor = Cursors.Default;
             }
+            this.Cursor = Cursors.Default;
         }
 
         private System.Collections.Generic.List<Estrazione> ImportaFormatoSingolaRiga(string filePath)
@@ -137,8 +156,8 @@ namespace Crs.Home.ApocalypsApp.UserControls
             // Simula l'importazione formato multipla riga (una per ruota per estrazione)
             var estrazioni = new System.Collections.Generic.List<Estrazione>();
             string[] ruote = { "BA", "CA", "FI", "GE", "MI", "NA", "PA", "RO", "TO", "VE", "NZ" };
-            
-            
+
+
 
             Random rnd = new Random();
             for (int i = 0; i < 5; i++) // 5 estrazioni
@@ -159,7 +178,7 @@ namespace Crs.Home.ApocalypsApp.UserControls
                     //        rnd.Next(1, 91),
                     //        rnd.Next(1, 91)
                     //    }
-                        
+
                     //};
                     //estrazioni.Add(estrazione);
                 }
@@ -172,6 +191,7 @@ namespace Crs.Home.ApocalypsApp.UserControls
         {
             if (GrigliaDestinazione == null) return;
 
+            this.Cursor = Cursors.WaitCursor;
             // Pulisci la griglia esistente
             GrigliaDestinazione.Rows.Clear();
 
@@ -179,6 +199,8 @@ namespace Crs.Home.ApocalypsApp.UserControls
             DateTime dataFine = dateTimeFine.Value;
 
             ParametriCondivisi.Estrazioni = new System.Collections.Generic.List<Estrazione>();
+            ParametriCondivisi.DataInizioAnalisi = dataInizio;
+            ParametriCondivisi.DataFineAnalisi = dataFine;
 
             List<Estrazione> lstBA = DbDataAccess.GetEstrazioniSuRuota(dataInizio, dataFine, "BA");
             List<Estrazione> lstCA = DbDataAccess.GetEstrazioniSuRuota(dataInizio, dataFine, "CA");
@@ -199,7 +221,7 @@ namespace Crs.Home.ApocalypsApp.UserControls
             lst.AddRange(lstGE);
             lst.AddRange(lstMI);
             lst.AddRange(lstNA);
-            lst.AddRange(lstPA);    
+            lst.AddRange(lstPA);
             lst.AddRange(lstRM);
             lst.AddRange(lstTO);
             lst.AddRange(lstVE);
@@ -209,11 +231,11 @@ namespace Crs.Home.ApocalypsApp.UserControls
 
             ParametriCondivisi.Estrazioni = lst;
             int idx = 0;
-            foreach(Estrazione e in lstBA)
+            foreach (Estrazione e in lstBA)
             {
                 object[] riga = new object[57];
                 riga[0] = e.Data.ToString("dd/MM/yyyy");
-                riga[1] = e.SeqAnno.ToString();
+                riga[1] = idx.ToString();
                 riga = SetRowRuota(riga, e.Data, e, err);
                 riga = SetRowRuota(riga, e.Data, lstCA[idx], err);
                 riga = SetRowRuota(riga, e.Data, lstFI[idx], err);
@@ -234,6 +256,9 @@ namespace Crs.Home.ApocalypsApp.UserControls
                 btnCaricaDati.BackColor = Color.Red;
                 toolTip1.SetToolTip(btnCaricaDati, "Errori nel caricamento:\n" + string.Join("\n", err));
             }
+
+            this.Cursor = Cursors.Default;
+
             //Random rnd = new Random();
             //for (int i = 0; i < 15; i++)
             //{
@@ -295,10 +320,10 @@ namespace Crs.Home.ApocalypsApp.UserControls
             else err.Add(dt.ToShortDateString() + " " + e.Ruota);
 
             riga[startidx] = e.Numeri[0];
-            riga[startidx+1] = e.Numeri[1];
-            riga[startidx+2] = e.Numeri[2];
-            riga[startidx+3] = e.Numeri[3];
-            riga[startidx+4] = e.Numeri[4];
+            riga[startidx + 1] = e.Numeri[1];
+            riga[startidx + 2] = e.Numeri[2];
+            riga[startidx + 3] = e.Numeri[3];
+            riga[startidx + 4] = e.Numeri[4];
             return riga;
         }
     }

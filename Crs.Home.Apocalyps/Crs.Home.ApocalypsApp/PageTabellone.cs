@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Crs.Home.ApocalypsData;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -15,6 +16,13 @@ namespace Crs.Home.ApocalypsApp
 
         private void InitializeGriglia()
         {
+
+            DateTime dtlast = DbDataAccess.GetLastDataEstrImported();
+            DateTime dtlastL = DbDataAccess.GetLastDataLottoImported();
+
+            headerTabellone1.GrigliaDestinazione = grigliaEstrazioni;
+            headerTabellone1.SetUltimaDataImportata((dtlast<dtlastL) ? dtlast: dtlastL);
+
             // Aggiungi colonne con le nuove intestazioni
             InitializeColonneGriglia();
 
@@ -28,12 +36,12 @@ namespace Crs.Home.ApocalypsApp
         private void InitializeColonneGriglia()
         {
             // Colonne base
-            grigliaEstrazioni.Columns.Add("DataEstrazione", "Data Estrazione");
+            grigliaEstrazioni.Columns.Add("DataEstrazione", "Data Estr.");
             DataGridViewColumn c = grigliaEstrazioni.Columns.GetLastColumn(DataGridViewElementStates.None, DataGridViewElementStates.None);
-            c.Width = 100;
-            grigliaEstrazioni.Columns.Add("NumeroEstrazione", "N° Estrazione");
+            c.Width = 80;
+            grigliaEstrazioni.Columns.Add("NumeroEstrazione", "N° Estr.");
             c = grigliaEstrazioni.Columns.GetLastColumn(DataGridViewElementStates.None, DataGridViewElementStates.None);
-            c.Width = 60;
+            c.Width = 45;
 
             // Definizione ruote con abbreviazioni
             var ruote = new[]
@@ -61,7 +69,7 @@ namespace Crs.Home.ApocalypsApp
 
                     grigliaEstrazioni.Columns.Add(nomeColonna, headerText);
                     c =grigliaEstrazioni.Columns.GetLastColumn(DataGridViewElementStates.None, DataGridViewElementStates.None);
-                    c.Width = 40;
+                    c.Width = 30;
                 }
             }
         }
