@@ -78,9 +78,9 @@ namespace Crs.Home.ApocalypsData
     public class ModelloLotto
     {
         protected ParametriModello param;
-        private List<Estrazione> estrazioni;
+        protected List<Estrazione> estrazioni;
         private HashSet<Tuple<int, int>> coppieFA;
-        private string[] ruote = {
+        protected string[] ruote = {
             "Bari", "Cagliari", "Firenze", "Genova", "Milano",
             "Napoli", "Palermo", "Roma", "Torino", "Venezia", "Nazionale"
         };
@@ -110,13 +110,13 @@ namespace Crs.Home.ApocalypsData
             return n;
         }
 
-        private int Antifigura(int numero)
+        protected int Antifigura(int numero)
         {
             int comp = 90 - numero;
             return Figura(comp);
         }
 
-        private int Decina(int numero)
+        protected int Decina(int numero)
         {
             if (numero == 90) return 90;
             return (numero / 10) * 10;
@@ -915,16 +915,22 @@ namespace Crs.Home.ApocalypsData
             for (int num = 1; num <= 90; num++)
             {
                 int bonus = CalcolaBonus(num, ruota, dataTarget);
+               
                 scores.Add(Tuple.Create(num, bonus));
             }
 
+            // Calcolo dinamico della soglia
+            //int soglia = Math.Max(70, SogliaAdattiva(scores));
+
             return scores
                 .Where(x => x.Item2 >= param.Soglia)
+                //.Where(x => x.Item2 >= soglia)
                 .Select(x => x.Item1)
                 .OrderBy(x => x)
                 .ToList();
         }
-        
+
+       
         public Dictionary<int, int> GetPunteggiCompleti(string ruota, DateTime dataTarget)
         {
             var scores = new Dictionary<int, int>();
@@ -1154,8 +1160,9 @@ namespace Crs.Home.ApocalypsData
                 int bonus = CalcolaBonus(num, ruota, dataTarget, regoleAttivate);
                 risultati.Add(Tuple.Create(num, bonus, regoleAttivate));
             }
-
-            var consigliati = risultati.Where(x => x.Item2 >= param.Soglia).Select(x => x.Item1).ToList();
+            int sogliaDinamica = SogliaAdattiva(risultati.Select(x => Tuple.Create(x.Item1, x.Item2)).ToList());
+            //var consigliati = risultati.Where(x => x.Item2 >= param.Soglia).Select(x => x.Item1).ToList();
+            var consigliati = risultati.Where(x => x.Item2 >= sogliaDinamica).Select(x => x.Item1).ToList();
 
             if (numeriUsciti != null)
             {
@@ -1165,6 +1172,14 @@ namespace Crs.Home.ApocalypsData
             return consigliati.OrderBy(x => x).ToList();
         }
 
+        // Calcola dinamicamente la soglia basata sulla distribuzione
+        public int SogliaAdattiva(List<Tuple<int, int>> scores)
+        {
+            var punteggi = scores.Select(x => x.Item2).OrderByDescending(x => x).ToList();
+            // Prendi il top 8% dei punteggi
+            int index = (int)(punteggi.Count * 0.08);
+            return Math.Max(50, punteggi[index]);
+        }
         private void AggiornaPerformance(List<Tuple<int, int, List<string>>> risultati, List<int> numeriUsciti)
         {
             foreach (var risultato in risultati)

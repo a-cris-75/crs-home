@@ -286,7 +286,7 @@ namespace Crs.Home.ApocalypsApp
                                 dataTarget: estrazione.Data,
                                 numeriUsciti: estrazione.Numeri // Passa i numeri realmente usciti per la simulazione
                             );
-
+                            var punteggi = ModelloAdattivo.GetPunteggiCompleti(ruota, estrazione.Data);
                             // Qui processi il risultato della previsione e calcoli le metriche
                             // (questa parte dipende dalla struttura del tuo modello)
                             ProcessaRisultatoPrevisione(nuoviRisultati, periodo, estrazione, numeriPrevisione, ruota);
@@ -323,7 +323,7 @@ namespace Crs.Home.ApocalypsApp
             if (chkMilano.Checked) ruoteSelezionate.Add("MI");
             if (chkNapoli.Checked) ruoteSelezionate.Add("NA");
             if (chkPalermo.Checked) ruoteSelezionate.Add("PA");
-            if (chkRoma.Checked) ruoteSelezionate.Add("RO");
+            if (chkRoma.Checked) ruoteSelezionate.Add("RM");
             if (chkTorino.Checked) ruoteSelezionate.Add("TO");
             if (chkVenezia.Checked) ruoteSelezionate.Add("VE");
             if (chkNazionale.Checked) ruoteSelezionate.Add("NZ");
@@ -411,6 +411,31 @@ namespace Crs.Home.ApocalypsApp
 
             // Qui dovresti aggiungere la logica per calcolare i numeri vinti, ambi, terni
             // confrontando numeriPrevisione con estrazione.NumeriEstratti
+            risultatoEsistente.NumeriVinti = numeriPrevisione.Where(X => X == estrazione.Numeri[0] || X == estrazione.Numeri[1] ||
+                    X == estrazione.Numeri[2] ||
+                    X == estrazione.Numeri[3] ||
+                    X == estrazione.Numeri[4]).Count();// estrazione.Numeri
+
+            risultatoEsistente.AmbiVinti = CalcolaCombinazioni(risultatoEsistente.NumeriVinti, 2);
+            risultatoEsistente.TerniVinti = CalcolaCombinazioni(risultatoEsistente.NumeriVinti, 3);
+        
+        }
+
+        private int CalcolaCombinazioni(int n, int k)
+        {
+            if (k > n) return 0;
+            if (k == 0 || k == n) return 1;
+            decimal numeratore = 1;
+            for (int i = 0; i < k; i++)
+            {
+                numeratore *= (n - i);
+            }
+            decimal denominatore = 1;
+            for (int i = 1; i <= k; i++)
+            {
+                denominatore *= i;
+            }
+            return (int)(numeratore / denominatore);
         }
     }
 
