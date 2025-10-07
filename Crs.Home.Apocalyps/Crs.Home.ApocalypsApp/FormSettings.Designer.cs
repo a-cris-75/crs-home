@@ -40,8 +40,8 @@
             txtSeqFields = new TextBox();
             txtFormatDate = new TextBox();
             groupBoxFormato = new GroupBox();
-            radioFormatoSingolaRiga = new RadioButton();
-            radioFormatoMultiplaRiga = new RadioButton();
+            rbFormatRuoteEstr = new RadioButton();
+            rbFormatRuotaEstr = new RadioButton();
             tabPage2 = new TabPage();
             btnOpedDialogPathDB = new Button();
             txtLocalPathDB = new TextBox();
@@ -171,8 +171,8 @@
             // 
             // groupBoxFormato
             // 
-            groupBoxFormato.Controls.Add(radioFormatoSingolaRiga);
-            groupBoxFormato.Controls.Add(radioFormatoMultiplaRiga);
+            groupBoxFormato.Controls.Add(rbFormatRuoteEstr);
+            groupBoxFormato.Controls.Add(rbFormatRuotaEstr);
             groupBoxFormato.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             groupBoxFormato.Location = new Point(2, 14);
             groupBoxFormato.Name = "groupBoxFormato";
@@ -181,26 +181,26 @@
             groupBoxFormato.TabStop = false;
             groupBoxFormato.Text = "Formato Importazione";
             // 
-            // radioFormatoSingolaRiga
+            // rbFormatRuoteEstr
             // 
-            radioFormatoSingolaRiga.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            radioFormatoSingolaRiga.Location = new Point(13, 22);
-            radioFormatoSingolaRiga.Name = "radioFormatoSingolaRiga";
-            radioFormatoSingolaRiga.Size = new Size(170, 20);
-            radioFormatoSingolaRiga.TabIndex = 0;
-            radioFormatoSingolaRiga.Text = "Singola riga per estrazione";
-            radioFormatoSingolaRiga.CheckedChanged += radioFormatoSingolaRiga_CheckedChanged;
+            rbFormatRuoteEstr.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            rbFormatRuoteEstr.Location = new Point(13, 22);
+            rbFormatRuoteEstr.Name = "rbFormatRuoteEstr";
+            rbFormatRuoteEstr.Size = new Size(170, 20);
+            rbFormatRuoteEstr.TabIndex = 0;
+            rbFormatRuoteEstr.Text = "Singola riga per estrazione";
+            rbFormatRuoteEstr.CheckedChanged += radioFormatoSingolaRiga_CheckedChanged;
             // 
-            // radioFormatoMultiplaRiga
+            // rbFormatRuotaEstr
             // 
-            radioFormatoMultiplaRiga.Checked = true;
-            radioFormatoMultiplaRiga.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            radioFormatoMultiplaRiga.Location = new Point(183, 22);
-            radioFormatoMultiplaRiga.Name = "radioFormatoMultiplaRiga";
-            radioFormatoMultiplaRiga.Size = new Size(180, 20);
-            radioFormatoMultiplaRiga.TabIndex = 1;
-            radioFormatoMultiplaRiga.TabStop = true;
-            radioFormatoMultiplaRiga.Text = "Riga per ruota per estrazione";
+            rbFormatRuotaEstr.Checked = true;
+            rbFormatRuotaEstr.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            rbFormatRuotaEstr.Location = new Point(183, 22);
+            rbFormatRuotaEstr.Name = "rbFormatRuotaEstr";
+            rbFormatRuotaEstr.Size = new Size(180, 20);
+            rbFormatRuotaEstr.TabIndex = 1;
+            rbFormatRuotaEstr.TabStop = true;
+            rbFormatRuotaEstr.Text = "Riga per ruota per estrazione";
             // 
             // tabPage2
             // 
@@ -310,8 +310,8 @@
         private TextBox txtSeqFields;
         private TextBox txtFormatDate;
         private GroupBox groupBoxFormato;
-        private RadioButton radioFormatoSingolaRiga;
-        private RadioButton radioFormatoMultiplaRiga;
+        private RadioButton rbFormatRuoteEstr;
+        private RadioButton rbFormatRuotaEstr;
         private Button btnOpenPath;
         private Panel pnlFooter;
         private Button BtnCancel;

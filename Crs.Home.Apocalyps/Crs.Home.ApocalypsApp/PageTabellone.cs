@@ -21,7 +21,7 @@ namespace Crs.Home.ApocalypsApp
             DateTime dtlastL = DbDataAccess.GetLastDataLottoImported();
 
             headerTabellone1.GrigliaDestinazione = grigliaEstrazioni;
-            headerTabellone1.SetUltimaDataImportata((dtlast<dtlastL) ? dtlast: dtlastL);
+            headerTabellone1.SetUltimaDataImportata((dtlast < dtlastL) ? dtlast : dtlastL);
 
             // Aggiungi colonne con le nuove intestazioni
             InitializeColonneGriglia();
@@ -68,7 +68,7 @@ namespace Crs.Home.ApocalypsApp
                     string headerText = $"{ruota.Abbreviazione}{i}";
 
                     grigliaEstrazioni.Columns.Add(nomeColonna, headerText);
-                    c =grigliaEstrazioni.Columns.GetLastColumn(DataGridViewElementStates.None, DataGridViewElementStates.None);
+                    c = grigliaEstrazioni.Columns.GetLastColumn(DataGridViewElementStates.None, DataGridViewElementStates.None);
                     c.Width = 30;
                 }
             }
@@ -135,7 +135,7 @@ namespace Crs.Home.ApocalypsApp
         private void InitializePanelDestra()
         {
             // Aggiungi pannelli colorati di esempio
-            AggiungiPannelliColori();
+            //AggiungiPannelliColori();
         }
 
         private void AggiungiPannelliColori()
@@ -171,5 +171,6 @@ namespace Crs.Home.ApocalypsApp
             // Logica per applicare i filtri
             MessageBox.Show("Filtri applicati!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+
     }
 }

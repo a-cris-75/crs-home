@@ -12,20 +12,6 @@ using System.Threading.Tasks;
 
 namespace Crs.Home.ApocalypsData
 {
-    //public class Estrazione
-    //{
-    //    public DateTime Data { get; set; }
-    //    public string Ruota { get; set; }
-    //    public List<int> Numeri { get; set; }
-
-    //    public Estrazione(DateTime data, string ruota, List<int> numeri)
-    //    {
-    //        Data = data;
-    //        Ruota = ruota;
-    //        Numeri = numeri;
-    //    }
-    //}
-
     public class ParametriModello
     {
         public int W_dec1 { get; set; } = 20;
@@ -38,11 +24,6 @@ namespace Crs.Home.ApocalypsData
         public int W_arm { get; set; } = 5;
         public int W_diff { get; set; } = 1;
         // questi sono pesi fissi che non necessitano di aggiornamento
-        //public int W_auto_att9 { get; set; } = 1;
-        //public int W_inter_ruota { get; set; } = 1;
-        //public int W_Temporale { get; set; } = 1;
-        //public int W_Sequenza { get; set; } = 1;
-        //public int W_Fisica { get; set; } = 1;
 
         public int Soglia_diff { get; set; } = 10;
         public int Soglia { get; set; } = 50;
@@ -89,15 +70,12 @@ namespace Crs.Home.ApocalypsData
         {
             this.estrazioni = estrazioniStoriche;
             this.param = parametri ?? new ParametriModello();
-            //this.performanceTracker = new PerformanceTracker();
-            //this.estrazioniDaUltimaCalibrazione = 0;
             coppieFA = new HashSet<Tuple<int, int>>
             {
                 Tuple.Create(1, 8), Tuple.Create(8, 1),
                 Tuple.Create(4, 5), Tuple.Create(5, 4)
             };
         }
-
 
         // Funzioni base
         public static int Figura(int numero)
@@ -120,6 +98,149 @@ namespace Crs.Home.ApocalypsData
         {
             if (numero == 90) return 90;
             return (numero / 10) * 10;
+        }
+    
+        public Tuple<int, List<string>> CalcolaBonusConRegole(int numero, string ruota, DateTime dataTarget)
+        {
+            var regoleAttivate = new List<string>();
+
+            // Calcolo dei bonus individuali
+            int B_dec = CalcolaBonusDecina(numero, ruota, dataTarget);
+            int B_FA = CalcolaBonusFiguraAntifigura(numero, ruota, dataTarget);
+            int B_pol = CalcolaBonusPolarizzazione(numero, ruota, dataTarget);
+            int B_rit = CalcolaBonusRitardo(numero, ruota, dataTarget);
+            int B_arm = CalcolaBonusArmonia(numero, ruota, dataTarget);
+            int B_diff = CalcolaBonusDifferenzaRitardi(numero, ruota, dataTarget);
+            int B_9 = CalcolaBonusAutoAttrazione9(numero, ruota, dataTarget);
+            int B_ir = CalcolaBonusInterRuota(numero, ruota, dataTarget);
+            int B_temp = CalcolaBonusTemporale(numero, ruota, dataTarget);
+            int B_seq = CalcolaBonusSequenza(numero, ruota, dataTarget);
+            int B_fisica = CalcolaBonusFisicaCompleto(numero, ruota, dataTarget);
+
+            // Registra regole attivate
+            if (B_dec > 0) regoleAttivate.Add("Decina");
+            if (B_FA > 0) regoleAttivate.Add("FiguraAntifigura");
+            if (B_pol > 0) regoleAttivate.Add("Polarizzazione");
+            if (B_rit > 0) regoleAttivate.Add("Ritardo");
+            if (B_arm > 0) regoleAttivate.Add("Armonia");
+            if (B_diff > 0) regoleAttivate.Add("DifferenzaRitardi");
+            if (B_9 > 0) regoleAttivate.Add("AutoAttrazione9");
+            if (B_ir > 0) regoleAttivate.Add("InterRuota");
+            if (B_temp > 0) regoleAttivate.Add("Temporale");
+            if (B_seq > 0) regoleAttivate.Add("Sequenza");
+            if (B_fisica > 0) regoleAttivate.Add("Fisica");
+
+            // CALCOLO MOLTIPLICATIVO
+            double bonus_moltiplicativo =
+                (B_dec / 10.0 + 1) *
+                (B_FA / 10.0 + 1) *
+                (B_pol / 10.0 + 1) *
+                (B_rit / 10.0 + 1) *
+                (B_arm / 10.0 + 1) *
+                (B_diff / 10.0 + 1) *
+                (B_9 / 10.0 + 1) *
+                (B_ir / 10.0 + 1) *
+                (B_temp / 10.0 + 1) *
+                (B_seq / 10.0 + 1) *
+                (B_fisica / 10.0 + 1) * 10;
+
+            return Tuple.Create((int)Math.Round(bonus_moltiplicativo), regoleAttivate);
+        }
+
+        // ========== IMPLEMENTAZIONI DEI METODI BONUS ==========
+
+        private int CalcolaBonusDecina(int numero, string ruota, DateTime dataTarget)
+        {
+            int B_dec = 0;
+            var estrRuota = GetUltimeEstrazioni(ruota, dataTarget, 2);
+            var decineUltime2 = new HashSet<int>();
+
+            foreach (var e in estrRuota)
+            {
+                foreach (int n in e.Numeri)
+                {
+                    decineUltime2.Add(Decina(n));
+                }
+            }
+
+            int dNum = Decina(numero);
+            if (decineUltime2.Contains(dNum))
+            {
+                if (estrRuota.Count > 0 && estrRuota[0].Numeri.Any(n => Decina(n) == dNum))
+                    B_dec += param.W_dec1;
+                if (estrRuota.Count > 1 && estrRuota[1].Numeri.Any(n => Decina(n) == dNum))
+                    B_dec += param.W_dec2;
+            }
+            return B_dec;
+        }
+
+        private int CalcolaBonusFiguraAntifigura(int numero, string ruota, DateTime dataTarget)
+        {
+            int B_FA = 0;
+            int fNum = Figura(numero);
+            if (fNum == 9) return 0; // Escludi figura 9
+
+            var estrRuota = GetUltimeEstrazioni(ruota, dataTarget, 3);
+
+            for (int i = 0; i < estrRuota.Count; i++)
+            {
+                foreach (int n in estrRuota[i].Numeri)
+                {
+                    int fN = Figura(n);
+                    if (fN == 9) continue;
+                    var coppia = Tuple.Create(fN, fNum);
+                    if (coppieFA.Contains(coppia))
+                    {
+                        if (i == 0) B_FA += param.W_FA;
+                        else if (i == 1) B_FA += (int)(param.W_FA * 0.5);
+                        else if (i == 2) B_FA += (int)(param.W_FA * 0.33);
+                    }
+                }
+            }
+            return B_FA;
+        }
+
+        private int CalcolaBonusPolarizzazione(int numero, string ruota, DateTime dataTarget)
+        {
+            int B_pol = 0;
+            var estrRuota = GetUltimeEstrazioni(ruota, dataTarget, 1);
+            if (estrRuota.Count == 0) return 0;
+
+            var ultimaCinquina = estrRuota[0].Numeri;
+            var figureUltima = new HashSet<int>(ultimaCinquina.Select(Figura));
+            int varieta = figureUltima.Count;
+            int fNum = Figura(numero);
+
+            if (varieta == 5) // Alta varietà → bonus figure già usate
+            {
+                var figureUltime3 = new HashSet<int>();
+                foreach (var e in GetUltimeEstrazioni(ruota, dataTarget, 3))
+                {
+                    figureUltime3.UnionWith(e.Numeri.Select(Figura));
+                }
+                if (figureUltime3.Contains(fNum))
+                    B_pol += param.W_pol;
+            }
+            else if (varieta <= 3) // Bassa varietà → bonus figure nuove
+            {
+                if (!figureUltima.Contains(fNum))
+                    B_pol += param.W_pol;
+            }
+            return B_pol;
+        }
+
+        private int CalcolaBonusRitardo(int numero, string ruota, DateTime dataTarget)
+        {
+            int B_rit = 0;
+            var ritardi = CalcolaRitardiFigure(ruota, dataTarget);
+            int fNum = Figura(numero);
+            int ritardoF = ritardi.ContainsKey(fNum) ? ritardi[fNum] : 1000;
+
+            if (ritardoF >= 25) B_rit += param.W_rit25;
+            else if (ritardoF >= 20) B_rit += param.W_rit20;
+            else if (ritardoF >= 15) B_rit += param.W_rit15;
+
+            return B_rit;
         }
 
         private Dictionary<int, int> CalcolaRitardiFigure(string ruota, DateTime dataTarget)
@@ -162,327 +283,14 @@ namespace Crs.Home.ApocalypsData
             return ritardi;
         }
 
-        // Modifica CalcolaBonus per restituire anche regole attivate
-        //public Tuple<int, List<string>> CalcolaBonusConTracking(int numero, string ruota, DateTime dataTarget)
-        //{
-        //    var regoleAttivate = new List<string>();
-        //    int bonus = 0;
-
-        //    // ... calcolo bonus esistente ...
-        //    // DOPO ogni bonus, aggiungi la regola alla lista se attiva
-
-        //    var estrRuota = estrazioni
-        //        .Where(e => e.Ruota == ruota && e.Data < dataTarget)
-        //        .OrderByDescending(e => e.Data)
-        //        .Take(3)
-        //        .ToList();
-
-        //    int fNum = Figura(numero);
-        //    int afNum = Antifigura(numero);
-        //    int dNum = Decina(numero);
-
-        //    // Calcolo dei bonus individuali
-        //    int B_dec = 0, B_FA = 0, B_pol = 0, B_rit = 0, B_arm = 0, B_diff = 0, B_9 = 0;
-
-        //    // 1. Bonus decina
-        //    var decineUltime2 = new HashSet<int>();
-        //    foreach (var e in estrRuota.Take(2))
-        //    {
-        //        foreach (int n in e.Numeri)
-        //        {
-        //            decineUltime2.Add(Decina(n));
-        //        }
-        //    }
-            
-
-        //    if (decineUltime2.Contains(dNum))
-        //    {
-        //        if (estrRuota.Count > 0 && estrRuota[0].Numeri.Any(n => Decina(n) == dNum))
-        //            B_dec += param.W_dec1;
-        //        if (estrRuota.Count > 1 && estrRuota[1].Numeri.Any(n => Decina(n) == dNum))
-        //            B_dec += param.W_dec2;
-
-        //        regoleAttivate.Add("Bonus decina");
-        //    }
-
-        //    // 2. Bonus figura-antifigura (solo 1-8 e 4-5) - ESCLUDI figura 9
-        //    if (fNum != 9)
-        //    {
-        //        for (int i = 0; i < estrRuota.Count; i++)
-        //        {
-        //            foreach (int n in estrRuota[i].Numeri)
-        //            {
-        //                int fN = Figura(n);
-        //                if (fN == 9) continue;
-        //                var coppia = Tuple.Create(fN, fNum);
-        //                if (coppieFA.Contains(coppia))
-        //                {
-        //                    if (i == 0) B_FA += param.W_FA;
-        //                    else if (i == 1) B_FA += (int)(param.W_FA * 0.5);
-        //                    else if (i == 2) B_FA += (int)(param.W_FA * 0.33);
-        //                }
-        //            }
-        //        }
-        //        if(B_FA>0)
-        //            regoleAttivate.Add("Bonus figura-antifigura");
-        //    }
-
-        //    // 3. Bonus polarizzazione
-        //    if (estrRuota.Count > 0)
-        //    {
-        //        var ultimaCinquina = estrRuota[0].Numeri;
-        //        var figureUltima = new HashSet<int>(ultimaCinquina.Select(Figura));
-        //        int varieta = figureUltima.Count;
-
-        //        if (varieta == 5)
-        //        {
-        //            var figureUltime3 = new HashSet<int>();
-        //            foreach (var e in estrRuota)
-        //            {
-        //                foreach (int n in e.Numeri)
-        //                {
-        //                    figureUltime3.Add(Figura(n));
-        //                }
-        //            }
-        //            if (figureUltime3.Contains(fNum))
-        //                B_pol += param.W_pol;
-        //        }
-        //        else if (varieta <= 3)
-        //        {
-        //            if (!figureUltima.Contains(fNum))
-        //                B_pol += param.W_pol;
-        //        }
-
-        //        regoleAttivate.Add("Bonus polarizzazione");
-        //    }
-
-        //    // 4. Bonus ritardo
-        //    var ritardi = CalcolaRitardiFigure(ruota, dataTarget);
-        //    int ritardoF = ritardi.ContainsKey(fNum) ? ritardi[fNum] : 1000;
-        //    if (ritardoF >= 25) B_rit += param.W_rit25;
-        //    else if (ritardoF >= 20) B_rit += param.W_rit20;
-        //    else if (ritardoF >= 15) B_rit += param.W_rit15;
-
-        //    if(B_rit>0) 
-        //        regoleAttivate.Add("Bonus ritardo");
-
-        //    // 5. Bonus armonia
-        //    var figureUltime4 = new List<int>();
-        //    foreach (var e in estrRuota)
-        //    {
-        //        figureUltime4.AddRange(e.Numeri.Select(Figura));
-        //    }
-        //    foreach (int fAltra in figureUltime4)
-        //    {
-        //        if (fAltra + fNum == 9 || fAltra + fNum == 10)
-        //        {
-        //            B_arm += param.W_arm;
-        //            break;
-        //        }
-        //    }
-        //    if (B_arm > 0)
-        //        regoleAttivate.Add("Bonus armonia");
-
-        //    // 6. Bonus differenza ritardi
-        //    if (coppieFA.Contains(Tuple.Create(fNum, afNum)))
-        //    {
-        //        int ritardoAF = ritardi.ContainsKey(afNum) ? ritardi[afNum] : 1000;
-        //        int diff = Math.Abs(ritardoF - ritardoAF);
-        //        if (diff > param.Soglia_diff)
-        //        {
-        //            B_diff += (diff - param.Soglia_diff) * param.W_diff;
-        //            regoleAttivate.Add("Bonus differenza ritardi");
-        //        }         
-        //    }
-
-        //    // 7. Bonus auto-attrazione figura 9
-        //    if (fNum == 9)
-        //    {
-        //        for (int i = 0; i < estrRuota.Count; i++)
-        //        {
-        //            if (estrRuota[i].Numeri.Any(n => Figura(n) == 9))
-        //            {
-        //                if (i == 0) B_9 += 20;
-        //                else if (i == 1) B_9 += 10;
-        //                else if (i == 2) B_9 += 5;
-        //                break;
-        //            }
-        //        }
-        //    }
-
-        //    // 8. Bonus inter-ruota
-        //    int B_ir = 0;
-        //    foreach (string altraRuota in ruote)
-        //    {
-        //        if (altraRuota == ruota) continue;
-
-        //        // Cerca se il numero è uscito su altraRuota nelle ultime 3 estrazioni
-        //        var estrAltraRuota = estrazioni
-        //            .Where(e => e.Ruota == altraRuota && e.Data < dataTarget)
-        //            .OrderByDescending(e => e.Data)
-        //            .Take(3)
-        //            .ToList();
-
-        //        foreach (var e in estrAltraRuota)
-        //        {
-        //            if (e.Numeri.Contains(numero))
-        //            {
-        //                // Assegna bonus in base alla forza della coppia
-        //                if (CoppiaForti(ruota, altraRuota, true))
-        //                    B_ir += 15;
-        //                else
-        //                    B_ir += 10;
-        //                break;
-        //            }
-        //        }
-        //    }
-
-        //    // 9. Bonus pattern temporali
-        //    int B_temp = 0;
-
-        //    DayOfWeek giornoTarget = dataTarget.DayOfWeek;
-        //    string ruotaTarget = ruota;
-
-        //    // Mappa dei pattern significativi (ruota, giorno, figura) → bonus
-        //    var patternTemporali = new Dictionary<Tuple<string, DayOfWeek, int>, int>
-        //    {
-        //        { Tuple.Create("Roma", DayOfWeek.Tuesday, 8), 12 },
-        //        { Tuple.Create("Napoli", DayOfWeek.Friday, 3), 12 },
-        //        { Tuple.Create("Palermo", DayOfWeek.Saturday, 9), 12 },
-        //        { Tuple.Create("Milano", DayOfWeek.Monday, 5), 10 },
-        //        { Tuple.Create("Bari", DayOfWeek.Thursday, 1), 8 }
-        //    };
-
-        //    var key = Tuple.Create(ruotaTarget, giornoTarget, fNum);
-        //    if (patternTemporali.ContainsKey(key))
-        //    {
-        //        B_temp += patternTemporali[key];
-        //    }
-
-        //    // 10. Bonus completamento sequenza
-        //    int B_seq = 0;
-        //    var estrattiRecenti = estrRuota.SelectMany(e => e.Numeri).ToList();
-        //    if (CompletaSequenza(numero, estrattiRecenti))
-        //    {
-        //        B_seq += 15;
-        //    }
-
-        //    // 11. Bonus Fisica (Gravità + Entropia)
-        //    int B_fisica = CalcolaBonusFisica(numero, ruota, dataTarget);
-
-        //    double bonus_moltiplicativo =
-        //        (B_dec / 10.0 + 1) *
-        //        (B_FA / 10.0 + 1) *
-        //        (B_pol / 10.0 + 1) *
-        //        (B_rit / 10.0 + 1) *
-        //        (B_arm / 10.0 + 1) *
-        //        (B_diff / 10.0 + 1) *
-        //        (B_9 / 10.0 + 1) *
-        //        (B_ir / 10.0 + 1) *
-        //        (B_temp / 10.0 + 1) *
-        //        (B_seq / 10.0 + 1) *
-        //        (B_fisica / 10.0 + 1) *
-        //        10;
-
-        //    return Tuple.Create(bonus, regoleAttivate);
-        //}
-
-
-        public int CalcolaBonus(int numero, string ruota, DateTime dataTarget, List<string>? regoleAttivate = null)
+        private int CalcolaBonusArmonia(int numero, string ruota, DateTime dataTarget)
         {
-            int bonus = 0;
-            var estrRuota = estrazioni
-                .Where(e => e.Ruota == ruota && e.Data < dataTarget)
-                .OrderByDescending(e => e.Data)
-                .Take(3)
-                .ToList();
-
+            int B_arm = 0;
+            var figureUltime3 = GetUltimeEstrazioni(ruota, dataTarget, 3)
+                .SelectMany(e => e.Numeri.Select(Figura));
             int fNum = Figura(numero);
-            int afNum = Antifigura(numero);
-            int dNum = Decina(numero);
 
-            // Calcolo dei bonus individuali
-            int B_dec = 0, B_FA = 0, B_pol = 0, B_rit = 0, B_arm = 0, B_diff = 0, B_9 = 0;
-
-            // 1. Bonus decina
-            var decineUltime2 = new HashSet<int>();
-            foreach (var e in estrRuota.Take(2))
-            {
-                foreach (int n in e.Numeri)
-                {
-                    decineUltime2.Add(Decina(n));
-                }
-            }
-
-            if (decineUltime2.Contains(dNum))
-            {
-                if (estrRuota.Count > 0 && estrRuota[0].Numeri.Any(n => Decina(n) == dNum))
-                    B_dec += param.W_dec1;
-                if (estrRuota.Count > 1 && estrRuota[1].Numeri.Any(n => Decina(n) == dNum))
-                    B_dec += param.W_dec2;
-            }
-
-            // 2. Bonus figura-antifigura (solo 1-8 e 4-5) - ESCLUDI figura 9
-            if (fNum != 9)
-            {
-                for (int i = 0; i < estrRuota.Count; i++)
-                {
-                    foreach (int n in estrRuota[i].Numeri)
-                    {
-                        int fN = Figura(n);
-                        if (fN == 9) continue;
-                        var coppia = Tuple.Create(fN, fNum);
-                        if (coppieFA.Contains(coppia))
-                        {
-                            if (i == 0) B_FA += param.W_FA;
-                            else if (i == 1) B_FA += (int)(param.W_FA * 0.5);
-                            else if (i == 2) B_FA += (int)(param.W_FA * 0.33);
-                        }
-                    }
-                }
-            }
-
-            // 3. Bonus polarizzazione
-            if (estrRuota.Count > 0)
-            {
-                var ultimaCinquina = estrRuota[0].Numeri;
-                var figureUltima = new HashSet<int>(ultimaCinquina.Select(Figura));
-                int varieta = figureUltima.Count;
-
-                if (varieta == 5)
-                {
-                    var figureUltime3 = new HashSet<int>();
-                    foreach (var e in estrRuota)
-                    {
-                        foreach (int n in e.Numeri)
-                        {
-                            figureUltime3.Add(Figura(n));
-                        }
-                    }
-                    if (figureUltime3.Contains(fNum))
-                        B_pol += param.W_pol;
-                }
-                else if (varieta <= 3)
-                {
-                    if (!figureUltima.Contains(fNum))
-                        B_pol += param.W_pol;
-                }
-            }
-
-            // 4. Bonus ritardo
-            var ritardi = CalcolaRitardiFigure(ruota, dataTarget);
-            int ritardoF = ritardi.ContainsKey(fNum) ? ritardi[fNum] : 1000;
-            if (ritardoF >= 25) B_rit += param.W_rit25;
-            else if (ritardoF >= 20) B_rit += param.W_rit20;
-            else if (ritardoF >= 15) B_rit += param.W_rit15;
-
-            // 5. Bonus armonia
-            var figureUltime4 = new List<int>();
-            foreach (var e in estrRuota)
-            {
-                figureUltime4.AddRange(e.Numeri.Select(Figura));
-            }
-            foreach (int fAltra in figureUltime4)
+            foreach (int fAltra in figureUltime3)
             {
                 if (fAltra + fNum == 9 || fAltra + fNum == 10)
                 {
@@ -490,10 +298,19 @@ namespace Crs.Home.ApocalypsData
                     break;
                 }
             }
+            return B_arm;
+        }
 
-            // 6. Bonus differenza ritardi
+        private int CalcolaBonusDifferenzaRitardi(int numero, string ruota, DateTime dataTarget)
+        {
+            int B_diff = 0;
+            var ritardi = CalcolaRitardiFigure(ruota, dataTarget);
+            int fNum = Figura(numero);
+            int afNum = Antifigura(numero);
+
             if (coppieFA.Contains(Tuple.Create(fNum, afNum)))
             {
+                int ritardoF = ritardi.ContainsKey(fNum) ? ritardi[fNum] : 1000;
                 int ritardoAF = ritardi.ContainsKey(afNum) ? ritardi[afNum] : 1000;
                 int diff = Math.Abs(ritardoF - ritardoAF);
                 if (diff > param.Soglia_diff)
@@ -501,40 +318,41 @@ namespace Crs.Home.ApocalypsData
                     B_diff += (diff - param.Soglia_diff) * param.W_diff;
                 }
             }
+            return B_diff;
+        }
 
-            // 7. Bonus auto-attrazione figura 9
-            if (fNum == 9)
+        private int CalcolaBonusAutoAttrazione9(int numero, string ruota, DateTime dataTarget)
+        {
+            int B_9 = 0;
+            int fNum = Figura(numero);
+            if (fNum != 9) return 0;
+
+            var estrRuota = GetUltimeEstrazioni(ruota, dataTarget, 3);
+            for (int i = 0; i < estrRuota.Count; i++)
             {
-                for (int i = 0; i < estrRuota.Count; i++)
+                if (estrRuota[i].Numeri.Any(n => Figura(n) == 9))
                 {
-                    if (estrRuota[i].Numeri.Any(n => Figura(n) == 9))
-                    {
-                        if (i == 0) B_9 += 20;
-                        else if (i == 1) B_9 += 10;
-                        else if (i == 2) B_9 += 5;
-                        break;
-                    }
+                    if (i == 0) B_9 += 20;
+                    else if (i == 1) B_9 += 10;
+                    else if (i == 2) B_9 += 5;
+                    break;
                 }
             }
+            return B_9;
+        }
 
-            // 8. Bonus inter-ruota
+        private int CalcolaBonusInterRuota(int numero, string ruota, DateTime dataTarget)
+        {
             int B_ir = 0;
             foreach (string altraRuota in ruote)
             {
                 if (altraRuota == ruota) continue;
 
-                // Cerca se il numero è uscito su altraRuota nelle ultime 3 estrazioni
-                var estrAltraRuota = estrazioni
-                    .Where(e => e.Ruota == altraRuota && e.Data < dataTarget)
-                    .OrderByDescending(e => e.Data)
-                    .Take(3)
-                    .ToList();
-
+                var estrAltraRuota = GetUltimeEstrazioni(altraRuota, dataTarget, 3);
                 foreach (var e in estrAltraRuota)
                 {
                     if (e.Numeri.Contains(numero))
                     {
-                        // Assegna bonus in base alla forza della coppia
                         if (CoppiaForti(ruota, altraRuota, true))
                             B_ir += 15;
                         else
@@ -543,14 +361,15 @@ namespace Crs.Home.ApocalypsData
                     }
                 }
             }
+            return B_ir;
+        }
 
-            // 9. Bonus pattern temporali
+        private int CalcolaBonusTemporale(int numero, string ruota, DateTime dataTarget)
+        {
             int B_temp = 0;
-
             DayOfWeek giornoTarget = dataTarget.DayOfWeek;
-            string ruotaTarget = ruota;
+            int fNum = Figura(numero);
 
-            // Mappa dei pattern significativi (ruota, giorno, figura) → bonus
             var patternTemporali = new Dictionary<Tuple<string, DayOfWeek, int>, int>
             {
                 { Tuple.Create("Roma", DayOfWeek.Tuesday, 8), 12 },
@@ -560,117 +379,36 @@ namespace Crs.Home.ApocalypsData
                 { Tuple.Create("Bari", DayOfWeek.Thursday, 1), 8 }
             };
 
-            var key = Tuple.Create(ruotaTarget, giornoTarget, fNum);
+            var key = Tuple.Create(ruota, giornoTarget, fNum);
             if (patternTemporali.ContainsKey(key))
             {
                 B_temp += patternTemporali[key];
             }
+            return B_temp;
+        }
 
-            // 10. Bonus completamento sequenza
+        private int CalcolaBonusSequenza(int numero, string ruota, DateTime dataTarget)
+        {
             int B_seq = 0;
-            var estrattiRecenti = estrRuota.SelectMany(e => e.Numeri).ToList();
+            var estrattiRecenti = GetUltimeEstrazioni(ruota, dataTarget, 3)
+                .SelectMany(e => e.Numeri).ToList();
+
             if (CompletaSequenza(numero, estrattiRecenti))
             {
                 B_seq += 15;
             }
-
-            // 11. Bonus Fisica (Gravità + Entropia)
-            //int B_fisica = CalcolaBonusFisica(numero, ruota, dataTarget);
-            int B_fisica = CalcolaBonusFisicaCompleto(numero, ruota, dataTarget);
-
-            if (regoleAttivate != null)
-            {
-                if (B_dec > 0) regoleAttivate.Add("Decina");
-                if (B_FA > 0) regoleAttivate.Add("FiguraAntifigura");
-                if (B_pol > 0) regoleAttivate.Add("Polarizzazione");
-                if (B_rit > 0) regoleAttivate.Add("Ritardo");
-                if (B_arm > 0) regoleAttivate.Add("Armonia");
-                if (B_diff > 0) regoleAttivate.Add("DifferenzaRitardi");
-                if (B_9 > 0) regoleAttivate.Add("AutoAttrazione9");
-                if (B_ir > 0) regoleAttivate.Add("InterRuota");
-                if (B_temp > 0) regoleAttivate.Add("Temporale");
-                if (B_seq > 0) regoleAttivate.Add("Sequenza");
-                if (B_fisica > 0) regoleAttivate.Add("Fisica");
-            }
-            double bonus_moltiplicativo =
-                (B_dec / 10.0 + 1) *
-                (B_FA / 10.0 + 1) *
-                (B_pol / 10.0 + 1) *
-                (B_rit / 10.0 + 1) *
-                (B_arm / 10.0 + 1) *
-                (B_diff / 10.0 + 1) *
-                (B_9 / 10.0 + 1) *
-                (B_ir / 10.0 + 1) *
-                (B_temp / 10.0 + 1) *
-                (B_seq / 10.0 + 1) *
-                (B_fisica / 10.0 + 1) *
-                10;
-
-            //return Tuple.Create(bonus, regoleAttivate);
-            return (int)Math.Round(bonus_moltiplicativo);
+            return B_seq;
         }
 
-        public Tuple<int, List<string>> CalcolaBonusConRegole(int numero, string ruota, DateTime dataTarget)
+        // ========== METODI DI SUPPORTO ==========
+
+        private List<Estrazione> GetUltimeEstrazioni(string ruota, DateTime dataTarget, int numeroEstrazioni)
         {
-            var regoleAttivate = new List<string>();
-            int B_dec = 0, B_FA = 0, B_pol = 0, B_rit = 0, B_arm = 0, B_diff = 0, B_9 = 0, B_ir = 0, B_temp = 0, B_seq = 0;
-
-            // [CODICE ESISTENTE - ma ora registra quando attiva una regola]
-
-            // 1. Bonus decina
-            if (B_dec > 0) regoleAttivate.Add("Decina");
-
-            // 2. Bonus figura-antifigura
-            if (B_FA > 0) regoleAttivate.Add("FiguraAntifigura");
-
-            // 3. Bonus polarizzazione
-            if (B_pol > 0) regoleAttivate.Add("Polarizzazione");
-
-            // 4. Bonus ritardo
-            if (B_rit > 0) regoleAttivate.Add("Ritardo");
-
-            // 5. Bonus armonia
-            if (B_arm > 0) regoleAttivate.Add("Armonia");
-
-            // 6. Bonus differenza ritardi
-            if (B_diff > 0) regoleAttivate.Add("DifferenzaRitardi");
-
-            // 7. Bonus auto-attrazione figura 9
-            if (B_9 > 0) regoleAttivate.Add("AutoAttrazione9");
-
-            // 8. Bonus inter-ruota
-            if (B_ir > 0) regoleAttivate.Add("InterRuota");
-
-            // 9. Bonus temporale
-            if (B_temp > 0) regoleAttivate.Add("Temporale");
-
-            // 10. Bonus sequenza
-            if (B_seq > 0) regoleAttivate.Add("Sequenza");
-
-            // Calcolo moltiplicativo
-            double bonus_moltiplicativo =
-                (B_dec / 10.0 + 1) * (B_FA / 10.0 + 1) * (B_pol / 10.0 + 1) *
-                (B_rit / 10.0 + 1) * (B_arm / 10.0 + 1) * (B_diff / 10.0 + 1) *
-                (B_9 / 10.0 + 1) * (B_ir / 10.0 + 1) * (B_temp / 10.0 + 1) *
-                (B_seq / 10.0 + 1) * 10;
-
-            return Tuple.Create((int)Math.Round(bonus_moltiplicativo), regoleAttivate);
-        }
-
-        private int CalcolaBonusFisica_deprecated(int numero, string ruota, DateTime dataTarget)
-        {
-            // 1. Componente gravitazionale
-            var ritardi = CalcolaRitardiFigure(ruota, dataTarget);
-            double forzaTotale = CalcolaForzaGravitazionaleTotale(numero, ritardi, ruota, dataTarget);
-
-            // 2. Componente entropica - PARAMETRI OTTIMIZZATI
-            double entropiaPrecedente = CalcolaEntropiaUltimaCinquina(ruota, dataTarget);
-            double bonusEntropia = entropiaPrecedente > 0.8 ? 20 : 0; // Soglia 0.8, Peso 20
-
-            // 3. Combinazione
-            double bonusFisica = (forzaTotale / 5.0) + bonusEntropia;
-
-            return Math.Max(0, (int)Math.Round(bonusFisica));
+            return estrazioni
+                .Where(e => e.Ruota == ruota && e.Data < dataTarget)
+                .OrderByDescending(e => e.Data)
+                .Take(numeroEstrazioni)
+                .ToList();
         }
 
         public int CalcolaBonusFisicaCompleto(int numero, string ruota, DateTime dataTarget)
@@ -730,7 +468,7 @@ namespace Crs.Home.ApocalypsData
             return G * (ritardo1 * ritardo2) / (distanza * distanza);
         }
 
-        private double CalcolaForzaGravitazionaleTotale(int numero, Dictionary<int, int> ritardi, string ruota, DateTime dataTarget)
+        protected double CalcolaForzaGravitazionaleTotale(int numero, Dictionary<int, int> ritardi, string ruota, DateTime dataTarget)
         {
             double forzaTotale = 0;
             //var estrattiRecenti = estrazioni
@@ -750,7 +488,7 @@ namespace Crs.Home.ApocalypsData
             return forzaTotale;
         }
 
-        private double CalcolaEntropiaUltimaCinquina(string ruota, DateTime dataTarget)
+        protected double CalcolaEntropiaUltimaCinquina(string ruota, DateTime dataTarget)
         {
             var ultimaCinquina = estrazioni
                 .Where(e => e.Ruota == ruota && e.Data < dataTarget)
@@ -816,7 +554,7 @@ namespace Crs.Home.ApocalypsData
             return energia;
         }
 
-        private bool CompletaSequenza(int numero, List<int> estrattiPrecedenti)
+        protected bool CompletaSequenza(int numero, List<int> estrattiPrecedenti)
         {
             if (estrattiPrecedenti.Count < 3) return false;
 
@@ -908,35 +646,14 @@ namespace Crs.Home.ApocalypsData
 
             return coppieForti.Contains(Tuple.Create(ruotaA, ruotaB));
         }
-        
-        public List<int> Previsione(string ruota, DateTime dataTarget)
+            
+        public Dictionary<int, Tuple<int, List<string>>> GetPunteggiCompleti(string ruota, DateTime dataTarget)
         {
-            var scores = new List<Tuple<int, int>>();
+            var scores = new Dictionary<int, Tuple<int, List<string>>>();
             for (int num = 1; num <= 90; num++)
             {
-                int bonus = CalcolaBonus(num, ruota, dataTarget);
-               
-                scores.Add(Tuple.Create(num, bonus));
-            }
-
-            // Calcolo dinamico della soglia
-            //int soglia = Math.Max(70, SogliaAdattiva(scores));
-
-            return scores
-                .Where(x => x.Item2 >= param.Soglia)
-                //.Where(x => x.Item2 >= soglia)
-                .Select(x => x.Item1)
-                .OrderBy(x => x)
-                .ToList();
-        }
-
-       
-        public Dictionary<int, int> GetPunteggiCompleti(string ruota, DateTime dataTarget)
-        {
-            var scores = new Dictionary<int, int>();
-            for (int num = 1; num <= 90; num++)
-            {
-                scores[num] = CalcolaBonus(num, ruota, dataTarget);
+                //scores[num] = CalcolaBonus(num, ruota, dataTarget);
+                scores[num] = CalcolaBonusConRegole(num, ruota, dataTarget);
             }
             return scores;
         }
@@ -967,174 +684,24 @@ namespace Crs.Home.ApocalypsData
         //    return selezionati;
         //}
 
+        //public List<int> Previsione(string ruota, DateTime dataTarget)
+        //{
+        //    var scores = new List<Tuple<int, int>>();
+        //    for (int num = 1; num <= 90; num++)
+        //    {
+        //        int bonus = CalcolaBonus(num, ruota, dataTarget);
+        //        scores.Add(Tuple.Create(num, bonus));
+        //    }
+
+        //    return scores
+        //        .Where(x => x.Item2 >= param.Soglia)
+        //        //.Where(x => x.Item2 >= soglia)
+        //        .Select(x => x.Item1)
+        //        .OrderBy(x => x)
+        //        .ToList();
+        //}
+        
     }
-
-
-    public class ModelloAdattivo2 : ModelloLotto
-    {
-        private Dictionary<string, RegolaPerformance> performanceRegole;
-        private int estrazioniDaUltimoAggiornamento = 0;
-        private const int INTERVALLO_AGGIORNAMENTO = 30;
-        private Queue<Tuple<string, DateTime, string, int, bool>> codaPerformance;
-
-        public ModelloAdattivo2(List<Estrazione> estrazioniStoriche, ParametriModello parametri = null)
-            : base(estrazioniStoriche, parametri)
-        {
-            InizializzaPerformanceRegole();
-            codaPerformance = new Queue<Tuple<string, DateTime, string, int, bool>>();
-        }
-
-        private void InizializzaPerformanceRegole()
-        {
-            performanceRegole = new Dictionary<string, RegolaPerformance>
-        {
-            { "Decina", new RegolaPerformance { NomeRegola = "Decina", UltimoReset = DateTime.Now } },
-            { "FiguraAntifigura", new RegolaPerformance { NomeRegola = "FiguraAntifigura", UltimoReset = DateTime.Now } },
-            { "Polarizzazione", new RegolaPerformance { NomeRegola = "Polarizzazione", UltimoReset = DateTime.Now } },
-            { "Ritardo", new RegolaPerformance { NomeRegola = "Ritardo", UltimoReset = DateTime.Now } },
-            { "Armonia", new RegolaPerformance { NomeRegola = "Armonia", UltimoReset = DateTime.Now } },
-            { "DifferenzaRitardi", new RegolaPerformance { NomeRegola = "DifferenzaRitardi", UltimoReset = DateTime.Now } },
-            { "AutoAttrazione9", new RegolaPerformance { NomeRegola = "AutoAttrazione9", UltimoReset = DateTime.Now } },
-            { "InterRuota", new RegolaPerformance { NomeRegola = "InterRuota", UltimoReset = DateTime.Now } },
-            { "Temporale", new RegolaPerformance { NomeRegola = "Temporale", UltimoReset = DateTime.Now } },
-            { "Sequenza", new RegolaPerformance { NomeRegola = "Sequenza", UltimoReset = DateTime.Now } }
-        };
-        }
-
-        public List<int> PrevisioneConTracking(string ruota, DateTime dataTarget, List<int> numeriUsciti = null)
-        {
-            var scores = new List<Tuple<int, int, List<string>>>();
-
-            for (int num = 1; num <= 90; num++)
-            {
-                var result = CalcolaBonusConRegole(num, ruota, dataTarget);
-                //var result = CalcolaBonus(num, ruota, dataTarget);
-                scores.Add(Tuple.Create(num, result.Item1, result.Item2));
-            }
-
-            var consigliati = scores.Where(x => x.Item2 >= param.Soglia).Select(x => x.Item1).ToList();
-
-            // Registra performance dopo l'estrazione (se abbiamo i risultati reali)
-            if (numeriUsciti != null)
-            {
-                RegistraPerformance(ruota, dataTarget, scores, numeriUsciti);
-            }
-
-            return consigliati.OrderBy(x => x).ToList();
-        }
-
-        private void RegistraPerformance(string ruota, DateTime data, List<Tuple<int, int, List<string>>> scores, List<int> numeriUsciti)
-        {
-            foreach (var score in scores)
-            {
-                int numero = score.Item1;
-                bool uscito = numeriUsciti.Contains(numero);
-                var regoleAttivate = score.Item3;
-
-                foreach (string regola in regoleAttivate)
-                {
-                    if (performanceRegole.ContainsKey(regola))
-                    {
-                        var perf = performanceRegole[regola];
-                        if (uscito)
-                            perf.AttivazioniSuccesso++;
-                        else
-                            perf.AttivazioniFallite++;
-                    }
-                }
-            }
-
-            estrazioniDaUltimoAggiornamento++;
-            if (estrazioniDaUltimoAggiornamento >= INTERVALLO_AGGIORNAMENTO)
-            {
-                AggiornaPesi();
-                estrazioniDaUltimoAggiornamento = 0;
-            }
-        }
-
-        private void AggiornaPesi()
-        {
-            Console.WriteLine("=== AGGIORNAMENTO PESI MODELLO ===");
-
-            double vantaggioMedio = performanceRegole.Values
-                .Where(p => (p.AttivazioniSuccesso + p.AttivazioniFallite) > 10)
-                .Average(p => p.VantaggioCorrente);
-
-            foreach (var kvp in performanceRegole)
-            {
-                var perf = kvp.Value;
-                int totaleAttivazioni = perf.AttivazioniSuccesso + perf.AttivazioniFallite;
-
-                if (totaleAttivazioni < 5) continue; // Troppo pochi dati
-
-                double rapporto = perf.VantaggioCorrente / vantaggioMedio;
-                rapporto = Math.Max(0.5, Math.Min(2.0, rapporto)); // Limita oscillazioni
-
-                double nuovoPeso = OttieniPesoCorrente(kvp.Key) * rapporto;
-                AggiornaParametro(kvp.Key, nuovoPeso);
-
-                Console.WriteLine($"{kvp.Key}: Vantaggio {perf.VantaggioCorrente:F2}x, Peso {nuovoPeso:F1} (x{rapporto:F2})");
-
-                // Reset contatori
-                //perf.AttivazioniSuccesso = 0;
-                //perf.AttivazioniFallite = 0;
-                //perf.UltimoReset = DateTime.Now;
-                perf.Reset();
-            }
-        }
-
-        private double OttieniPesoCorrente(string regola)
-        {
-            switch (regola)
-            {
-                case "Decina": return param.W_dec1; // Usiamo W_dec1 come riferimento
-                case "FiguraAntifigura": return param.W_FA;
-                case "Polarizzazione": return param.W_pol;
-                case "Ritardo": return param.W_rit15;
-                case "Armonia": return param.W_arm;
-                case "DifferenzaRitardi": return param.W_diff;
-                case "AutoAttrazione9": return 20; // Peso fisso per B_9
-                case "InterRuota": return 15; // Peso fisso per B_ir
-                case "Temporale": return 12; // Peso fisso per B_temp
-                case "Sequenza": return 15; // Peso fisso per B_seq
-                default: return 10;
-            }
-        }
-
-        private void AggiornaParametro(string regola, double nuovoPeso)
-        {
-            int pesoInt = (int)Math.Round(nuovoPeso);
-
-            switch (regola)
-            {
-                case "Decina":
-                    param.W_dec1 = Math.Max(5, Math.Min(40, pesoInt));
-                    param.W_dec2 = param.W_dec1 / 2;
-                    break;
-                case "FiguraAntifigura":
-                    param.W_FA = Math.Max(10, Math.Min(50, pesoInt));
-                    break;
-                case "Polarizzazione":
-                    param.W_pol = Math.Max(2, Math.Min(15, pesoInt));
-                    break;
-                case "Ritardo":
-                    param.W_rit15 = Math.Max(5, Math.Min(30, pesoInt));
-                    param.W_rit20 = (int)(param.W_rit15 * 1.67);
-                    param.W_rit25 = (int)(param.W_rit15 * 2.33);
-                    break;
-                case "Armonia":
-                    param.W_arm = Math.Max(2, Math.Min(10, pesoInt));
-                    break;
-                case "DifferenzaRitardi":
-                    param.W_diff = Math.Max(1, Math.Min(5, pesoInt));
-                    break;
-                    // Per regole con pesi fissi, aggiorniamo i valori fissi
-            }
-        }
-
-
-    }
-
 
     public class ModelloAdattivo : ModelloLotto
     {
@@ -1156,9 +723,9 @@ namespace Crs.Home.ApocalypsData
 
             for (int num = 1; num <= 90; num++)
             {
-                List<string> regoleAttivate = new List<string>();
-                int bonus = CalcolaBonus(num, ruota, dataTarget, regoleAttivate);
-                risultati.Add(Tuple.Create(num, bonus, regoleAttivate));
+                //List<string> regoleAttivate = new List<string>();
+                Tuple<int, List<string>> bonus = CalcolaBonusConRegole(num, ruota, dataTarget);//, regoleAttivate);
+                risultati.Add(Tuple.Create(num, bonus.Item1, bonus.Item2));
             }
             int sogliaDinamica = SogliaAdattiva(risultati.Select(x => Tuple.Create(x.Item1, x.Item2)).ToList());
             //var consigliati = risultati.Where(x => x.Item2 >= param.Soglia).Select(x => x.Item1).ToList();
@@ -1269,23 +836,6 @@ namespace Crs.Home.ApocalypsData
         }
     }
 
-
-    public class StatoQuantistico
-    {
-        public Dictionary<int, double> Ampiezze { get; set; } // numero -> ampiezza probabilità
-        public int Collassa() => Ampiezze.OrderByDescending(x => x.Value).First().Key;
-
-        // NUOVO METODO: evoluzione temporale dello stato
-        public void Evolvi(DateTime nuovoTempo)
-        {
-            foreach (var num in Ampiezze.Keys.ToList())
-            {
-                double nuovaAmpiezza = new OndaNumerica().Ampiezza(num, nuovoTempo);
-                Ampiezze[num] = (Ampiezze[num] + nuovaAmpiezza) / 2.0; // Media con evoluzione
-            }
-        }
-    }
-
     public class OndaNumerica
     {
 
@@ -1301,12 +851,6 @@ namespace Crs.Home.ApocalypsData
             return (faseBase + 0.5 * secondaArmonica + 0.2 * terzaArmonica) / 1.7;
         }
 
-        /// <summary>
-        /// TO DO
-        /// </summary>
-        /// <param name="numero"></param>
-        /// <param name="data"></param>
-        /// <returns></returns>
         public double FunzioneOnda(int numero, DateTime data)
         {
             // Fase dipende da data e figura
@@ -1327,6 +871,32 @@ namespace Crs.Home.ApocalypsData
             }
 
             return interferenzaTotale / Math.Max(1, numeriRecenti.Count);
+        }
+    }
+
+    public class RegolaPerformance
+    {
+        public string NomeRegola { get; set; }
+        public int AttivazioniSuccesso { get; set; }
+        public int AttivazioniFallite { get; set; }
+        public double VantaggioCorrente
+        {
+            get
+            {
+                double totale = AttivazioniSuccesso + AttivazioniFallite;
+                if (totale == 0) return 1.0;
+                double successRate = AttivazioniSuccesso / totale;
+                return successRate / 0.0556; // Vantaggio vs caso casuale
+            }
+        }
+        public DateTime UltimoReset { get; set; }
+        public int TotaleAttivazioni { get { return AttivazioniSuccesso + AttivazioniFallite; } }
+
+        public void Reset() 
+        {
+            AttivazioniSuccesso = 0;
+            AttivazioniFallite = 0;        
+            UltimoReset = DateTime.Now;
         }
     }
 
@@ -1364,34 +934,21 @@ namespace Crs.Home.ApocalypsData
         }
     }
 
-    public class RegolaPerformance
+    public class StatoQuantistico
     {
-        public string NomeRegola { get; set; }
-        public int AttivazioniSuccesso { get; set; }
-        public int AttivazioniFallite { get; set; }
-        public double VantaggioCorrente
+        public Dictionary<int, double> Ampiezze { get; set; } // numero -> ampiezza probabilità
+        public int Collassa() => Ampiezze.OrderByDescending(x => x.Value).First().Key;
+
+        // NUOVO METODO: evoluzione temporale dello stato
+        public void Evolvi(DateTime nuovoTempo)
         {
-            get
+            foreach (var num in Ampiezze.Keys.ToList())
             {
-                double totale = AttivazioniSuccesso + AttivazioniFallite;
-                if (totale == 0) return 1.0;
-                double successRate = AttivazioniSuccesso / totale;
-                return successRate / 0.0556; // Vantaggio vs caso casuale
+                double nuovaAmpiezza = new OndaNumerica().Ampiezza(num, nuovoTempo);
+                Ampiezze[num] = (Ampiezze[num] + nuovaAmpiezza) / 2.0; // Media con evoluzione
             }
         }
-        public DateTime UltimoReset { get; set; }
-        public int TotaleAttivazioni { get { return AttivazioniSuccesso + AttivazioniFallite; } }
-
-        public void Reset() 
-        {
-            AttivazioniSuccesso = 0;
-            AttivazioniFallite = 0;
-            
-            UltimoReset = DateTime.Now;
-            //TotaleAttivazioni = 0;
-        }
     }
-
 
     //public class ModelloAdattivo : ModelloLotto
     //{
@@ -1455,22 +1012,22 @@ namespace Crs.Home.ApocalypsData
                 return;
             }
 
-            var modello = new ModelloLotto(estrazioni);
+            //var modello = new ModelloLotto(estrazioni);
             DateTime dataPrevisione = new DateTime(2009, 6, 13);
 
-            foreach (string ruota in new[] { "Roma", "Bari", "Napoli" }) // Test su 3 ruote
-            {
-                var consigli = modello.Previsione(ruota, dataPrevisione);
-                var punteggi = modello.GetPunteggiCompleti(ruota, dataPrevisione);
+            //foreach (string ruota in new[] { "Roma", "Bari", "Napoli" }) // Test su 3 ruote
+            //{
+            //    var consigli = modello.Previsione(ruota, dataPrevisione);
+            //    var punteggi = modello.GetPunteggiCompleti(ruota, dataPrevisione);
 
-                Console.WriteLine($"{ruota}: {consigli.Count} numeri");
-                Console.WriteLine($"  Numeri: {string.Join(", ", consigli)}");
-                Console.WriteLine($"  Punteggi: {string.Join(", ", punteggi.Where(x => x.Value >= 40).OrderByDescending(x => x.Value).Select(x => $"{x.Key}({x.Value})"))}");
-                Console.WriteLine();
-            }
+            //    Console.WriteLine($"{ruota}: {consigli.Count} numeri");
+            //    Console.WriteLine($"  Numeri: {string.Join(", ", consigli)}");
+            //    Console.WriteLine($"  Punteggi: {string.Join(", ", punteggi.Where(x => x.Value >= 40).OrderByDescending(x => x.Value).Select(x => $"{x.Key}({x.Value})"))}");
+            //    Console.WriteLine();
+            //}
 
             var modelloAdattivo = new ModelloAdattivo(estrazioni);
-            dataPrevisione = new DateTime(2009, 6, 13);
+            //dataPrevisione = new DateTime(2009, 6, 13);
 
             foreach (string ruota in new[] { "Roma", "Bari", "Napoli" }) // Test su 3 ruote
             {
@@ -1480,7 +1037,7 @@ namespace Crs.Home.ApocalypsData
 
                 Console.WriteLine($"{ruota}: {consigli.Count} numeri");
                 Console.WriteLine($"  Numeri: {string.Join(", ", consigli)}");
-                Console.WriteLine($"  Punteggi: {string.Join(", ", punteggi.Where(x => x.Value >= 40).OrderByDescending(x => x.Value).Select(x => $"{x.Key}({x.Value})"))}");
+                Console.WriteLine($"  Punteggi: {string.Join(", ", punteggi.Where(x => x.Value.Item1 >= 40).OrderByDescending(x => x.Value).Select(x => $"{x.Key}({x.Value})"))}");
                 Console.WriteLine();
             }
         }

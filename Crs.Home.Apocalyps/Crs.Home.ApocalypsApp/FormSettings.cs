@@ -17,6 +17,30 @@ namespace Crs.Home.ApocalypsApp
         public FormSettings()
         {
             InitializeComponent();
+            FillParams();
+        }
+
+        private void FillParams()
+        {
+            ConfigManager ConfiguratorManagerDB = new ConfigManager("", "DatabaseSettings");
+            ConfigManager ConfiguratorManagerApp = new ConfigManager("", "AppSettings");
+            string? s = ConfiguratorManagerApp.GetValue("FILE_PATH_ESTRAZIONI");
+            txtPathStorico.Text = s;
+
+            s = ConfiguratorManagerApp.GetValue("FORMAT_DATE_FILE");
+            txtFormatDate.Text = s;
+
+            s = ConfiguratorManagerApp.GetValue("SEQ_FIELDS_FILE");
+            txtSeqFields.Text = s;
+
+            s = ConfiguratorManagerApp.GetValue("TYPE_FIELDS_FILE");
+            rbFormatRuotaEstr.Checked = s == "1";
+
+            s = ConfiguratorManagerApp.GetValue("SAVE_TO_DB");
+            chkSaveToDb.Checked = s == "True";
+
+            s = ConfiguratorManagerDB.GetValue("DB_LOCAL_PATH");
+            txtLocalPathDB.Text = s;
         }
 
         private void brnSave_Click(object sender, EventArgs e)
@@ -28,7 +52,7 @@ namespace Crs.Home.ApocalypsApp
             ConfiguratorManagerApp.SetValue("FORMAT_DATE_FILE", txtFormatDate.Text);
             ConfiguratorManagerApp.SetValue("SEQ_FIELDS_FILE", txtSeqFields.Text);
 
-            string typef = radioFormatoSingolaRiga.Checked ? "2" : "1";
+            string typef = rbFormatRuoteEstr.Checked ? "2" : "1";
             ConfiguratorManagerApp.SetValue("TYPE_FIELDS_FILE", typef);
             ConfiguratorManagerApp.SetValue("SAVE_TO_DB", chkSaveToDb.Checked.ToString());
 
@@ -90,7 +114,7 @@ namespace Crs.Home.ApocalypsApp
 
         private void radioFormatoSingolaRiga_CheckedChanged(object sender, EventArgs e)
         {
-            if (radioFormatoSingolaRiga.Checked)
+            if (rbFormatRuoteEstr.Checked)
             {
                 txtSeqFields.Text = "Data;Numero;Numeri";
                 txtFormatDate.Text = "dd/MM/yyyy";

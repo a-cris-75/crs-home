@@ -194,6 +194,7 @@ namespace Crs.Home.ApocalypsApp
 
         private string OttieniRaggruppamentoSelezionato()
         {
+            if (radioEstrazione.Checked) return "Estrazione";
             if (radioSettimana.Checked) return "Settimana";
             if (radioMese.Checked) return "Mese";
             if (radioTrimestre.Checked) return "Trimestre";
@@ -336,38 +337,52 @@ namespace Crs.Home.ApocalypsApp
             var periodi = new List<Periodo>();
             DateTime dataCorrente = dataInizio;
 
-            while (dataCorrente < dataFine)
+            if (raggruppamento == "Estrazione")
             {
-                DateTime finePeriodo = dataCorrente;
-
-                switch (raggruppamento)
+                foreach (DateTime dt in ParametriCondivisi.Estrazioni.Select(X => X.Data).Distinct().Where(X => X >= dataInizio && X < dataFine).OrderBy(X => X))
                 {
-                    case "Settimana":
-                        finePeriodo = dataCorrente.AddDays(7);
-                        break;
-                    case "Mese":
-                        finePeriodo = dataCorrente.AddMonths(1);
-                        break;
-                    case "Trimestre":
-                        finePeriodo = dataCorrente.AddMonths(3);
-                        break;
-                    case "Anno":
-                        finePeriodo = dataCorrente.AddYears(1);
-                        break;
+                    periodi.Add(new Periodo
+                    {
+                        DataInizio = dt,
+                        DataFine = dt.AddDays(1)
+                    });
                 }
-
-                if (finePeriodo > dataFine)
-                    finePeriodo = dataFine;
-
-                periodi.Add(new Periodo
-                {
-                    DataInizio = dataCorrente,
-                    DataFine = finePeriodo
-                });
-
-                dataCorrente = finePeriodo;
             }
+            else
+            {
+                while (dataCorrente < dataFine)
+                {
+                    DateTime finePeriodo = dataCorrente;
 
+                    switch (raggruppamento)
+                    {
+
+                        case "Settimana":
+                            finePeriodo = dataCorrente.AddDays(7);
+                            break;
+                        case "Mese":
+                            finePeriodo = dataCorrente.AddMonths(1);
+                            break;
+                        case "Trimestre":
+                            finePeriodo = dataCorrente.AddMonths(3);
+                            break;
+                        case "Anno":
+                            finePeriodo = dataCorrente.AddYears(1);
+                            break;
+                    }
+
+                    if (finePeriodo > dataFine)
+                        finePeriodo = dataFine;
+
+                    periodi.Add(new Periodo
+                    {
+                        DataInizio = dataCorrente,
+                        DataFine = finePeriodo
+                    });
+
+                    dataCorrente = finePeriodo;
+                }
+            }
             return periodi;
         }
 

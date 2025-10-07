@@ -111,19 +111,6 @@ namespace Crs.Home.ApocalypsData
             return B_dec;
         }
 
-        //private int Decina(int numero)
-        //{
-        //    if (numero == 90) return 90;
-        //    return (numero / 10) * 10;
-        //}
-
-        //private int Antifigura(int numero)
-        //{
-        //    int comp = 90 - numero;
-        //    return Figura(comp);
-        //}
-
-
         private int CalcolaBonusFiguraAntifigura(int numero, string ruota, DateTime dataTarget)
         {
             int B_FA = 0;
