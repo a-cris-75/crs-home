@@ -717,9 +717,10 @@ namespace Crs.Home.ApocalypsData
         }
 
         // Metodo specifico per adattività
-        public List<int> PrevisioneConAdattivita(string ruota, DateTime dataTarget, List<int> numeriUsciti = null)
+        public List<int> PrevisioneConAdattivita(string ruota, DateTime dataTarget, List<int> numeriUsciti, out List<Tuple<int, int, List<string>>> risultati)
         {
-            var risultati = new List<Tuple<int, int, List<string>>>();
+            // num, bonus, regoleAttivate
+            risultati = new List<Tuple<int, int, List<string>>>();
 
             for (int num = 1; num <= 90; num++)
             {
@@ -736,6 +737,7 @@ namespace Crs.Home.ApocalypsData
                 AggiornaPerformance(risultati, numeriUsciti);
             }
 
+            risultati = risultati.OrderBy(X=>X.Item2).TakeLast(consigliati.Count + 2).ToList();
             return consigliati.OrderBy(x => x).ToList();
         }
 
@@ -1032,12 +1034,12 @@ namespace Crs.Home.ApocalypsData
             foreach (string ruota in new[] { "Roma", "Bari", "Napoli" }) // Test su 3 ruote
             {
                 var risultatiReali = new List<int> { 7, 38, 39, 65, 90 };
-                var consigli = modelloAdattivo.PrevisioneConAdattivita(ruota, dataPrevisione, risultatiReali);
-                var punteggi = modelloAdattivo.GetPunteggiCompleti(ruota, dataPrevisione);
+                var consigli = modelloAdattivo.PrevisioneConAdattivita(ruota, dataPrevisione, risultatiReali, out List<Tuple<int,int,List<string>>> risBonusRegole);
+                //var punteggi = modelloAdattivo.GetPunteggiCompleti(ruota, dataPrevisione);
 
                 Console.WriteLine($"{ruota}: {consigli.Count} numeri");
                 Console.WriteLine($"  Numeri: {string.Join(", ", consigli)}");
-                Console.WriteLine($"  Punteggi: {string.Join(", ", punteggi.Where(x => x.Value.Item1 >= 40).OrderByDescending(x => x.Value).Select(x => $"{x.Key}({x.Value})"))}");
+                Console.WriteLine($"  Punteggi: {string.Join(", ", risBonusRegole.Where(x => x.Item2 >= 40).OrderByDescending(x => x.Item2).Select(x => $"{x.Item1}({x.Item2})"))}");
                 Console.WriteLine();
             }
         }

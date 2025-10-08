@@ -264,6 +264,7 @@ namespace Crs.Home.ApocalypsApp
                 this.Cursor = Cursors.WaitCursor;
                 // Prepara i risultati
                 List<RisultatoAnalisi> nuoviRisultati = new List<RisultatoAnalisi>();
+                List<RisultatoEstrazione> nuoviRisultatiDet = new List<RisultatoEstrazione>();
 
                 // Per ogni periodo nel raggruppamento selezionato
                 string raggruppamento = OttieniRaggruppamentoSelezionato();
@@ -285,12 +286,20 @@ namespace Crs.Home.ApocalypsApp
                             var numeriPrevisione = ModelloAdattivo.PrevisioneConAdattivita(
                                 ruota: ruota,
                                 dataTarget: estrazione.Data,
-                                numeriUsciti: estrazione.Numeri // Passa i numeri realmente usciti per la simulazione
+                                numeriUsciti: estrazione.Numeri, // Passa i numeri realmente usciti per la simulazione
+                                out List<Tuple<int,int,List<string>>> numPesiRegole
                             );
-                            var punteggi = ModelloAdattivo.GetPunteggiCompleti(ruota, estrazione.Data);
+                            //var punteggi = ModelloAdattivo.GetPunteggiCompleti(ruota, estrazione.Data);
                             // Qui processi il risultato della previsione e calcoli le metriche
                             // (questa parte dipende dalla struttura del tuo modello)
                             ProcessaRisultatoPrevisione(nuoviRisultati, periodo, estrazione, numeriPrevisione, ruota);
+
+                            RisultatoEstrazione re = new RisultatoEstrazione();
+                            re.Ruota = ruota;
+                            re.Data = estrazione.Data;
+                            re.NumeriPrevisionePeso = numPesiRegole.Select(x => (x.Item1, x.Item2)).ToList();
+                            re.NumeriEstrazione = estrazione.Numeri;
+                            nuoviRisultatiDet.Add(re);
                         }
                     }
                 }
@@ -468,5 +477,14 @@ namespace Crs.Home.ApocalypsApp
         public decimal Guadagno { get; set; }
         public decimal InvestimentoProposto { get; set; }
         public decimal GuadagnoProposto { get; set; }
+    }
+
+    public class RisultatoEstrazione
+    {
+        public string Ruota { get; set; }
+        public DateTime Data{ get; set; }
+        
+        public List<(int,int)> NumeriPrevisionePeso { get; set; }
+        public List<int> NumeriEstrazione { get; set; }
     }
 }
