@@ -11,6 +11,7 @@ namespace Crs.Home.ApocalypsApp
     public partial class PageAnalisi : UserControl
     {
         private List<RisultatoAnalisi> risultati = new List<RisultatoAnalisi>();
+        private List<RisultatoEstrazione> risultatiEstr = new List<RisultatoEstrazione>();
         private decimal budgetDisponibile = 1000m;
 
 
@@ -148,6 +149,7 @@ namespace Crs.Home.ApocalypsApp
         {
             //grigliaRisultati.Rows.Clear();
             grigliaRisultati.DataSource = risultati;
+            grigliaDettagliEsrtrazione.DataSource = risultatiEstr;
             //foreach (var risultato in risultati)
             //{
             //    grigliaRisultati.Rows.Add(
@@ -194,7 +196,7 @@ namespace Crs.Home.ApocalypsApp
 
         private string OttieniRaggruppamentoSelezionato()
         {
-            if (radioEstrazione.Checked) return "Estrazione";
+            //if (radioEstrazione.Checked) return "Estrazione";
             if (radioSettimana.Checked) return "Settimana";
             if (radioMese.Checked) return "Mese";
             if (radioTrimestre.Checked) return "Trimestre";
@@ -306,6 +308,7 @@ namespace Crs.Home.ApocalypsApp
 
                 // Aggiorna i risultati e la griglia
                 risultati = nuoviRisultati;
+                risultatiEstr = nuoviRisultatiDet;
                 AggiornaGriglia();
 
                 this.Cursor = Cursors.Default;
@@ -483,7 +486,14 @@ namespace Crs.Home.ApocalypsApp
     {
         public string Ruota { get; set; }
         public DateTime Data{ get; set; }
-        
+        public string NumPrevistiPesi 
+        { 
+            get 
+            {
+                return string.Join(", ", NumeriPrevisionePeso.Select(x => $"{x.Item1}({x.Item2})"));
+            }
+        }
+
         public List<(int,int)> NumeriPrevisionePeso { get; set; }
         public List<int> NumeriEstrazione { get; set; }
     }
