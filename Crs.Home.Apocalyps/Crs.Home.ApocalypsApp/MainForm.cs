@@ -38,6 +38,7 @@ namespace Crs.Home.ApocalypsApp
         {
             panelContainer.Controls.Clear();
             panelContainer.Controls.Add(pageAnalisi);
+            pageAnalisi.Init();
             UpdateButtonStyles(false);
         }
 

@@ -259,20 +259,8 @@ namespace Crs.Home.ApocalypsApp.UserControls
 
             this.Cursor = Cursors.Default;
 
-            //Random rnd = new Random();
-            //for (int i = 0; i < 15; i++)
-            //{
-            //    object[] riga = new object[57];
-            //    riga[0] = dataInizio.AddDays(i).ToString("dd/MM/yyyy");
-            //    riga[1] = 1000 + i;
+            lblNumEstr.Text = "N.Estr: " + GrigliaDestinazione.Rows.Count.ToString();
 
-            //    for (int j = 2; j < 57; j++)
-            //    {
-            //        riga[j] = rnd.Next(1, 91);
-            //    }
-
-            //    GrigliaDestinazione.Rows.Add(riga);
-            //}
         }
 
         private object[] SetRowRuota(object[] riga, DateTime dt, Estrazione e, List<string> err)

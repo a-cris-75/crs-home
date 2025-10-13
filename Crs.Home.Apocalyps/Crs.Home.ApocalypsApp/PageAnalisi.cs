@@ -20,8 +20,22 @@ namespace Crs.Home.ApocalypsApp
         {
             InitializeComponent();
             //InizializzaColonneGriglia();
-            InizializzaDatiEsempio();
+            //InizializzaDatiEsempio();
             AggiornaGriglia();
+        }
+
+        public void Init()
+        {
+            if (!risultatiEstr.Any())
+            {
+                dateTimeInizio.Value = ParametriCondivisi.DataInizioAnalisi;
+                dateTimeFine.Value = ParametriCondivisi.DataFineAnalisi;
+            }
+            else
+            {
+                dateTimeInizio.Value = risultatiEstr.Min(X => X.Data);
+                dateTimeFine.Value = risultatiEstr.Max(X => X.Data);
+            }
         }
 
         private void InizializzaColonneGriglia()
@@ -37,8 +51,6 @@ namespace Crs.Home.ApocalypsApp
             grigliaRisultati.Columns.Add("InvestimentoProp", "Invest. Proposto");
             grigliaRisultati.Columns.Add("GuadagnoProp", "Guadagno Proposto");
         }
-
-
 
         private void InizializzaDatiEsempio()
         {
@@ -176,10 +188,16 @@ namespace Crs.Home.ApocalypsApp
             decimal totGuadagno = risultati.Sum(r => r.Guadagno);
             decimal totInvestimentoProp = risultati.Sum(r => r.InvestimentoProposto);
             decimal totGuadagnoProp = risultati.Sum(r => r.GuadagnoProposto);
+            int numvincenti = risultati.Sum(r => r.NumeriVinti);
+            int numambi = risultati.Sum(r => r.AmbiVinti);
+            int numterni = risultati.Sum(r => r.TerniVinti);
+            int numgiocati = risultati.Sum(r => r.NumeriGiocati);
 
             lblTotali.Text = $"Totali - Invest.Min: {totInvestimentoMin:C2} | Guadagno: {totGuadagno:C2} | " +
                            $"Invest.Prop: {totInvestimentoProp:C2} | Guadagno Prop: {totGuadagnoProp:C2} | " +
-                           $"Bilancio: {(totGuadagnoProp - totInvestimentoProp):C2}";
+                           $"Bilancio: {(totGuadagnoProp - totInvestimentoProp):C2} | " +
+                           $"Tot Giocati: {(numgiocati)} | " +
+                           $"Tot Vincenti: {(numvincenti)}  | Tot Ambi: {numambi} | Tot Terni: {numterni}";
         }
 
         private void BtnAggiorna_Click(object sender, EventArgs e)
@@ -240,7 +258,6 @@ namespace Crs.Home.ApocalypsApp
         {
             try
             {
-                
                 // Ottieni le ruote selezionate
                 List<string> ruoteSelezionate = OttieniRuoteSelezionate();
 
@@ -252,8 +269,18 @@ namespace Crs.Home.ApocalypsApp
                 }
 
                 // Ottieni l'intervallo di date dai parametri condivisi
-                DateTime dataInizioAnalisi = ParametriCondivisi.DataInizioAnalisi;
-                DateTime dataFineAnalisi = ParametriCondivisi.DataFineAnalisi;
+                //DateTime dataInizioAnalisi = ParametriCondivisi.DataInizioAnalisi;
+                //DateTime dataFineAnalisi = ParametriCondivisi.DataFineAnalisi;
+
+                DateTime dataInizioAnalisi = dateTimeInizio.Value;
+                DateTime dataFineAnalisi = dateTimeFine.Value;
+
+                if (dataInizioAnalisi < ParametriCondivisi.DataInizioAnalisi)
+                    dataInizioAnalisi = ParametriCondivisi.DataInizioAnalisi;
+
+                if (dataFineAnalisi > ParametriCondivisi.DataFineAnalisi)
+                    dataFineAnalisi = ParametriCondivisi.DataFineAnalisi;
+
 
                 // Verifica che le date siano valide
                 if (dataInizioAnalisi == DateTime.MinValue || dataFineAnalisi == DateTime.MinValue)
@@ -289,7 +316,7 @@ namespace Crs.Home.ApocalypsApp
                                 ruota: ruota,
                                 dataTarget: estrazione.Data,
                                 numeriUsciti: estrazione.Numeri, // Passa i numeri realmente usciti per la simulazione
-                                out List<Tuple<int,int,List<string>>> numPesiRegole
+                                out List<Tuple<int, int, List<string>>> numPesiRegole
                             );
                             //var punteggi = ModelloAdattivo.GetPunteggiCompleti(ruota, estrazione.Data);
                             // Qui processi il risultato della previsione e calcoli le metriche
@@ -371,15 +398,23 @@ namespace Crs.Home.ApocalypsApp
 
                         case "Settimana":
                             finePeriodo = dataCorrente.AddDays(7);
+                            if (finePeriodo.DayOfWeek != DayOfWeek.Monday)
+                                finePeriodo = finePeriodo.AddDays(-(int)DayOfWeek.Monday);
                             break;
                         case "Mese":
                             finePeriodo = dataCorrente.AddMonths(1);
+                            //if (finePeriodo.Day != 1)
+                            finePeriodo = finePeriodo.AddDays(-finePeriodo.Day);
                             break;
                         case "Trimestre":
                             finePeriodo = dataCorrente.AddMonths(3);
+                            if (finePeriodo.Day != 1)
+                                finePeriodo = finePeriodo.AddDays(-finePeriodo.Day);
                             break;
                         case "Anno":
                             finePeriodo = dataCorrente.AddYears(1);
+                            //if (finePeriodo.Month != 1)
+                            finePeriodo = finePeriodo.AddDays(-finePeriodo.DayOfYear);
                             break;
                     }
 
@@ -392,7 +427,7 @@ namespace Crs.Home.ApocalypsApp
                         DataFine = finePeriodo
                     });
 
-                    dataCorrente = finePeriodo;
+                    dataCorrente = finePeriodo.AddDays(1);
                 }
             }
             return periodi;
@@ -402,7 +437,7 @@ namespace Crs.Home.ApocalypsApp
         {
             // Questo metodo dovrebbe recuperare le estrazioni dal database o dalla fonte dati
             // Per ora restituisco una lista vuota - tu implementerai la logica specifica
-            return ParametriCondivisi.Estrazioni.Where(X=>X.Ruota.Equals(ruota) && X.Data >= dataInizio && X.Data < dataFine).ToList();
+            return ParametriCondivisi.Estrazioni.Where(X => X.Ruota.Equals(ruota) && X.Data >= dataInizio && X.Data < dataFine).ToList();
         }
 
         private void ProcessaRisultatoPrevisione(List<RisultatoAnalisi> risultati, Periodo periodo,
@@ -445,7 +480,6 @@ namespace Crs.Home.ApocalypsApp
 
             risultatoEsistente.AmbiVinti = CalcolaCombinazioni(risultatoEsistente.NumeriVinti, 2);
             risultatoEsistente.TerniVinti = CalcolaCombinazioni(risultatoEsistente.NumeriVinti, 3);
-        
         }
 
         private int CalcolaCombinazioni(int n, int k)
@@ -463,6 +497,22 @@ namespace Crs.Home.ApocalypsApp
                 denominatore *= i;
             }
             return (int)(numeratore / denominatore);
+        }
+
+        private void btnTest_Click(object sender, EventArgs e)
+        {
+            ModelloAdattivo ModelloAdattivo = new ModelloAdattivo(ParametriCondivisi.Estrazioni);
+            // DEBUG COMPLETO
+            DateTime dataTarget = new DateTime(2024, 12, 07);
+            var ritardi = ModelloAdattivo.CalcolaRitardiFigure("RM", dataTarget );
+            Console.WriteLine($"Ritardo figura {ModelloAdattivo.Figura(89)}: {ritardi[ModelloAdattivo.Figura(89)]}");
+
+            var forzaGrav = ModelloAdattivo.CalcolaForzaGravitazionaleTotale(89, ritardi, "RM", dataTarget);
+            var energia = ModelloAdattivo.CalcolaEnergiaPotenziale(89, ritardi);
+
+            txtResTest.Text = $"Ritardo figura {ModelloAdattivo.Figura(89)}: {ritardi[ModelloAdattivo.Figura(89)]}";
+            txtResTest.Text += "\nForza gravitazionale: " + forzaGrav.ToString("0.000");
+            txtResTest.Text += "\nEnergia: " + energia.ToString("0.000");
         }
     }
 
@@ -491,6 +541,14 @@ namespace Crs.Home.ApocalypsApp
             get 
             {
                 return string.Join(", ", NumeriPrevisionePeso.Select(x => $"{x.Item1}({x.Item2})"));
+            }
+        }
+
+        public string NumEstratti
+        {
+            get
+            {
+                return string.Join(", ", NumeriEstrazione.Select(x => $"{x.ToString()}"));
             }
         }
 

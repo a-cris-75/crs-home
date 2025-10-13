@@ -9,6 +9,7 @@ using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Crs.Home.ApocalypsData
 {
@@ -243,41 +244,49 @@ namespace Crs.Home.ApocalypsData
             return B_rit;
         }
 
-        private Dictionary<int, int> CalcolaRitardiFigure(string ruota, DateTime dataTarget)
+        public Dictionary<int, int> CalcolaRitardiFigure(string ruota, DateTime dataTarget)
         {
-            var estrRuota = estrazioni
-                .Where(e => e.Ruota == ruota && e.Data <= dataTarget)
-                .OrderBy(e => e.Data)
-                .ToList();
-
-            if (estrRuota.Count == 0)
-                return Enumerable.Range(1, 9).ToDictionary(f => f, f => 1000);
-
-            var datesEstrazioni = estrRuota.Select(e => e.Data).Distinct().OrderBy(d => d).ToList();
-            var dataToIndex = datesEstrazioni.Select((d, i) => new { d, i }).ToDictionary(x => x.d, x => x.i);
-            int idxTarget = dataToIndex[dataTarget];
-
-            var ultimaUscita = new Dictionary<int, DateTime>();
-            for (int f = 1; f <= 9; f++)
-                ultimaUscita[f] = DateTime.MinValue;
-
-            foreach (var e in estrRuota)
+            var ritardi = new Dictionary<int, int>();
+            try
             {
-                foreach (int num in e.Numeri)
+                var estrRuota = estrazioni
+                    .Where(e => e.Ruota == ruota && e.Data < dataTarget)
+                    .OrderBy(e => e.Data)
+                    .ToList();
+
+                if (estrRuota.Count == 0)
+                    return Enumerable.Range(1, 9).ToDictionary(f => f, f => 1000);
+
+                var datesEstrazioni = estrRuota.Select(e => e.Data).Distinct().OrderBy(d => d).ToList();
+                var dataToIndex = datesEstrazioni.Select((d, i) => new { d, i }).ToDictionary(x => x.d, x => x.i);
+                int idxTarget = dataToIndex[dataTarget];
+
+                var ultimaUscita = new Dictionary<int, DateTime>();
+                for (int f = 1; f <= 9; f++)
+                    ultimaUscita[f] = DateTime.MinValue;
+
+                foreach (var e in estrRuota)
                 {
-                    int f = Figura(num);
-                    if (e.Data > ultimaUscita[f])
-                        ultimaUscita[f] = e.Data;
+                    foreach (int num in e.Numeri)
+                    {
+                        int f = Figura(num);
+                        if (e.Data > ultimaUscita[f])
+                            ultimaUscita[f] = e.Data;
+                    }
+                }
+
+                
+                for (int f = 1; f <= 9; f++)
+                {
+                    if (ultimaUscita[f] == DateTime.MinValue)
+                        ritardi[f] = idxTarget + 1;
+                    else
+                        ritardi[f] = idxTarget - dataToIndex[ultimaUscita[f]];
                 }
             }
-
-            var ritardi = new Dictionary<int, int>();
-            for (int f = 1; f <= 9; f++)
+            catch (Exception e) 
             {
-                if (ultimaUscita[f] == DateTime.MinValue)
-                    ritardi[f] = idxTarget + 1;
-                else
-                    ritardi[f] = idxTarget - dataToIndex[ultimaUscita[f]];
+                MessageBox.Show("ERR CalcolaRitardiFigure: " + e.Message);
             }
 
             return ritardi;
@@ -468,7 +477,7 @@ namespace Crs.Home.ApocalypsData
             return G * (ritardo1 * ritardo2) / (distanza * distanza);
         }
 
-        protected double CalcolaForzaGravitazionaleTotale(int numero, Dictionary<int, int> ritardi, string ruota, DateTime dataTarget)
+        public double CalcolaForzaGravitazionaleTotale(int numero, Dictionary<int, int> ritardi, string ruota, DateTime dataTarget)
         {
             double forzaTotale = 0;
             //var estrattiRecenti = estrazioni
