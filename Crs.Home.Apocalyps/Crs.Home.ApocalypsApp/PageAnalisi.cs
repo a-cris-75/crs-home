@@ -1,5 +1,6 @@
 ﻿using Crs.Home.ApocalypsData;
 using Crs.Home.ApocalypsData.DataEntities;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -503,16 +504,34 @@ namespace Crs.Home.ApocalypsApp
         {
             ModelloAdattivo ModelloAdattivo = new ModelloAdattivo(ParametriCondivisi.Estrazioni);
             // DEBUG COMPLETO
-            DateTime dataTarget = new DateTime(2024, 12, 07);
+            DateTime dataTarget = new DateTime(2025, 07, 29);
             var ritardi = ModelloAdattivo.CalcolaRitardiFigure("RM", dataTarget );
-            Console.WriteLine($"Ritardo figura {ModelloAdattivo.Figura(89)}: {ritardi[ModelloAdattivo.Figura(89)]}");
+            Console.WriteLine($"Ritardo figura {ModelloAdattivo.Figura(46)}: {ritardi[ModelloAdattivo.Figura(46)]}");
 
-            var forzaGrav = ModelloAdattivo.CalcolaForzaGravitazionaleTotale(89, ritardi, "RM", dataTarget);
-            var energia = ModelloAdattivo.CalcolaEnergiaPotenziale(89, ritardi);
+            var forzaGrav = ModelloAdattivo.CalcolaForzaGravitazionaleTotale(46, ritardi, "RM", dataTarget);
+            var energia = ModelloAdattivo.CalcolaEnergiaPotenziale(46, ritardi);
 
-            txtResTest.Text = $"Ritardo figura {ModelloAdattivo.Figura(89)}: {ritardi[ModelloAdattivo.Figura(89)]}";
+            txtResTest.Text = $"Ritardo figura {ModelloAdattivo.Figura(89)}: {ritardi[ModelloAdattivo.Figura(46)]}";
             txtResTest.Text += "\nForza gravitazionale: " + forzaGrav.ToString("0.000");
             txtResTest.Text += "\nEnergia: " + energia.ToString("0.000");
+            List<Estrazione> lst = ModelloAdattivo.GetUltimeEstrazioni("RM", dataTarget, 3);
+            var debug46 = new
+            {
+                B_dec = ModelloAdattivo.CalcolaBonusDecina(46, "RM", dataTarget),
+                B_FA = ModelloAdattivo.CalcolaBonusFiguraAntifigura(46, "RM", dataTarget),
+                B_pol = ModelloAdattivo.CalcolaBonusPolarizzazione(46, "RM", dataTarget),
+                B_rit = ModelloAdattivo.CalcolaBonusRitardo(46, "RM", dataTarget),
+                B_arm = ModelloAdattivo.CalcolaBonusArmonia(46, "RM", dataTarget),
+                B_diff = ModelloAdattivo.CalcolaBonusDifferenzaRitardi(46, "RM", dataTarget),
+                B_9 = ModelloAdattivo.CalcolaBonusAutoAttrazione9(46, "RM", dataTarget),
+                B_ir = ModelloAdattivo.CalcolaBonusInterRuota(46, "RM", dataTarget),
+                B_temp = ModelloAdattivo.CalcolaBonusTemporale(46, "RM", dataTarget),
+                B_seq = ModelloAdattivo.CalcolaBonusSequenza(46, "RM", dataTarget),
+                B_fisica = ModelloAdattivo.CalcolaBonusFisicaCompleto(46, "RM", dataTarget)
+            };
+            Console.WriteLine($"DEBUG 46: {JsonConvert.SerializeObject(debug46)}");
+            txtResTest.Text += "\n\nDEBUG 46: " + JsonConvert.SerializeObject(debug46);
+            txtResTest.Text += "\n\nUltime estrazioni: \n " + string.Join("\n ", lst.OrderBy(X=>X.Data).Select(X=> X.Data.ToShortDateString() + " "  + string.Join(", ",X.Numeri)));
         }
     }
 

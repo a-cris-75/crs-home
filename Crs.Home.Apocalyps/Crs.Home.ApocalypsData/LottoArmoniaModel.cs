@@ -150,7 +150,7 @@ namespace Crs.Home.ApocalypsData
 
         // ========== IMPLEMENTAZIONI DEI METODI BONUS ==========
 
-        private int CalcolaBonusDecina(int numero, string ruota, DateTime dataTarget)
+        public int CalcolaBonusDecina(int numero, string ruota, DateTime dataTarget)
         {
             int B_dec = 0;
             var estrRuota = GetUltimeEstrazioni(ruota, dataTarget, 2);
@@ -175,7 +175,7 @@ namespace Crs.Home.ApocalypsData
             return B_dec;
         }
 
-        private int CalcolaBonusFiguraAntifigura(int numero, string ruota, DateTime dataTarget)
+        public int CalcolaBonusFiguraAntifigura(int numero, string ruota, DateTime dataTarget)
         {
             int B_FA = 0;
             int fNum = Figura(numero);
@@ -201,7 +201,7 @@ namespace Crs.Home.ApocalypsData
             return B_FA;
         }
 
-        private int CalcolaBonusPolarizzazione(int numero, string ruota, DateTime dataTarget)
+        public int CalcolaBonusPolarizzazione(int numero, string ruota, DateTime dataTarget)
         {
             int B_pol = 0;
             var estrRuota = GetUltimeEstrazioni(ruota, dataTarget, 1);
@@ -230,7 +230,7 @@ namespace Crs.Home.ApocalypsData
             return B_pol;
         }
 
-        private int CalcolaBonusRitardo(int numero, string ruota, DateTime dataTarget)
+        public int CalcolaBonusRitardo(int numero, string ruota, DateTime dataTarget)
         {
             int B_rit = 0;
             var ritardi = CalcolaRitardiFigure(ruota, dataTarget);
@@ -246,53 +246,48 @@ namespace Crs.Home.ApocalypsData
 
         public Dictionary<int, int> CalcolaRitardiFigure(string ruota, DateTime dataTarget)
         {
-            var ritardi = new Dictionary<int, int>();
-            try
+            var estrRuota = estrazioni
+                .Where(e => e.Ruota == ruota && e.Data < dataTarget)  // ⚠️ NOTA: < dataTarget (NON <=)
+                .OrderBy(e => e.Data)
+                .ToList();
+
+            if (estrRuota.Count == 0)
+                return Enumerable.Range(1, 9).ToDictionary(f => f, f => 1000);
+
+            var datesEstrazioni = estrRuota.Select(e => e.Data).Distinct().OrderBy(d => d).ToList();
+            var dataToIndex = datesEstrazioni.Select((d, i) => new { d, i }).ToDictionary(x => x.d, x => x.i);
+
+            // ⚠️ NOTA: idxTarget è l'INDICE dell'ultima estrazione PRIMA di dataTarget
+            DateTime ultimaDataPrimaTarget = datesEstrazioni.Last();
+            int idxTarget = dataToIndex[ultimaDataPrimaTarget];
+
+            var ultimaUscita = new Dictionary<int, DateTime>();
+            for (int f = 1; f <= 9; f++)
+                ultimaUscita[f] = DateTime.MinValue;
+
+            foreach (var e in estrRuota)
             {
-                var estrRuota = estrazioni
-                    .Where(e => e.Ruota == ruota && e.Data < dataTarget)
-                    .OrderBy(e => e.Data)
-                    .ToList();
-
-                if (estrRuota.Count == 0)
-                    return Enumerable.Range(1, 9).ToDictionary(f => f, f => 1000);
-
-                var datesEstrazioni = estrRuota.Select(e => e.Data).Distinct().OrderBy(d => d).ToList();
-                var dataToIndex = datesEstrazioni.Select((d, i) => new { d, i }).ToDictionary(x => x.d, x => x.i);
-                int idxTarget = dataToIndex[dataTarget];
-
-                var ultimaUscita = new Dictionary<int, DateTime>();
-                for (int f = 1; f <= 9; f++)
-                    ultimaUscita[f] = DateTime.MinValue;
-
-                foreach (var e in estrRuota)
+                foreach (int num in e.Numeri)
                 {
-                    foreach (int num in e.Numeri)
-                    {
-                        int f = Figura(num);
-                        if (e.Data > ultimaUscita[f])
-                            ultimaUscita[f] = e.Data;
-                    }
-                }
-
-                
-                for (int f = 1; f <= 9; f++)
-                {
-                    if (ultimaUscita[f] == DateTime.MinValue)
-                        ritardi[f] = idxTarget + 1;
-                    else
-                        ritardi[f] = idxTarget - dataToIndex[ultimaUscita[f]];
+                    int f = Figura(num);
+                    if (e.Data > ultimaUscita[f])
+                        ultimaUscita[f] = e.Data;
                 }
             }
-            catch (Exception e) 
+
+            var ritardi = new Dictionary<int, int>();
+            for (int f = 1; f <= 9; f++)
             {
-                MessageBox.Show("ERR CalcolaRitardiFigure: " + e.Message);
+                if (ultimaUscita[f] == DateTime.MinValue)
+                    ritardi[f] = idxTarget + 1;  // Mai uscita
+                else
+                    ritardi[f] = idxTarget - dataToIndex[ultimaUscita[f]];
             }
 
             return ritardi;
         }
 
-        private int CalcolaBonusArmonia(int numero, string ruota, DateTime dataTarget)
+        public int CalcolaBonusArmonia(int numero, string ruota, DateTime dataTarget)
         {
             int B_arm = 0;
             var figureUltime3 = GetUltimeEstrazioni(ruota, dataTarget, 3)
@@ -310,7 +305,7 @@ namespace Crs.Home.ApocalypsData
             return B_arm;
         }
 
-        private int CalcolaBonusDifferenzaRitardi(int numero, string ruota, DateTime dataTarget)
+        public int CalcolaBonusDifferenzaRitardi(int numero, string ruota, DateTime dataTarget)
         {
             int B_diff = 0;
             var ritardi = CalcolaRitardiFigure(ruota, dataTarget);
@@ -330,7 +325,7 @@ namespace Crs.Home.ApocalypsData
             return B_diff;
         }
 
-        private int CalcolaBonusAutoAttrazione9(int numero, string ruota, DateTime dataTarget)
+        public int CalcolaBonusAutoAttrazione9(int numero, string ruota, DateTime dataTarget)
         {
             int B_9 = 0;
             int fNum = Figura(numero);
@@ -350,7 +345,7 @@ namespace Crs.Home.ApocalypsData
             return B_9;
         }
 
-        private int CalcolaBonusInterRuota(int numero, string ruota, DateTime dataTarget)
+        public int CalcolaBonusInterRuota(int numero, string ruota, DateTime dataTarget)
         {
             int B_ir = 0;
             foreach (string altraRuota in ruote)
@@ -373,7 +368,7 @@ namespace Crs.Home.ApocalypsData
             return B_ir;
         }
 
-        private int CalcolaBonusTemporale(int numero, string ruota, DateTime dataTarget)
+        public int CalcolaBonusTemporale(int numero, string ruota, DateTime dataTarget)
         {
             int B_temp = 0;
             DayOfWeek giornoTarget = dataTarget.DayOfWeek;
@@ -396,7 +391,7 @@ namespace Crs.Home.ApocalypsData
             return B_temp;
         }
 
-        private int CalcolaBonusSequenza(int numero, string ruota, DateTime dataTarget)
+        public int CalcolaBonusSequenza(int numero, string ruota, DateTime dataTarget)
         {
             int B_seq = 0;
             var estrattiRecenti = GetUltimeEstrazioni(ruota, dataTarget, 3)
@@ -411,7 +406,7 @@ namespace Crs.Home.ApocalypsData
 
         // ========== METODI DI SUPPORTO ==========
 
-        private List<Estrazione> GetUltimeEstrazioni(string ruota, DateTime dataTarget, int numeroEstrazioni)
+        public List<Estrazione> GetUltimeEstrazioni(string ruota, DateTime dataTarget, int numeroEstrazioni)
         {
             return estrazioni
                 .Where(e => e.Ruota == ruota && e.Data < dataTarget)
@@ -731,8 +726,15 @@ namespace Crs.Home.ApocalypsData
             // num, bonus, regoleAttivate
             risultati = new List<Tuple<int, int, List<string>>>();
 
+            // Ottieni le ultime estrazioni per escludere numeri recenti
+            var ultimeEstrazioni = GetUltimeEstrazioni(ruota, dataTarget, 3);
+            var numeriRecenti = ultimeEstrazioni.SelectMany(e => e.Numeri).Distinct().ToList();
+
             for (int num = 1; num <= 90; num++)
             {
+                // ⚠️ ESCLUDI NUMERI USCITI DI RECENTE
+                if (numeriRecenti.Contains(num))
+                    continue;
                 //List<string> regoleAttivate = new List<string>();
                 Tuple<int, List<string>> bonus = CalcolaBonusConRegole(num, ruota, dataTarget);//, regoleAttivate);
                 risultati.Add(Tuple.Create(num, bonus.Item1, bonus.Item2));
