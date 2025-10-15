@@ -1,11 +1,13 @@
 ﻿using Crs.Home.ApocalypsData;
 using Crs.Home.ApocalypsData.DataEntities;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+//using static Google.Protobuf.Collections.MapField<TKey, TValue>;
 
 namespace Crs.Home.ApocalypsApp
 {
@@ -189,16 +191,34 @@ namespace Crs.Home.ApocalypsApp
             decimal totGuadagno = risultati.Sum(r => r.Guadagno);
             decimal totInvestimentoProp = risultati.Sum(r => r.InvestimentoProposto);
             decimal totGuadagnoProp = risultati.Sum(r => r.GuadagnoProposto);
-            int numvincenti = risultati.Sum(r => r.NumeriVinti);
-            int numambi = risultati.Sum(r => r.AmbiVinti);
-            int numterni = risultati.Sum(r => r.TerniVinti);
-            int numgiocati = risultati.Sum(r => r.NumeriGiocati);
+            int numeriIndovinati = risultati.Sum(r => r.NumeriVinti);
+            int ambiIndovinati = risultati.Sum(r => r.AmbiVinti);
+            int terniIndovinati = risultati.Sum(r => r.TerniVinti);
+            int numeriGiocati = risultati.Sum(r => r.NumeriGiocati);
 
             lblTotali.Text = $"Totali - Invest.Min: {totInvestimentoMin:C2} | Guadagno: {totGuadagno:C2} | " +
                            $"Invest.Prop: {totInvestimentoProp:C2} | Guadagno Prop: {totGuadagnoProp:C2} | " +
                            $"Bilancio: {(totGuadagnoProp - totInvestimentoProp):C2} | " +
-                           $"Tot Giocati: {(numgiocati)} | " +
-                           $"Tot Vincenti: {(numvincenti)}  | Tot Ambi: {numambi} | Tot Terni: {numterni}";
+                           $"Tot Giocati: {(numeriGiocati)} | " +
+                           $"Tot Vincenti: {(numeriIndovinati)}  | Tot Ambi: {ambiIndovinati} | Tot Terni: {terniIndovinati}";
+
+            double successRate = (double)numeriIndovinati / numeriGiocati * 100;
+            double probabilitaCasuale = 5.0 / 90.0; // 5.56%
+            double probabilitaReale = (double)numeriIndovinati / numeriGiocati;
+            double vantaggio = probabilitaReale / probabilitaCasuale;
+
+            // Supponendo: Ambo = 250x, Numeri singoli = 11.23x
+            double costoPerNumero = 1;
+            double costoGiocate = numeriGiocati * costoPerNumero;
+            double vinciteAmbo = ambiIndovinati * 250 * costoPerNumero;
+            double vinciteNumeriSingoli = numeriIndovinati * 11.23 * costoPerNumero;
+            double roi = ((vinciteAmbo + vinciteNumeriSingoli - costoGiocate) / costoGiocate) * 100;
+
+            int estrazioniTotali = ParametriCondivisi.Estrazioni.Where(X=>X.Data>=ParametriCondivisi.DataInizioAnalisi && X.Data<=ParametriCondivisi.DataFineAnalisi).Select(X=>X.Data).Distinct().Count();
+            double amboOgni = (double)estrazioniTotali / ambiIndovinati;
+            double ternoOgni = (double)estrazioniTotali / terniIndovinati;
+
+            lblTotali.Text += $" | Success Rate: {successRate.ToString("0.00")} | ROI: {roi.ToString("0.00")} | Vantaggio (prob.reale/caso): {vantaggio.ToString("0.00")} ";
         }
 
         private void BtnAggiorna_Click(object sender, EventArgs e)
@@ -465,6 +485,7 @@ namespace Crs.Home.ApocalypsApp
                     AmbiVinti = 0,
                     TerniVinti = 0
                 };
+
                 risultati.Add(risultatoEsistente);
             }
 
@@ -474,13 +495,14 @@ namespace Crs.Home.ApocalypsApp
 
             // Qui dovresti aggiungere la logica per calcolare i numeri vinti, ambi, terni
             // confrontando numeriPrevisione con estrazione.NumeriEstratti
-            risultatoEsistente.NumeriVinti = numeriPrevisione.Where(X => X == estrazione.Numeri[0] || X == estrazione.Numeri[1] ||
+            int numvintiprev = numeriPrevisione.Where(X => X == estrazione.Numeri[0] || X == estrazione.Numeri[1] ||
                     X == estrazione.Numeri[2] ||
                     X == estrazione.Numeri[3] ||
-                    X == estrazione.Numeri[4]).Count();// estrazione.Numeri
+                    X == estrazione.Numeri[4]).Count();
+            risultatoEsistente.NumeriVinti += numvintiprev;// estrazione.Numeri
 
-            risultatoEsistente.AmbiVinti = CalcolaCombinazioni(risultatoEsistente.NumeriVinti, 2);
-            risultatoEsistente.TerniVinti = CalcolaCombinazioni(risultatoEsistente.NumeriVinti, 3);
+            risultatoEsistente.AmbiVinti = CalcolaCombinazioni(numvintiprev, 2);
+            risultatoEsistente.TerniVinti = CalcolaCombinazioni(numvintiprev, 3);
         }
 
         private int CalcolaCombinazioni(int n, int k)
@@ -502,36 +524,64 @@ namespace Crs.Home.ApocalypsApp
 
         private void btnTest_Click(object sender, EventArgs e)
         {
+            string ruota = "RM";
+            List<int> numeri = txtDbgNum.Text.Split(",").Select(X=>Convert.ToInt32(X)).ToList();
+
+            DateTime dataTarget = dtDataTarget.Value;
             ModelloAdattivo ModelloAdattivo = new ModelloAdattivo(ParametriCondivisi.Estrazioni);
+            List<Estrazione> lst = ModelloAdattivo.GetUltimeEstrazioni(ruota, dataTarget, 3);
+            txtResTest.Text = "";
+            txtResTest.Text += "Ultime estrazioni: \n " + string.Join("\n ", lst.OrderBy(X => X.Data).Select(X => X.Data.ToShortDateString() + " " + string.Join(", ", X.Numeri)));
+
+            
             // DEBUG COMPLETO
-            DateTime dataTarget = new DateTime(2025, 07, 29);
-            var ritardi = ModelloAdattivo.CalcolaRitardiFigure("RM", dataTarget );
-            Console.WriteLine($"Ritardo figura {ModelloAdattivo.Figura(46)}: {ritardi[ModelloAdattivo.Figura(46)]}");
-
-            var forzaGrav = ModelloAdattivo.CalcolaForzaGravitazionaleTotale(46, ritardi, "RM", dataTarget);
-            var energia = ModelloAdattivo.CalcolaEnergiaPotenziale(46, ritardi);
-
-            txtResTest.Text = $"Ritardo figura {ModelloAdattivo.Figura(89)}: {ritardi[ModelloAdattivo.Figura(46)]}";
-            txtResTest.Text += "\nForza gravitazionale: " + forzaGrav.ToString("0.000");
-            txtResTest.Text += "\nEnergia: " + energia.ToString("0.000");
-            List<Estrazione> lst = ModelloAdattivo.GetUltimeEstrazioni("RM", dataTarget, 3);
-            var debug46 = new
+            
+            var ritardi = ModelloAdattivo.CalcolaRitardiFigure(ruota, dataTarget);
+            foreach (int numero in numeri)
             {
-                B_dec = ModelloAdattivo.CalcolaBonusDecina(46, "RM", dataTarget),
-                B_FA = ModelloAdattivo.CalcolaBonusFiguraAntifigura(46, "RM", dataTarget),
-                B_pol = ModelloAdattivo.CalcolaBonusPolarizzazione(46, "RM", dataTarget),
-                B_rit = ModelloAdattivo.CalcolaBonusRitardo(46, "RM", dataTarget),
-                B_arm = ModelloAdattivo.CalcolaBonusArmonia(46, "RM", dataTarget),
-                B_diff = ModelloAdattivo.CalcolaBonusDifferenzaRitardi(46, "RM", dataTarget),
-                B_9 = ModelloAdattivo.CalcolaBonusAutoAttrazione9(46, "RM", dataTarget),
-                B_ir = ModelloAdattivo.CalcolaBonusInterRuota(46, "RM", dataTarget),
-                B_temp = ModelloAdattivo.CalcolaBonusTemporale(46, "RM", dataTarget),
-                B_seq = ModelloAdattivo.CalcolaBonusSequenza(46, "RM", dataTarget),
-                B_fisica = ModelloAdattivo.CalcolaBonusFisicaCompleto(46, "RM", dataTarget)
-            };
-            Console.WriteLine($"DEBUG 46: {JsonConvert.SerializeObject(debug46)}");
-            txtResTest.Text += "\n\nDEBUG 46: " + JsonConvert.SerializeObject(debug46);
-            txtResTest.Text += "\n\nUltime estrazioni: \n " + string.Join("\n ", lst.OrderBy(X=>X.Data).Select(X=> X.Data.ToShortDateString() + " "  + string.Join(", ",X.Numeri)));
+                var forzaGrav = ModelloAdattivo.CalcolaForzaGravitazionaleTotale(numero, ritardi, ruota, dataTarget);
+                var energia = ModelloAdattivo.CalcolaEnergiaPotenziale(numero, ritardi);
+                txtResTest.Text += "\n\nRISULTATI PER  " + numero.ToString() + " su ruota " + ruota;
+                txtResTest.Text += $"\n\nRitardo figura {ModelloAdattivo.Figura(89)}: {ritardi[ModelloAdattivo.Figura(numero)]}";
+                txtResTest.Text += "\nForza gravitazionale: " + forzaGrav.ToString("0.000");
+                txtResTest.Text += "\nEnergia: " + energia.ToString("0.000");
+
+                int bonus = ModelloAdattivo.CalcolaBonusDecina(numero, ruota, dataTarget);
+                bonus += ModelloAdattivo.CalcolaBonusFiguraAntifigura(numero, ruota, dataTarget);
+                bonus += ModelloAdattivo.CalcolaBonusPolarizzazione(numero, ruota, dataTarget);
+                bonus += ModelloAdattivo.CalcolaBonusRitardo(numero, ruota, dataTarget);
+                bonus += ModelloAdattivo.CalcolaBonusArmonia(numero, ruota, dataTarget);
+                bonus += ModelloAdattivo.CalcolaBonusDifferenzaRitardi(numero, ruota, dataTarget);
+                bonus += ModelloAdattivo.CalcolaBonusAutoAttrazione9(numero, ruota, dataTarget);
+                bonus += ModelloAdattivo.CalcolaBonusInterRuota(numero, ruota, dataTarget);
+                bonus += ModelloAdattivo.CalcolaBonusTemporale(numero, ruota, dataTarget);
+                bonus += ModelloAdattivo.CalcolaBonusSequenza(numero, ruota, dataTarget);
+                bonus += ModelloAdattivo.CalcolaBonusFisicaCompleto(numero, ruota, dataTarget);
+
+                var debug46 = new
+                {
+                    B_dec = ModelloAdattivo.CalcolaBonusDecina(numero, ruota, dataTarget),
+                    B_FA = ModelloAdattivo.CalcolaBonusFiguraAntifigura(numero, ruota, dataTarget),
+                    B_pol = ModelloAdattivo.CalcolaBonusPolarizzazione(numero, ruota, dataTarget),
+                    B_rit = ModelloAdattivo.CalcolaBonusRitardo(numero, ruota, dataTarget),
+                    B_arm = ModelloAdattivo.CalcolaBonusArmonia(numero, ruota, dataTarget),
+                    B_diff = ModelloAdattivo.CalcolaBonusDifferenzaRitardi(numero, ruota, dataTarget),
+                    B_9 = ModelloAdattivo.CalcolaBonusAutoAttrazione9(numero, ruota, dataTarget),
+                    B_ir = ModelloAdattivo.CalcolaBonusInterRuota(numero, ruota, dataTarget),
+                    B_temp = ModelloAdattivo.CalcolaBonusTemporale(numero, ruota, dataTarget),
+                    B_seq = ModelloAdattivo.CalcolaBonusSequenza(numero, ruota, dataTarget),
+                    B_fisica = ModelloAdattivo.CalcolaBonusFisicaCompleto(numero, ruota, dataTarget)
+                };
+                
+                txtResTest.Text += $"\n\nTot bonus per numero {numero}: {bonus}\n    Debug: " + JsonConvert.SerializeObject(debug46);
+                //txtResTest.Text += "\n\n" + debug; 
+                
+                var numusciti = ModelloAdattivo.GetUltimeEstrazioni(ruota, dataTarget.AddDays(1), 1).First();
+                List<int> numprevisti = ModelloAdattivo.PrevisioneConAdattivita(ruota, dataTarget, numusciti.Numeri, out List<Tuple<int, int, List<string>>> res);
+                txtResTest.Text += "\n\nNum usciti:  " + string.Join(", ", numusciti.Numeri) + "\nPrevisioni: " + string.Join(", ", numprevisti);
+
+                txtResTest.Text += "\n\nNum previsti (Bonus): \n    " + string.Join(", ", res.Select(X => X.Item1.ToString() + "(" + X.Item2.ToString() + ")"));
+            }
         }
     }
 
@@ -568,6 +618,15 @@ namespace Crs.Home.ApocalypsApp
             get
             {
                 return string.Join(", ", NumeriEstrazione.Select(x => $"{x.ToString()}"));
+            }
+        }
+
+        public string NumVinti
+        {
+            get
+            {
+                List<(int,int)> v = NumeriPrevisionePeso.Where(X => X.Item1 == NumeriEstrazione[0] || X.Item1 == NumeriEstrazione[1] || X.Item1 == NumeriEstrazione[2] || X.Item1 == NumeriEstrazione[3] || X.Item1 == NumeriEstrazione[4]).ToList();             
+                return string.Join(", ", v.Select(x => $"{x.Item1.ToString()}"));
             }
         }
 

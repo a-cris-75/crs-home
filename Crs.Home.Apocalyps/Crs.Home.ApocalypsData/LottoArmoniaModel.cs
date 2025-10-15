@@ -1,7 +1,9 @@
 ﻿
 using Crs.Home.ApocalypsData.DataEntities;
+using Org.BouncyCastle.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -101,13 +103,14 @@ namespace Crs.Home.ApocalypsData
             return (numero / 10) * 10;
         }
     
+      
         public Tuple<int, List<string>> CalcolaBonusConRegole(int numero, string ruota, DateTime dataTarget)
         {
             var regoleAttivate = new List<string>();
 
             // Calcolo dei bonus individuali
             int B_dec = CalcolaBonusDecina(numero, ruota, dataTarget);
-            int B_FA = CalcolaBonusFiguraAntifigura(numero, ruota, dataTarget);
+            int B_FA = CalcolaBonusFiguraAntifigura(numero, ruota, dataTarget);//, out string debug);
             int B_pol = CalcolaBonusPolarizzazione(numero, ruota, dataTarget);
             int B_rit = CalcolaBonusRitardo(numero, ruota, dataTarget);
             int B_arm = CalcolaBonusArmonia(numero, ruota, dataTarget);
@@ -150,7 +153,7 @@ namespace Crs.Home.ApocalypsData
 
         // ========== IMPLEMENTAZIONI DEI METODI BONUS ==========
 
-        public int CalcolaBonusDecina(int numero, string ruota, DateTime dataTarget)
+        public int CalcolaBonusDecina2(int numero, string ruota, DateTime dataTarget)
         {
             int B_dec = 0;
             var estrRuota = GetUltimeEstrazioni(ruota, dataTarget, 2);
@@ -175,14 +178,60 @@ namespace Crs.Home.ApocalypsData
             return B_dec;
         }
 
-        public int CalcolaBonusFiguraAntifigura(int numero, string ruota, DateTime dataTarget)
+        public int CalcolaBonusDecina(int numero, string ruota, DateTime dataTarget)
+        {
+            int dNum = Decina(numero);
+            var estrRuota = GetUltimeEstrazioni(ruota, dataTarget, 1); // SOLO 1 estrazione!
+
+            if (estrRuota.Count > 0 && estrRuota[0].Numeri.Any(n => Decina(n) == dNum))
+                return param.W_dec1; // SOLO 20, non 30!
+
+            return 0;
+        }
+
+        public int CalcolaBonusFiguraAntifiguraDebug(int numero, string ruota, DateTime dataTarget, out string debug)
         {
             int B_FA = 0;
             int fNum = Figura(numero);
+            debug = string.Empty;
             if (fNum == 9) return 0; // Escludi figura 9
 
             var estrRuota = GetUltimeEstrazioni(ruota, dataTarget, 3);
 
+            debug = $"=== DEBUG FA per {numero} (figura {fNum}) ===";
+            for (int i = 0; i < estrRuota.Count; i++)
+            {
+                debug += $"\nEstrazione {i} giorni fa:";
+                foreach (int n in estrRuota[i].Numeri)
+                {
+                    int fN = Figura(n);
+                    if (fN == 9) continue;
+                    var coppia = Tuple.Create(fN, fNum);
+                    if (coppieFA.Contains(coppia))
+                    {
+                        debug += $"\n  Trovata coppia FA: {fN}-{fNum} dal numero {n}";
+                        int bonus = 0;
+                        if (i == 0) bonus += param.W_FA;
+                        else if (i == 1) bonus += (int)(param.W_FA * 0.5);
+                        else if (i == 2) bonus += (int)(param.W_FA * 0.33);
+
+                        B_FA += bonus;
+                        debug += $"\n  Bonus aggiunto: {bonus}, Totale: {B_FA}";
+                        break;
+                    }
+                }
+            }
+            return B_FA;
+        }
+
+        public int CalcolaBonusFiguraAntifigura(int numero, string ruota, DateTime dataTarget)
+        {
+            int fNum = Figura(numero);
+            if (fNum == 9) return 0;
+
+            var estrRuota = GetUltimeEstrazioni(ruota, dataTarget, 3);
+
+            // Cerca la PRIMA coppia FA (più recente)
             for (int i = 0; i < estrRuota.Count; i++)
             {
                 foreach (int n in estrRuota[i].Numeri)
@@ -192,13 +241,15 @@ namespace Crs.Home.ApocalypsData
                     var coppia = Tuple.Create(fN, fNum);
                     if (coppieFA.Contains(coppia))
                     {
-                        if (i == 0) B_FA += param.W_FA;
-                        else if (i == 1) B_FA += (int)(param.W_FA * 0.5);
-                        else if (i == 2) B_FA += (int)(param.W_FA * 0.33);
+                        // Trovata coppia - applica bonus e ESCI
+                        if (i == 0) return param.W_FA;
+                        else if (i == 1) return (int)(param.W_FA * 0.5);
+                        else if (i == 2) return (int)(param.W_FA * 0.33);
                     }
                 }
             }
-            return B_FA;
+
+            return 0; // Nessuna coppia trovata
         }
 
         public int CalcolaBonusPolarizzazione(int numero, string ruota, DateTime dataTarget)
@@ -437,12 +488,20 @@ namespace Crs.Home.ApocalypsData
             double bonusEntropia = entropiaPrecedente > 1.2 ? 15 : 0;
 
             // COMBINAZIONE PONDERATA
+            //double bonusFisica =
+            //    (forzaGravitazionale * 0.3) +      // 30% gravità
+            //    (energia * 0.4) +                  // 40% energia  
+            //    (interferenza * 20) +              // 20% interferenza
+            //    (bonusEntropia * 0.1) +            // 10% entropia
+            //    (ampiezzaOnda * 5);                // bonus base onda
+
+            // MIA FISICA (parametri diversi):
             double bonusFisica =
-                (forzaGravitazionale * 0.3) +      // 30% gravità
-                (energia * 0.4) +                  // 40% energia  
-                (interferenza * 20) +              // 20% interferenza
-                (bonusEntropia * 0.1) +            // 10% entropia
-                (ampiezzaOnda * 5);                // bonus base onda
+                (forzaGravitazionale * 0.1) +      // 10% gravità (non 30%)
+                (energia * 0.2) +                  // 20% energia (non 40%)  
+                (interferenza * 10) +              // 10% interferenza (non 20%)
+                (bonusEntropia * 0.05) +           // 5% entropia (non 10%)
+                (ampiezzaOnda * 2);                // bonus base onda (non 5)
 
             return (int)Math.Round(Math.Min(60, bonusFisica));
         }
@@ -742,13 +801,18 @@ namespace Crs.Home.ApocalypsData
             int sogliaDinamica = SogliaAdattiva(risultati.Select(x => Tuple.Create(x.Item1, x.Item2)).ToList());
             //var consigliati = risultati.Where(x => x.Item2 >= param.Soglia).Select(x => x.Item1).ToList();
             var consigliati = risultati.Where(x => x.Item2 >= sogliaDinamica).Select(x => x.Item1).ToList();
+            //var consigliati = risultati.Where(x => x.Item2 >= 50).ToList();
+
+            // se i numeri scelti sono troppi non considerarli: capita se sono all'inmizio dell'analisi e la soglia dinamica è bassa
+            if (consigliati.Count >= 10)
+                consigliati = new List<int>();
 
             if (numeriUsciti != null)
             {
                 AggiornaPerformance(risultati, numeriUsciti);
             }
 
-            risultati = risultati.OrderBy(X=>X.Item2).TakeLast(consigliati.Count + 2).ToList();
+            risultati = risultati.OrderBy(X=>X.Item2).TakeLast(consigliati.Count).ToList();
             return consigliati.OrderBy(x => x).ToList();
         }
 

@@ -250,7 +250,6 @@ namespace Crs.Home.ApocalypsData
             return res;
         }
 
-
         public static List<ESTRAZIONI> RecalcNumEstr(List<ESTRAZIONI> estr)
         {
             try
@@ -273,7 +272,6 @@ namespace Crs.Home.ApocalypsData
 
             return estr;
         }
-
       
         public static List<LOTTO> EstrToLotto(List<ESTRAZIONI> estr)
         {
