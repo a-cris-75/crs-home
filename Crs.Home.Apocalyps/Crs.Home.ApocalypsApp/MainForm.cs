@@ -1,4 +1,5 @@
 using Crs.Base.CommonUtilsLibrary;
+using Crs.Home.ApocalypsData;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -13,7 +14,7 @@ namespace Crs.Home.ApocalypsApp
         public MainForm()
         {
             InitializeComponent();
-            InitLocal();
+            InitDataSettings();
             InitializeUserControls();
             ShowPageTabellone();
         }
@@ -51,7 +52,7 @@ namespace Crs.Home.ApocalypsApp
             btnAnalisi.ForeColor = !isTabelloneActive ? Color.White : Color.Black;
         }
 
-        public bool InitLocal()
+        public bool InitDataSettings()
         {
             ConfigManager AppConfigManagerDB = new ConfigManager("", "DatabaseSettings");
             string? path_db = AppConfigManagerDB.GetValue("DB_LOCAL_PATH");
