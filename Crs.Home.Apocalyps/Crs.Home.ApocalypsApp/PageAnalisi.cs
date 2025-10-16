@@ -214,7 +214,7 @@ namespace Crs.Home.ApocalypsApp
             double vinciteNumeriSingoli = numeriIndovinati * 11.23 * costoPerNumero;
             double roi = ((vinciteAmbo + vinciteNumeriSingoli - costoGiocate) / costoGiocate) * 100;
 
-            int estrazioniTotali = ParametriCondivisi.Estrazioni.Where(X=>X.Data>=ParametriCondivisi.DataInizioAnalisi && X.Data<=ParametriCondivisi.DataFineAnalisi).Select(X=>X.Data).Distinct().Count();
+            int estrazioniTotali = ParametriCondivisi.Estrazioni.Where(X => X.Data >= ParametriCondivisi.DataInizioAnalisi && X.Data <= ParametriCondivisi.DataFineAnalisi).Select(X => X.Data).Distinct().Count();
             double amboOgni = (double)estrazioniTotali / ambiIndovinati;
             double ternoOgni = (double)estrazioniTotali / terniIndovinati;
 
@@ -277,6 +277,25 @@ namespace Crs.Home.ApocalypsApp
 
         private void BtnAvviaAnalisi_Click(object sender, EventArgs e)
         {
+            bool flowControl = AnalisiModelloArmonia();
+            if (!flowControl)
+            {
+                return;
+            }
+        }
+
+
+        private void btnStartModParametriOscillanti_Click(object sender, EventArgs e)
+        {
+            bool flowControl = AnalisiModelloArmoniaOscillazione();
+            if (!flowControl)
+            {
+                return;
+            }
+        }
+
+        private bool AnalisiModelloArmonia()
+        {
             try
             {
                 // Ottieni le ruote selezionate
@@ -286,7 +305,7 @@ namespace Crs.Home.ApocalypsApp
                 {
                     MessageBox.Show("Seleziona almeno una ruota per l'analisi.", "Attenzione",
                                   MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
+                    return false;
                 }
 
                 // Ottieni l'intervallo di date dai parametri condivisi
@@ -308,7 +327,7 @@ namespace Crs.Home.ApocalypsApp
                 {
                     MessageBox.Show("Intervallo date non valido. Carica prima i dati nel Tabellone.",
                                   "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
+                    return false;
                 }
 
                 this.Cursor = Cursors.WaitCursor;
@@ -370,7 +389,105 @@ namespace Crs.Home.ApocalypsApp
                               "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 this.Cursor = Cursors.Default;
             }
+
+            return true;
         }
+
+        private bool AnalisiModelloArmoniaOscillazione()
+        {
+            try
+            {
+                // Ottieni le ruote selezionate
+                List<string> ruoteSelezionate = OttieniRuoteSelezionate();
+
+                if (ruoteSelezionate.Count == 0)
+                {
+                    MessageBox.Show("Seleziona almeno una ruota per l'analisi.", "Attenzione",
+                                  MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return false;
+                }
+
+                DateTime dataInizioAnalisi = dateTimeInizio.Value;
+                DateTime dataFineAnalisi = dateTimeFine.Value;
+
+                if (dataInizioAnalisi < ParametriCondivisi.DataInizioAnalisi)
+                    dataInizioAnalisi = ParametriCondivisi.DataInizioAnalisi;
+
+                if (dataFineAnalisi > ParametriCondivisi.DataFineAnalisi)
+                    dataFineAnalisi = ParametriCondivisi.DataFineAnalisi;
+
+
+                // Verifica che le date siano valide
+                if (dataInizioAnalisi == DateTime.MinValue || dataFineAnalisi == DateTime.MinValue)
+                {
+                    MessageBox.Show("Intervallo date non valido. Carica prima i dati nel Tabellone.",
+                                  "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+
+                this.Cursor = Cursors.WaitCursor;
+                // Prepara i risultati
+                List<RisultatoAnalisi> nuoviRisultati = new List<RisultatoAnalisi>();
+                List<RisultatoEstrazione> nuoviRisultatiDet = new List<RisultatoEstrazione>();
+
+                // Per ogni periodo nel raggruppamento selezionato
+                string raggruppamento = OttieniRaggruppamentoSelezionato();
+                var periodi = SuddividiInPeriodi(dataInizioAnalisi, dataFineAnalisi, raggruppamento);
+
+                ModelloParametriOscillanti ModelloParOscillanti = new ModelloParametriOscillanti(ParametriCondivisi.Estrazioni);
+
+                foreach (var periodo in periodi)
+                {
+                    // Per ogni ruota selezionata
+                    foreach (string ruota in ruoteSelezionate)
+                    {
+                        // Ottieni le estrazioni per questo periodo e ruota
+                        var estrazioniPeriodo = OttieniEstrazioniPerPeriodo(periodo.DataInizio, periodo.DataFine, ruota);
+
+                        foreach (var estrazione in estrazioniPeriodo)
+                        {
+                            // Chiama il modello adattivo per la previsione
+                            var numeriPrevisione = ModelloParOscillanti.PrevisioneConParametriOscillanti(
+                                ruota: ruota,
+                                dataTarget: estrazione.Data,
+                                //numeriUsciti: estrazione.Numeri, // Passa i numeri realmente usciti per la simulazione
+                                out List<Tuple<int, int, List<string>>> numPesiRegole
+                            );
+                            
+                            // Qui processi il risultato della previsione e calcoli le metriche
+                            // (questa parte dipende dalla struttura del tuo modello)
+                            ProcessaRisultatoPrevisione(nuoviRisultati, periodo, estrazione, numeriPrevisione, ruota);
+
+                            RisultatoEstrazione re = new RisultatoEstrazione();
+                            re.Ruota = ruota;
+                            re.Data = estrazione.Data;
+                            re.NumeriPrevisionePeso = numPesiRegole.Select(x => (x.Item1, x.Item2)).ToList();
+                            re.NumeriEstrazione = estrazione.Numeri;
+                            nuoviRisultatiDet.Add(re);
+                        }
+                    }
+                }
+
+                // Aggiorna i risultati e la griglia
+                risultati = nuoviRisultati;
+                risultatiEstr = nuoviRisultatiDet;
+                AggiornaGriglia();
+
+                this.Cursor = Cursors.Default;
+
+                MessageBox.Show($"Analisi completata! Processate {nuoviRisultati.Count} periodi.",
+                              "Analisi Completata", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Errore durante l'analisi: {ex.Message}",
+                              "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.Cursor = Cursors.Default;
+            }
+
+            return true;
+        }
+
 
         private List<string> OttieniRuoteSelezionate()
         {
@@ -525,7 +642,7 @@ namespace Crs.Home.ApocalypsApp
         private void btnTest_Click(object sender, EventArgs e)
         {
             string ruota = "RM";
-            List<int> numeri = txtDbgNum.Text.Split(",").Select(X=>Convert.ToInt32(X)).ToList();
+            List<int> numeri = txtDbgNum.Text.Split(",").Select(X => Convert.ToInt32(X)).ToList();
 
             DateTime dataTarget = dtDataTarget.Value;
             ModelloAdattivo ModelloAdattivo = new ModelloAdattivo(ParametriCondivisi.Estrazioni);
@@ -533,9 +650,9 @@ namespace Crs.Home.ApocalypsApp
             txtResTest.Text = "";
             txtResTest.Text += "Ultime estrazioni: \n " + string.Join("\n ", lst.OrderBy(X => X.Data).Select(X => X.Data.ToShortDateString() + " " + string.Join(", ", X.Numeri)));
 
-            
+
             // DEBUG COMPLETO
-            
+
             var ritardi = ModelloAdattivo.CalcolaRitardiFigure(ruota, dataTarget);
             foreach (int numero in numeri)
             {
@@ -572,10 +689,10 @@ namespace Crs.Home.ApocalypsApp
                     B_seq = ModelloAdattivo.CalcolaBonusSequenza(numero, ruota, dataTarget),
                     B_fisica = ModelloAdattivo.CalcolaBonusFisicaCompleto(numero, ruota, dataTarget)
                 };
-                
+
                 txtResTest.Text += $"\n\nTot bonus per numero {numero}: {bonus}\n    Debug: " + JsonConvert.SerializeObject(debug46);
                 //txtResTest.Text += "\n\n" + debug; 
-                
+
                 var numusciti = ModelloAdattivo.GetUltimeEstrazioni(ruota, dataTarget.AddDays(1), 1).First();
                 List<int> numprevisti = ModelloAdattivo.PrevisioneConAdattivita(ruota, dataTarget, numusciti.Numeri, out List<Tuple<int, int, List<string>>> res);
                 txtResTest.Text += "\n\nNum usciti:  " + string.Join(", ", numusciti.Numeri) + "\nPrevisioni: " + string.Join(", ", numprevisti);
@@ -583,6 +700,7 @@ namespace Crs.Home.ApocalypsApp
                 txtResTest.Text += "\n\nNum previsti (Bonus): \n    " + string.Join(", ", res.Select(X => X.Item1.ToString() + "(" + X.Item2.ToString() + ")"));
             }
         }
+
     }
 
     public class RisultatoAnalisi

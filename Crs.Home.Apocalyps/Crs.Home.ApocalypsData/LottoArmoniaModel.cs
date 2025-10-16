@@ -59,11 +59,29 @@ namespace Crs.Home.ApocalypsData
         }
     }
 
+    public class ParametriModelloFibo
+    {
+        // ✅ CONFIGURAZIONE FIBO_BASE
+        public int W_dec1 { get; set; } = 8;    // Fibonacci: 8
+        public int W_dec2 { get; set; } = 4;    // Metà di W_dec1
+        public int W_FA { get; set; } = 13;     // Fibonacci: 13
+        public int W_pol { get; set; } = 3;     // Ridotto
+        public int W_rit15 { get; set; } = 8;   // Scala Fibonacci
+        public int W_rit20 { get; set; } = 13;  // Fibonacci: 13
+        public int W_rit25 { get; set; } = 21;  // Fibonacci: 21
+        public int W_arm { get; set; } = 3;     // Ridotto
+        public int W_diff { get; set; } = 1;    // Mantenuto
+
+        // ✅ SOGLIA FIBO_BASE
+        public int Soglia { get; set; } = 65;
+        public int Soglia_diff { get; set; } = 10;
+    }
+
     public class ModelloLotto
     {
         protected ParametriModello param;
         protected List<Estrazione> estrazioni;
-        private HashSet<Tuple<int, int>> coppieFA;
+        protected HashSet<Tuple<int, int>> coppieFA;
         protected string[] ruote = {
             "Bari", "Cagliari", "Firenze", "Genova", "Milano",
             "Napoli", "Palermo", "Roma", "Torino", "Venezia", "Nazionale"
@@ -496,14 +514,23 @@ namespace Crs.Home.ApocalypsData
             //    (ampiezzaOnda * 5);                // bonus base onda
 
             // MIA FISICA (parametri diversi):
-            double bonusFisica =
-                (forzaGravitazionale * 0.1) +      // 10% gravità (non 30%)
-                (energia * 0.2) +                  // 20% energia (non 40%)  
-                (interferenza * 10) +              // 10% interferenza (non 20%)
-                (bonusEntropia * 0.05) +           // 5% entropia (non 10%)
-                (ampiezzaOnda * 2);                // bonus base onda (non 5)
+            //double bonusFisica =
+            //    (forzaGravitazionale * 0.1) +      // 10% gravità (non 30%)
+            //    (energia * 0.2) +                  // 20% energia (non 40%)  
+            //    (interferenza * 10) +              // 10% interferenza (non 20%)
+            //    (bonusEntropia * 0.05) +           // 5% entropia (non 10%)
+            //    (ampiezzaOnda * 2);                // bonus base onda (non 5)
 
-            return (int)Math.Round(Math.Min(60, bonusFisica));
+            double bonusFisica =
+                (forzaGravitazionale * 0.2) +      // 20% gravità
+                (energia * 0.3) +                  // 30% energia  
+                (interferenza * 15) +              // 15% interferenza
+                (bonusEntropia * 0.08) +           // 8% entropia
+                (ampiezzaOnda * 3);                // bonus base onda
+
+            return (int)Math.Round(Math.Min(50, bonusFisica)); // Limite 50
+
+            //return (int)Math.Round(Math.Min(60, bonusFisica));
         }
 
         private List<int> GetUltimiEstratti(string ruota, DateTime dataTarget, int numeroEstrazioni)
@@ -674,7 +701,7 @@ namespace Crs.Home.ApocalypsData
             return false;
         }
         
-        private bool CoppiaForti(string ruotaA, string ruotaB, bool onlyStrong)
+        protected bool CoppiaForti(string ruotaA, string ruotaB, bool onlyStrong)
         {
             // Coppie con vantaggio > 1.3x dai nostri test
             var coppieForti = new HashSet<Tuple<string, string>>
@@ -721,6 +748,7 @@ namespace Crs.Home.ApocalypsData
             return scores;
         }
 
+       
         // to do
         // Dopo aver calcolato tutti i bonus, usiamo lo stato quantistico come "tie-breaker"
         //public List<int> PrevisioneConQuantistica(string ruota, DateTime dataTarget)
@@ -763,7 +791,321 @@ namespace Crs.Home.ApocalypsData
         //        .OrderBy(x => x)
         //        .ToList();
         //}
-        
+
+    }
+
+    public class ModelloParametriOscillanti: ModelloLotto
+    {
+        public ModelloParametriOscillanti(List<Estrazione> estrazioniStoriche, ParametriModello parametri = null)
+           : base(estrazioniStoriche, parametri)
+        {
+            //this.performanceTracker = new PerformanceTracker();
+            //this.estrazioniDaUltimaCalibrazione = 0;
+        }
+
+        public List<int> PrevisioneConParametriOscillanti(string ruota, DateTime dataTarget, out List<Tuple<int, int, List<string>>> risultati)
+        {
+            // 🎵 CREA PARAMETRI SPECIFICI PER QUESTA DATA
+            var parametriOscillanti = new ParametriOscillanti(dataTarget);
+
+            Console.WriteLine($"🎵 Parametri per {dataTarget:dd/MM/yyyy}:");
+            Console.WriteLine($"   W_dec1: {parametriOscillanti.W_dec1}, W_FA: {parametriOscillanti.W_FA}, " +
+                              $"W_rit25: {parametriOscillanti.W_rit25}, Soglia: {parametriOscillanti.Soglia}");
+
+            risultati = new List<Tuple<int, int, List<string>>>();
+
+            for (int num = 1; num <= 90; num++)
+            {
+                // Escludi numeri recenti
+                var ultimeEstrazioni = GetUltimeEstrazioni(ruota, dataTarget, 3);
+                var numeriRecenti = ultimeEstrazioni.SelectMany(e => e.Numeri).ToList();
+                if (numeriRecenti.Contains(num)) continue;
+
+                var bonus = CalcolaBonusConRegoleOscillanti(num, ruota, dataTarget, parametriOscillanti);
+                risultati.Add(Tuple.Create(num, bonus.Item1, bonus.Item2));
+            }
+
+            var consigliati = risultati
+                .Where(x => x.Item2 >= parametriOscillanti.Soglia)
+                .OrderByDescending(x => x.Item2)
+                .Select(x => x.Item1)
+                .ToList();
+
+            // Fallback se troppo pochi numeri
+            if (consigliati.Count < 3)
+            {
+                consigliati = risultati
+                    .OrderByDescending(x => x.Item2)
+                    .Take(5)
+                    .Select(x => x.Item1)
+                    .ToList();
+            }
+
+            Console.WriteLine($"   Numeri consigliati: {string.Join(", ", consigliati)}");
+            return consigliati;
+        }
+
+
+        private Tuple<int, List<string>> CalcolaBonusConRegoleOscillanti(int numero, string ruota, DateTime dataTarget, ParametriOscillanti parametri)
+        {
+            var regoleAttivate = new List<string>();
+
+            // 🎵 CALCOLA TUTTI I BONUS CON PARAMETRI OSCILLANTI
+            int B_dec = CalcolaBonusDecinaOscillante(numero, ruota, dataTarget, parametri);
+            int B_FA = CalcolaBonusFAOscillante(numero, ruota, dataTarget, parametri);
+            int B_pol = CalcolaBonusPolarizzazioneOscillante(numero, ruota, dataTarget, parametri);
+            int B_rit = CalcolaBonusRitardoOscillante(numero, ruota, dataTarget, parametri);
+            int B_arm = CalcolaBonusArmoniaOscillante(numero, ruota, dataTarget, parametri);
+            int B_diff = CalcolaBonusDifferenzaRitardiOscillante(numero, ruota, dataTarget, parametri);
+            int B_9 = CalcolaBonusAutoAttrazione9Oscillante(numero, ruota, dataTarget, parametri);
+            int B_ir = CalcolaBonusInterRuotaOscillante(numero, ruota, dataTarget, parametri);
+            int B_temp = CalcolaBonusTemporaleOscillante(numero, ruota, dataTarget, parametri);
+            int B_seq = CalcolaBonusSequenzaOscillante(numero, ruota, dataTarget, parametri);
+            int B_fisica = CalcolaBonusFisicaCompleto(numero, ruota, dataTarget); // Fisica rimane invariata
+
+            // 🎵 REGISTRA REGOLE ATTIVATE
+            if (B_dec > 0) regoleAttivate.Add("Decina");
+            if (B_FA > 0) regoleAttivate.Add("FiguraAntifigura");
+            if (B_pol > 0) regoleAttivate.Add("Polarizzazione");
+            if (B_rit > 0) regoleAttivate.Add("Ritardo");
+            if (B_arm > 0) regoleAttivate.Add("Armonia");
+            if (B_diff > 0) regoleAttivate.Add("DifferenzaRitardi");
+            if (B_9 > 0) regoleAttivate.Add("AutoAttrazione9");
+            if (B_ir > 0) regoleAttivate.Add("InterRuota");
+            if (B_temp > 0) regoleAttivate.Add("Temporale");
+            if (B_seq > 0) regoleAttivate.Add("Sequenza");
+            if (B_fisica > 0) regoleAttivate.Add("Fisica");
+
+            // 🎵 CALCOLO MOLTIPLICATIVO (INVARIATO)
+            double bonus_moltiplicativo =
+                (B_dec / 10.0 + 1) *
+                (B_FA / 10.0 + 1) *
+                (B_pol / 10.0 + 1) *
+                (B_rit / 10.0 + 1) *
+                (B_arm / 10.0 + 1) *
+                (B_diff / 10.0 + 1) *
+                (B_9 / 10.0 + 1) *
+                (B_ir / 10.0 + 1) *
+                (B_temp / 10.0 + 1) *
+                (B_seq / 10.0 + 1) *
+                (B_fisica / 10.0 + 1) * 10;
+
+            return Tuple.Create((int)Math.Round(bonus_moltiplicativo), regoleAttivate);
+        }
+
+        private int CalcolaBonusDecinaOscillante(int numero, string ruota, DateTime dataTarget, ParametriOscillanti parametri)
+        {
+            int B_dec = 0;
+            var estrRuota = GetUltimeEstrazioni(ruota, dataTarget, 2);
+            var decineUltime2 = new HashSet<int>();
+
+            foreach (var e in estrRuota)
+            {
+                foreach (int n in e.Numeri)
+                {
+                    decineUltime2.Add(Decina(n));
+                }
+            }
+
+            int dNum = Decina(numero);
+            if (decineUltime2.Contains(dNum))
+            {
+                if (estrRuota.Count > 0 && estrRuota[0].Numeri.Any(n => Decina(n) == dNum))
+                    B_dec += parametri.W_dec1;
+                if (estrRuota.Count > 1 && estrRuota[1].Numeri.Any(n => Decina(n) == dNum))
+                    B_dec += parametri.W_dec2;
+            }
+            return B_dec;
+        }
+
+        private int CalcolaBonusFAOscillante(int numero, string ruota, DateTime dataTarget, ParametriOscillanti parametri)
+        {
+            int B_FA = 0;
+            int fNum = Figura(numero);
+            if (fNum == 9) return 0;
+
+            var estrRuota = GetUltimeEstrazioni(ruota, dataTarget, 3);
+
+            for (int i = 0; i < estrRuota.Count; i++)
+            {
+                foreach (int n in estrRuota[i].Numeri)
+                {
+                    int fN = Figura(n);
+                    if (fN == 9) continue;
+                    var coppia = Tuple.Create(fN, fNum);
+                    if (coppieFA.Contains(coppia))
+                    {
+                        if (i == 0) B_FA += parametri.W_FA;
+                        else if (i == 1) B_FA += (int)(parametri.W_FA * 0.5);
+                        else if (i == 2) B_FA += (int)(parametri.W_FA * 0.33);
+                        break;
+                    }
+                }
+            }
+            return B_FA;
+        }
+
+        // 🎵 AGGIUNGI METODI SIMILI PER GLI ALTRI BONUS...
+        private int CalcolaBonusPolarizzazioneOscillante(int numero, string ruota, DateTime dataTarget, ParametriOscillanti parametri)
+        {
+            int B_pol = 0;
+            var estrRuota = GetUltimeEstrazioni(ruota, dataTarget, 1);
+            if (estrRuota.Count == 0) return 0;
+
+            var ultimaCinquina = estrRuota[0].Numeri;
+            var figureUltima = new HashSet<int>(ultimaCinquina.Select(Figura));
+            int varieta = figureUltima.Count;
+            int fNum = Figura(numero);
+
+            if (varieta == 5) // Alta varietà → bonus figure già usate
+            {
+                var figureUltime3 = new HashSet<int>();
+                foreach (var e in GetUltimeEstrazioni(ruota, dataTarget, 3))
+                {
+                    figureUltime3.UnionWith(e.Numeri.Select(Figura));
+                }
+                if (figureUltime3.Contains(fNum))
+                    B_pol += parametri.W_pol;
+            }
+            else if (varieta <= 3) // Bassa varietà → bonus figure nuove
+            {
+                if (!figureUltima.Contains(fNum))
+                    B_pol += parametri.W_pol;
+            }
+            return B_pol;
+        }
+
+        private int CalcolaBonusRitardoOscillante(int numero, string ruota, DateTime dataTarget, ParametriOscillanti parametri)
+        {
+            int B_rit = 0;
+            var ritardi = CalcolaRitardiFigure(ruota, dataTarget);
+            int fNum = Figura(numero);
+            int ritardoF = ritardi.ContainsKey(fNum) ? ritardi[fNum] : 1000;
+
+            if (ritardoF >= 25) B_rit += parametri.W_rit25;
+            else if (ritardoF >= 20) B_rit += parametri.W_rit20;
+            else if (ritardoF >= 15) B_rit += parametri.W_rit15;
+
+            return B_rit;
+        }
+
+        private int CalcolaBonusArmoniaOscillante(int numero, string ruota, DateTime dataTarget, ParametriOscillanti parametri)
+        {
+            int B_arm = 0;
+            var figureUltime3 = GetUltimeEstrazioni(ruota, dataTarget, 3)
+                .SelectMany(e => e.Numeri.Select(Figura));
+            int fNum = Figura(numero);
+
+            foreach (int fAltra in figureUltime3)
+            {
+                if (fAltra + fNum == 9 || fAltra + fNum == 10)
+                {
+                    B_arm += parametri.W_arm;
+                    break;
+                }
+            }
+            return B_arm;
+        }
+
+        private int CalcolaBonusDifferenzaRitardiOscillante(int numero, string ruota, DateTime dataTarget, ParametriOscillanti parametri)
+        {
+            int B_diff = 0;
+            var ritardi = CalcolaRitardiFigure(ruota, dataTarget);
+            int fNum = Figura(numero);
+            int afNum = Antifigura(numero);
+
+            if (coppieFA.Contains(Tuple.Create(fNum, afNum)))
+            {
+                int ritardoF = ritardi.ContainsKey(fNum) ? ritardi[fNum] : 1000;
+                int ritardoAF = ritardi.ContainsKey(afNum) ? ritardi[afNum] : 1000;
+                int diff = Math.Abs(ritardoF - ritardoAF);
+                if (diff > parametri.Soglia_diff)
+                {
+                    B_diff += (diff - parametri.Soglia_diff) * parametri.W_diff;
+                }
+            }
+            return B_diff;
+        }
+
+        private int CalcolaBonusAutoAttrazione9Oscillante(int numero, string ruota, DateTime dataTarget, ParametriOscillanti parametri)
+        {
+            int B_9 = 0;
+            int fNum = Figura(numero);
+            if (fNum != 9) return 0;
+
+            var estrRuota = GetUltimeEstrazioni(ruota, dataTarget, 3);
+            for (int i = 0; i < estrRuota.Count; i++)
+            {
+                if (estrRuota[i].Numeri.Any(n => Figura(n) == 9))
+                {
+                    if (i == 0) B_9 += 20; // Fisso per coerenza
+                    else if (i == 1) B_9 += 10;
+                    else if (i == 2) B_9 += 5;
+                    break;
+                }
+            }
+            return B_9;
+        }
+
+        private int CalcolaBonusInterRuotaOscillante(int numero, string ruota, DateTime dataTarget, ParametriOscillanti parametri)
+        {
+            int B_ir = 0;
+            foreach (string altraRuota in ruote)
+            {
+                if (altraRuota == ruota) continue;
+
+                var estrAltraRuota = GetUltimeEstrazioni(altraRuota, dataTarget, 3);
+                foreach (var e in estrAltraRuota)
+                {
+                    if (e.Numeri.Contains(numero))
+                    {
+                        if (CoppiaForti(ruota, altraRuota, true))
+                            B_ir += 15; // Fisso
+                        else
+                            B_ir += 10; // Fisso
+                        break;
+                    }
+                }
+            }
+            return B_ir;
+        }
+
+        private int CalcolaBonusTemporaleOscillante(int numero, string ruota, DateTime dataTarget, ParametriOscillanti parametri)
+        {
+            int B_temp = 0;
+            DayOfWeek giornoTarget = dataTarget.DayOfWeek;
+            int fNum = Figura(numero);
+
+            var patternTemporali = new Dictionary<Tuple<string, DayOfWeek, int>, int>
+    {
+        { Tuple.Create("Roma", DayOfWeek.Tuesday, 8), 12 },
+        { Tuple.Create("Napoli", DayOfWeek.Friday, 3), 12 },
+        { Tuple.Create("Palermo", DayOfWeek.Saturday, 9), 12 },
+        { Tuple.Create("Milano", DayOfWeek.Monday, 5), 10 },
+        { Tuple.Create("Bari", DayOfWeek.Thursday, 1), 8 }
+    };
+
+            var key = Tuple.Create(ruota, giornoTarget, fNum);
+            if (patternTemporali.ContainsKey(key))
+            {
+                B_temp += patternTemporali[key];
+            }
+            return B_temp;
+        }
+
+        private int CalcolaBonusSequenzaOscillante(int numero, string ruota, DateTime dataTarget, ParametriOscillanti parametri)
+        {
+            int B_seq = 0;
+            var estrattiRecenti = GetUltimeEstrazioni(ruota, dataTarget, 3)
+                .SelectMany(e => e.Numeri).ToList();
+
+            if (CompletaSequenza(numero, estrattiRecenti))
+            {
+                B_seq += 15; // Fisso
+            }
+            return B_seq;
+        }
+
     }
 
     public class ModelloAdattivo : ModelloLotto
@@ -799,7 +1141,6 @@ namespace Crs.Home.ApocalypsData
                 risultati.Add(Tuple.Create(num, bonus.Item1, bonus.Item2));
             }
             int sogliaDinamica = SogliaAdattiva(risultati.Select(x => Tuple.Create(x.Item1, x.Item2)).ToList());
-            //var consigliati = risultati.Where(x => x.Item2 >= param.Soglia).Select(x => x.Item1).ToList();
             var consigliati = risultati.Where(x => x.Item2 >= sogliaDinamica).Select(x => x.Item1).ToList();
             //var consigliati = risultati.Where(x => x.Item2 >= 50).ToList();
 
@@ -989,6 +1330,7 @@ namespace Crs.Home.ApocalypsData
             {
                 bool b = DbDataAccess.GetSeqFields(configfields, out int seqdt, out int seqruota, out int seqanno, out int seqnum1);
                 var lines = File.ReadAllLines(filePath);
+                int idx = 0;
                 foreach (var line in lines.Skip(1))
                 {
                     var parts = line.Split(';');
@@ -998,7 +1340,7 @@ namespace Crs.Home.ApocalypsData
                     {
                         string ruota = parts[seqruota];
                         var numeri = parts[seqnum1].Split(',').Select(int.Parse).ToList();
-                        estrazioni.Add(new Estrazione(data, ruota, 0, numeri));
+                        estrazioni.Add(new Estrazione(data, ruota, idx++, numeri));
                     }
                 }
             }
@@ -1027,55 +1369,46 @@ namespace Crs.Home.ApocalypsData
         }
     }
 
-    //public class ModelloAdattivo : ModelloLotto
-    //{
-    //    private Dictionary<string, RegolaPerformance> performanceRegole;
-    //    private int estrazioniDaUltimoAggiornamento = 0;
-    //    private const int INTERVALLO_AGGIORNAMENTO = 30; // ogni 30 estrazioni
+    public class ParametriOscillanti
+    {
+        private DateTime _dataTarget;
 
-    //    public ModelloAdattivo(List<Estrazione> estrazioniStoriche, ParametriModello parametri = null) : base(estrazioniStoriche, parametri)
-    //    {
-    //    }
+        public ParametriOscillanti(DateTime dataTarget)
+        {
+            _dataTarget = dataTarget;
+        }
 
-    //    public void RegistraPerformance(string ruota, DateTime data, int numero, bool uscito, List<string> regoleAttivate)
-    //    {
-    //        foreach (string regola in regoleAttivate)
-    //        {
-    //            var perf = performanceRegole[regola];
-    //            if (uscito)
-    //                perf.AttivazioniSuccesso++;
-    //            else
-    //                perf.AttivazioniFallite++;
-    //        }
+        // 🎵 FUNZIONI ONDA BASE
+        private double OndaGiornaliera() => (_dataTarget.DayOfYear % 1) * 2 * Math.PI;
+        private double OndaSettimanale() => ((_dataTarget.DayOfYear / 7.0) % 1) * 2 * Math.PI;
+        private double OndaMensile() => ((_dataTarget.DayOfYear / 30.4375) % 1) * 2 * Math.PI;
+        private double OndaStagionale() => ((_dataTarget.DayOfYear / 91.25) % 1) * 2 * Math.PI;
 
-    //        estrazioniDaUltimoAggiornamento++;
-    //        if (estrazioniDaUltimoAggiornamento >= INTERVALLO_AGGIORNAMENTO)
-    //        {
-    //            AggiornaPesi();
-    //            estrazioniDaUltimoAggiornamento = 0;
-    //        }
-    //    }
+        // 🎵 PARAMETRI OSCILLANTI
+        public int W_dec1 => 8 + (int)(2 * Math.Sin(OndaSettimanale() * 2)); // 6-10
+        public int W_dec2 => W_dec1 / 2;
+        public int W_FA => 13 + (int)(3 * Math.Cos(OndaMensile() * 1.5)); // 10-16
+        public int W_rit15 => 8 + (int)(2 * Math.Sin(OndaGiornaliera() * 3));
+        public int W_rit20 => 13 + (int)(3 * Math.Cos(OndaSettimanale() * 2));
+        public int W_rit25 => 21 + (int)(4 * Math.Sin(OndaStagionale() * 1.2)); // 17-25
 
-    //    private void AggiornaPesi()
-    //    {
-    //        foreach (var perf in performanceRegole.Values)
-    //        {
-    //            double nuovoPeso = CalcolaNuovoPeso(perf.VantaggioCorrente);
-    //            AggiornaParametro(perf.NomeRegola, nuovoPeso);
-    //        }
-    //    }
+        public int W_pol => 3 + (int)(1 * Math.Sin(OndaMensile()));
+        public int W_arm => 3 + (int)(1 * Math.Cos(OndaSettimanale()));
+        public int W_diff => 1;
 
-    //    private double CalcolaNuovoPeso(double vantaggioRegola)
-    //    {
-    //        double vantaggioMedio = performanceRegole.Values.Average(p => p.VantaggioCorrente);
-    //        double rapporto = vantaggioRegola / vantaggioMedio;
+        // Piccole ottimizzazioni basate sui dati:
+        //public int W_dec1 => 8 + (int)(2 * Math.Sin(OndaSettimanale() * 2.1)); // Leggero stretch
+        //public int W_FA => 13 + (int)(3 * Math.Cos(OndaMensile() * 1.6)); // Frequenza ottimizzata
+        //public int W_rit25 => 21 + (int)(4 * Math.Sin(OndaStagionale() * 1.1)); // Ciclo più lungo
 
-    //        // Limita l'aggiustamento tra 0.7x e 1.3x per stabilità
-    //        rapporto = Math.Max(0.7, Math.Min(1.3, rapporto));
+        public int Soglia_diff => 10 + (int)(2 * Math.Sin(OndaMensile())); // 8-12
 
-    //        return parametriCorrenti * rapporto;
-    //    }
-    //}
+        public int Soglia => 65 + (int)(5 * Math.Sin(OndaCombinata())); // 60-70
+
+        private double OndaCombinata() =>
+            (OndaSettimanale() + OndaMensile() * 0.7 + OndaStagionale() * 0.3) / 2;
+    }
+
 
     class Program
     {
