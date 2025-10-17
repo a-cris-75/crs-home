@@ -340,7 +340,7 @@ namespace Crs.Home.ApocalypsApp
                 var periodi = SuddividiInPeriodi(dataInizioAnalisi, dataFineAnalisi, raggruppamento);
 
                 ModelloAdattivo ModelloAdattivo = new ModelloAdattivo(ParametriCondivisi.Estrazioni);
-
+                int indiceperiodo = 0;
                 foreach (var periodo in periodi)
                 {
                     // Per ogni ruota selezionata
@@ -361,12 +361,27 @@ namespace Crs.Home.ApocalypsApp
                             //var punteggi = ModelloAdattivo.GetPunteggiCompleti(ruota, estrazione.Data);
                             // Qui processi il risultato della previsione e calcoli le metriche
                             // (questa parte dipende dalla struttura del tuo modello)
-                            ProcessaRisultatoPrevisione(nuoviRisultati, periodo, estrazione, numeriPrevisione, ruota);
-
+                            ProcessaRisultatoPrevisione(nuoviRisultati, periodo, estrazione, numeriPrevisione, ruota, indiceperiodo++);
+                            
                             RisultatoEstrazione re = new RisultatoEstrazione();
                             re.Ruota = ruota;
                             re.Data = estrazione.Data;
-                            re.NumeriPrevisionePeso = numPesiRegole.Select(x => (x.Item1, x.Item2)).ToList();
+
+                            //re.NumeriPrevisionePeso = numPesiRegole.Where(X =>
+                            //        (numeriPrevisione.Count() > 0 && numeriPrevisione[0] == X.Item1) ||
+                            //        (numeriPrevisione.Count() > 1 && numeriPrevisione[1] == X.Item1) ||
+                            //        (numeriPrevisione.Count() > 2 && numeriPrevisione[2] == X.Item1) ||
+                            //        (numeriPrevisione.Count() > 3 && numeriPrevisione[3] == X.Item1) ||
+                            //        (numeriPrevisione.Count() > 4 && numeriPrevisione[4] == X.Item1))
+                            re.NumeriPrevisionePeso = numPesiRegole.Where(X =>numeriPrevisione.Where(Y=>Y==X.Item1).Any())
+                                .Select(x => (x.Item1, x.Item2)).OrderBy(X=>X.Item2).ToList();
+                            re.NumeriEstrazionePeso = numPesiRegole.Where(X =>
+                                    estrazione.Numeri[0] == X.Item1 ||
+                                    estrazione.Numeri[1] == X.Item1 ||
+                                    estrazione.Numeri[2] == X.Item1 ||
+                                    estrazione.Numeri[3] == X.Item1 ||
+                                    estrazione.Numeri[4] == X.Item1)
+                                .Select(x => (x.Item1, x.Item2)).OrderBy(X => X.Item2).ToList();
                             re.NumeriEstrazione = estrazione.Numeri;
                             nuoviRisultatiDet.Add(re);
                         }
@@ -416,7 +431,6 @@ namespace Crs.Home.ApocalypsApp
                 if (dataFineAnalisi > ParametriCondivisi.DataFineAnalisi)
                     dataFineAnalisi = ParametriCondivisi.DataFineAnalisi;
 
-
                 // Verifica che le date siano valide
                 if (dataInizioAnalisi == DateTime.MinValue || dataFineAnalisi == DateTime.MinValue)
                 {
@@ -435,7 +449,7 @@ namespace Crs.Home.ApocalypsApp
                 var periodi = SuddividiInPeriodi(dataInizioAnalisi, dataFineAnalisi, raggruppamento);
 
                 ModelloParametriOscillanti ModelloParOscillanti = new ModelloParametriOscillanti(ParametriCondivisi.Estrazioni);
-
+                int indiceperiodo = 0;
                 foreach (var periodo in periodi)
                 {
                     // Per ogni ruota selezionata
@@ -450,19 +464,144 @@ namespace Crs.Home.ApocalypsApp
                             var numeriPrevisione = ModelloParOscillanti.PrevisioneConParametriOscillanti(
                                 ruota: ruota,
                                 dataTarget: estrazione.Data,
-                                //numeriUsciti: estrazione.Numeri, // Passa i numeri realmente usciti per la simulazione
+                                numeriUsciti: estrazione.Numeri, // Passa i numeri realmente usciti per la simulazione
                                 out List<Tuple<int, int, List<string>>> numPesiRegole
                             );
                             
                             // Qui processi il risultato della previsione e calcoli le metriche
                             // (questa parte dipende dalla struttura del tuo modello)
-                            ProcessaRisultatoPrevisione(nuoviRisultati, periodo, estrazione, numeriPrevisione, ruota);
+                            ProcessaRisultatoPrevisione(nuoviRisultati, periodo, estrazione, numeriPrevisione, ruota, indiceperiodo++);
 
                             RisultatoEstrazione re = new RisultatoEstrazione();
                             re.Ruota = ruota;
                             re.Data = estrazione.Data;
-                            re.NumeriPrevisionePeso = numPesiRegole.Select(x => (x.Item1, x.Item2)).ToList();
+                            //re.NumeriPrevisionePeso = numPesiRegole.Select(x => (x.Item1, x.Item2)).ToList();
                             re.NumeriEstrazione = estrazione.Numeri;
+
+                            //re.NumeriPrevisionePeso = numPesiRegole.Where(X =>
+                            //        (numeriPrevisione.Count() > 0 && numeriPrevisione[0] == X.Item1) ||
+                            //        (numeriPrevisione.Count() > 1 && numeriPrevisione[1] == X.Item1) ||
+                            //        (numeriPrevisione.Count() > 2 && numeriPrevisione[2] == X.Item1) ||
+                            //        (numeriPrevisione.Count() > 3 && numeriPrevisione[3] == X.Item1) ||
+                            //        (numeriPrevisione.Count() > 4 && numeriPrevisione[4] == X.Item1))
+                            //    .Select(x => (x.Item1, x.Item2)).ToList();
+                            re.NumeriPrevisionePeso = numPesiRegole.Where(X => numeriPrevisione.Where(Y => Y == X.Item1).Any())
+                                .Select(x => (x.Item1, x.Item2)).OrderBy(X => X.Item2).ToList();
+                            re.NumeriEstrazionePeso = numPesiRegole.Where(X =>
+                                    estrazione.Numeri[0] == X.Item1 ||
+                                    estrazione.Numeri[1] == X.Item1 ||
+                                    estrazione.Numeri[2] == X.Item1 ||
+                                    estrazione.Numeri[3] == X.Item1 ||
+                                    estrazione.Numeri[4] == X.Item1)
+                                .Select(x => (x.Item1, x.Item2)).OrderBy(X => X.Item2).ToList();
+
+
+                            nuoviRisultatiDet.Add(re);
+                        }
+                    }
+                }
+
+                // Aggiorna i risultati e la griglia
+                risultati = nuoviRisultati;
+                risultatiEstr = nuoviRisultatiDet;
+                AggiornaGriglia();
+
+                this.Cursor = Cursors.Default;
+
+                MessageBox.Show($"Analisi completata! Processate {nuoviRisultati.Count} periodi.",
+                              "Analisi Completata", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Errore durante l'analisi: {ex.Message}",
+                              "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.Cursor = Cursors.Default;
+            }
+
+            return true;
+        }
+
+        private bool AnalisiModelloArmoniaStatistica()
+        {
+            try
+            {
+                // Ottieni le ruote selezionate
+                List<string> ruoteSelezionate = OttieniRuoteSelezionate();
+
+                if (ruoteSelezionate.Count == 0)
+                {
+                    MessageBox.Show("Seleziona almeno una ruota per l'analisi.", "Attenzione",
+                                  MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return false;
+                }
+
+                DateTime dataInizioAnalisi = dateTimeInizio.Value;
+                DateTime dataFineAnalisi = dateTimeFine.Value;
+
+                if (dataInizioAnalisi < ParametriCondivisi.DataInizioAnalisi)
+                    dataInizioAnalisi = ParametriCondivisi.DataInizioAnalisi;
+
+                if (dataFineAnalisi > ParametriCondivisi.DataFineAnalisi)
+                    dataFineAnalisi = ParametriCondivisi.DataFineAnalisi;
+
+
+                // Verifica che le date siano valide
+                if (dataInizioAnalisi == DateTime.MinValue || dataFineAnalisi == DateTime.MinValue)
+                {
+                    MessageBox.Show("Intervallo date non valido. Carica prima i dati nel Tabellone.",
+                                  "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+
+                this.Cursor = Cursors.WaitCursor;
+                // Prepara i risultati
+                List<RisultatoAnalisi> nuoviRisultati = new List<RisultatoAnalisi>();
+                List<RisultatoEstrazione> nuoviRisultatiDet = new List<RisultatoEstrazione>();
+
+                // Per ogni periodo nel raggruppamento selezionato
+                string raggruppamento = OttieniRaggruppamentoSelezionato();
+                var periodi = SuddividiInPeriodi(dataInizioAnalisi, dataFineAnalisi, raggruppamento);
+
+                ModelloLottoStatistico ModelloStatistico = new ModelloLottoStatistico(ParametriCondivisi.Estrazioni);
+                int indiceperiodo = 0;
+                foreach (var periodo in periodi)
+                {
+                    // Per ogni ruota selezionata
+                    foreach (string ruota in ruoteSelezionate)
+                    {
+                        // Ottieni le estrazioni per questo periodo e ruota
+                        var estrazioniPeriodo = OttieniEstrazioniPerPeriodo(periodo.DataInizio, periodo.DataFine, ruota);
+
+                        foreach (var estrazione in estrazioniPeriodo)
+                        {
+                            // Chiama il modello adattivo per la previsione
+                            var numeriPrevisione = ModelloStatistico.PrevisioneNumeri(
+                                ruota: ruota,
+                                dataTarget: estrazione.Data,
+                                numeriUsciti: estrazione.Numeri, // Passa i numeri realmente usciti per la simulazione
+                                out List<Tuple<int, int, List<string>>> numPesiRegole
+                            );
+
+                            // Qui processi il risultato della previsione e calcoli le metriche
+                            // (questa parte dipende dalla struttura del tuo modello)
+                            ProcessaRisultatoPrevisione(nuoviRisultati, periodo, estrazione, numeriPrevisione, ruota, indiceperiodo++);
+
+                            RisultatoEstrazione re = new RisultatoEstrazione();
+                            re.Ruota = ruota;
+                            re.Data = estrazione.Data;
+                            //re.NumeriPrevisionePeso = numPesiRegole.Select(x => (x.Item1, x.Item2)).ToList();
+                            re.NumeriEstrazione = estrazione.Numeri;
+
+                            re.NumeriPrevisionePeso = numPesiRegole.Where(X => numeriPrevisione.Where(Y => Y == X.Item1).Any())
+                                .Select(x => (x.Item1, x.Item2)).OrderBy(X => X.Item2).ToList();
+                            re.NumeriEstrazionePeso = numPesiRegole.Where(X =>
+                                    estrazione.Numeri[0] == X.Item1 ||
+                                    estrazione.Numeri[1] == X.Item1 ||
+                                    estrazione.Numeri[2] == X.Item1 ||
+                                    estrazione.Numeri[3] == X.Item1 ||
+                                    estrazione.Numeri[4] == X.Item1)
+                                .Select(x => (x.Item1, x.Item2)).OrderBy(X => X.Item2).ToList();
+
                             nuoviRisultatiDet.Add(re);
                         }
                     }
@@ -578,8 +717,8 @@ namespace Crs.Home.ApocalypsApp
             return ParametriCondivisi.Estrazioni.Where(X => X.Ruota.Equals(ruota) && X.Data >= dataInizio && X.Data < dataFine).ToList();
         }
 
-        private void ProcessaRisultatoPrevisione(List<RisultatoAnalisi> risultati, Periodo periodo,
-                                               Estrazione estrazione, List<int> numeriPrevisione, string ruota)
+        private RisultatoAnalisi ProcessaRisultatoPrevisione(List<RisultatoAnalisi> risultati, Periodo periodo,
+                                               Estrazione estrazione, List<int> numeriPrevisione, string ruota, int indiceperiodo)
         {
             // Implementa qui la logica per processare il risultato della previsione
             // Confronta i numeri previsti con quelli realmente usciti
@@ -588,9 +727,10 @@ namespace Crs.Home.ApocalypsApp
             // Esempio semplificato:
             var risultatoEsistente = risultati.FirstOrDefault(r =>
                 r.DataInizio == periodo.DataInizio && r.DataFine == periodo.DataFine);
-
+            bool toadd = false;
             if (risultatoEsistente == null)
             {
+                toadd = true;
                 risultatoEsistente = new RisultatoAnalisi
                 {
                     Intervallo = $"{periodo.DataInizio:dd/MM/yyyy} - {periodo.DataFine:dd/MM/yyyy}",
@@ -603,7 +743,6 @@ namespace Crs.Home.ApocalypsApp
                     TerniVinti = 0
                 };
 
-                risultati.Add(risultatoEsistente);
             }
 
             // Aggiorna le metriche (logica semplificata - adatta alla tua implementazione)
@@ -617,9 +756,17 @@ namespace Crs.Home.ApocalypsApp
                     X == estrazione.Numeri[3] ||
                     X == estrazione.Numeri[4]).Count();
             risultatoEsistente.NumeriVinti += numvintiprev;// estrazione.Numeri
+            if (numvintiprev > 1)
+            {
+                risultatoEsistente.AmbiVinti += CalcolaCombinazioni(numvintiprev, 2);
+                risultatoEsistente.TerniVinti += CalcolaCombinazioni(numvintiprev, 3);
+            }
 
-            risultatoEsistente.AmbiVinti = CalcolaCombinazioni(numvintiprev, 2);
-            risultatoEsistente.TerniVinti = CalcolaCombinazioni(numvintiprev, 3);
+            if(toadd)
+                risultati.Add(risultatoEsistente);
+
+            CalcolaMetricheFinanziarie(risultatoEsistente, indiceperiodo);
+            return risultatoEsistente;
         }
 
         private int CalcolaCombinazioni(int n, int k)
@@ -723,11 +870,20 @@ namespace Crs.Home.ApocalypsApp
     {
         public string Ruota { get; set; }
         public DateTime Data{ get; set; }
+        public int CountPrevisti { get { return NumeriPrevisionePeso.Count(); } }
         public string NumPrevistiPesi 
         { 
             get 
             {
                 return string.Join(", ", NumeriPrevisionePeso.Select(x => $"{x.Item1}({x.Item2})"));
+            }
+        }
+        public string NumEstrattiPesi
+        {
+            get
+            {
+                //return string.Join(", ", NumeriPrevisionePeso.Where(X=> NumeriEstrazione.Contains(X.Item1)).Select(x => $"{x.Item1}({x.Item2})"));
+                return string.Join(", ", NumeriEstrazionePeso.Select(x => $"{x.Item1}({x.Item2})"));
             }
         }
 
@@ -750,5 +906,6 @@ namespace Crs.Home.ApocalypsApp
 
         public List<(int,int)> NumeriPrevisionePeso { get; set; }
         public List<int> NumeriEstrazione { get; set; }
+        public List<(int,int)> NumeriEstrazionePeso { get; set; }
     }
 }

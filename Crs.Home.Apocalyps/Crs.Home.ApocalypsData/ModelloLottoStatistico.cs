@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Crs.Home.ApocalypsData.DataEntities;
+using Google.Protobuf.WellKnownTypes;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Crs.Home.ApocalypsData
 {
-    using Crs.Home.ApocalypsData.DataEntities;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-
     public class ModelloLottoStatistico
     {
         private List<Estrazione> estrazioni;
@@ -161,42 +161,51 @@ namespace Crs.Home.ApocalypsData
         }
 
         // === MODELLO PRINCIPALE ===
-        public int CalcolaBonusModelloFinale(int numero, string ruota, DateTime dataTarget)
+        public Tuple<int, List<string>> CalcolaBonusModelloFinale(int numero, string ruota, DateTime dataTarget)
         {
+            var regoleAttivate = new List<string>();
             var ritardi = CalcolaRitardiFigure(ruota, dataTarget);
             int figura = Figura(numero);
             int unita = numero % 10;
 
-            int bonus = 0;
+            //int bonus = 0;
+            int B_dec = 0;
+            int B_FA = 0;
+            int B_stessaFig = 0;
+            int B_stessaUnit = 0;
+            int B_ritFig = 0;     
+            int B_figData = 0;
+            int B_figUnita = 0;
+           
 
             // 1. RITARDO FIGURE (PESO ALTO - +25% vantaggio)
             if (ritardi.ContainsKey(figura) && ritardi[figura] > 15)
-                bonus += 30 + Math.Min(20, ritardi[figura] - 15);
+                B_ritFig += 30 + Math.Min(20, ritardi[figura] - 15);
 
             // 2. DECINE (PESO MEDIO - +4% vantaggio)
             var decineRecenti = GetDecineRecenti(ruota, dataTarget, 2);
             if (decineRecenti.Contains(Decina(numero)))
-                bonus += 15;
+                B_dec += 15;
 
             // 3. FIGURA-ANTIFIGURA (PESO BASSO - +3% vantaggio)
             var figurePrecedenti = GetFigurePrecedenti(ruota, dataTarget, 1);
             int antifigura = Antifigura(figura);
             if (figurePrecedenti.Contains(antifigura))
-                bonus += 10;
+                B_FA += 10;
 
             // 4. STESSA UNITÀ (PESO MEDIO-ALTO - +9.5% vantaggio)
             var unitaRecenti = GetUnitaRecenti(ruota, dataTarget, 2);
             if (unitaRecenti.Contains(unita))
-                bonus += 12;
+                B_stessaUnit += 12;
 
             // 5. STESSA FIGURA (PESO MEDIO - +5.8% vantaggio)
             var figureRecenti = GetFigureRecenti(ruota, dataTarget, 2);
             if (figureRecenti.Contains(figura))
-                bonus += 8;
+                B_stessaFig += 8;
 
             // 6. INTERAZIONE DECINA-RITARDO (PESO MEDIO)
-            int decina = Decina(numero);
-            int ritardo = ritardi.ContainsKey(figura) ? ritardi[figura] : 0;
+            //int decina = Decina(numero);
+            //int ritardo = ritardi.ContainsKey(figura) ? ritardi[figura] : 0;
 
             // Strategia adattiva per ruota
             //if (ruota == "RM") // ROMA
@@ -212,7 +221,7 @@ namespace Crs.Home.ApocalypsData
 
             // 7. FIGURA=UNITÀ (PESO BASSO - Pattern debole ma verificato)
             if (figura == unita)
-                bonus += 8;
+                B_figUnita += 8;
 
             // 8. ATTRACTION FIGURA-DATA (PESO MEDIO - Pattern universale)
             int figuraData = CalcolaFiguraData(dataTarget);
@@ -220,13 +229,32 @@ namespace Crs.Home.ApocalypsData
             {
                 switch (figuraData)
                 {
-                    case 3: bonus += 15; break;
-                    case 5: bonus += 18; break;
-                    case 8: bonus += 12; break;
+                    case 3: B_figData += 15; break;
+                    case 5: B_figData += 18; break;
+                    case 8: B_figData += 12; break;
                 }
             }
 
-            return Math.Min(100, bonus);
+            if (B_ritFig > 0) regoleAttivate.Add("RitardoFigura");
+            if (B_dec > 0) regoleAttivate.Add("Decina");
+            if (B_FA > 0) regoleAttivate.Add("FiguraAntifigura");
+            if (B_stessaUnit > 0) regoleAttivate.Add("Unita");
+            if (B_stessaFig > 0) regoleAttivate.Add("StessaFigura");
+            if (B_figUnita > 0) regoleAttivate.Add("FiguraUnita");
+            if (B_figData > 0) regoleAttivate.Add("FiguraData");
+
+            double bonus_moltiplicativo =
+               (B_dec / 10.0 + 1) *
+               (B_FA / 10.0 + 1) *
+               (B_ritFig / 10.0 + 1) *
+               (B_stessaUnit / 10.0 + 1) *
+               (B_stessaFig / 10.0 + 1) *
+               (B_figUnita / 10.0 + 1) *
+               (B_figData / 10.0 + 1) * 10;
+
+            return Tuple.Create((int)Math.Round(bonus_moltiplicativo), regoleAttivate);
+
+            //return Math.Min(100, bonus);
         }
 
         public int CalcolaBonusModelloFinale_(int numero, string ruota, DateTime dataTarget)
@@ -265,9 +293,9 @@ namespace Crs.Home.ApocalypsData
             return Math.Min(75, bonus);
         }
 
-        public int CalcolaBonusModelloAdattivo(int numero, string ruota, DateTime dataTarget)
+        public Tuple<int, List<string>> CalcolaBonusModelloAdattivo(int numero, string ruota, DateTime dataTarget)
         {
-            int bonus = CalcolaBonusModelloFinale(numero, ruota, dataTarget);
+            Tuple<int, List<string>> bonus = CalcolaBonusModelloFinale(numero, ruota, dataTarget);
 
             var ritardi = CalcolaRitardiFigure(ruota, dataTarget);
             int decina = Decina(numero);
@@ -278,15 +306,15 @@ namespace Crs.Home.ApocalypsData
             if (ruota == "RM") // ROMA
             {
                 if ((decina == 1 || decina == 4 || decina == 7) && ritardo > 15)
-                    bonus += 12;
+                    bonus = new Tuple<int, List<string>>(bonus.Item1 + 12, bonus.Item2) ;
             }
             else if (ruota == "BA") // BARI  
             {
                 if ((decina == 0 || decina == 4 || decina == 7 || decina == 5 || decina == 9) && ritardo > 15)
-                    bonus += 12;
+                    bonus = new Tuple<int, List<string>>(bonus.Item1 + 12, bonus.Item2);
             }
-
-            return Math.Min(85, bonus);
+            return bonus;
+            //return Math.Min(85, bonus);
         }
 
         public int CalcolaBonusFiguraData(int numero, DateTime data)
@@ -324,20 +352,54 @@ namespace Crs.Home.ApocalypsData
 
         // === METODO PER SELEZIONE NUMERI ===
 
-        public List<int> PrevisioneNumeri(string ruota, DateTime dataTarget, int soglia = 25)
+        public List<int> PrevisioneNumeri(string ruota, DateTime dataTarget, List<int> numeriUsciti, out List<Tuple<int, int, List<string>>> risultati, int soglia = 25)
         {
-            var numeriSelezionati = new List<int>();
-
+            risultati = new List<Tuple<int, int, List<string>>>();
             for (int numero = 1; numero <= 90; numero++)
             {
-                int bonus = CalcolaBonusModelloFinale(numero, ruota, dataTarget);
-                if (bonus >= soglia)
-                {
-                    numeriSelezionati.Add(numero);
-                }
+                var bonus = CalcolaBonusModelloFinale(numero, ruota, dataTarget);
+                risultati.Add(Tuple.Create(numero, bonus.Item1, bonus.Item2));
+            }
+            
+            var consigliati = risultati
+              .Where(x => x.Item2 >= soglia)
+              .OrderByDescending(x => x.Item2)
+              .ToList();
+
+            // Fallback se troppo pochi numeri
+            if (consigliati.Count < 3)
+            {
+                consigliati = risultati
+                    .OrderByDescending(x => x.Item2)
+                    .Take(5)
+                    .ToList();
+            }
+            else
+            if (consigliati.Count > 10)
+            {
+                consigliati = risultati
+                    .OrderByDescending(x => x.Item2)
+                    .Take(5)
+                    .ToList();
             }
 
-            return numeriSelezionati.OrderBy(n => n).ToList();
+
+            if (numeriUsciti != null)
+            {
+                //var risultati1 = risultati.OrderBy(X => X.Item2).TakeLast(consigliati.Count).ToList();
+                var risultati1 = risultati.Where(X => consigliati.Contains(X)).ToList();
+                risultati1.AddRange(risultati.Where(X => X.Item1 == numeriUsciti[0] ||
+                                            X.Item1 == numeriUsciti[1] ||
+                                            X.Item1 == numeriUsciti[2] ||
+                                            X.Item1 == numeriUsciti[3] ||
+                                            X.Item1 == numeriUsciti[4]));
+                risultati = risultati1.DistinctBy(X => X.Item1).ToList();
+            }
+            else
+                risultati = risultati.OrderBy(X => X.Item2).TakeLast(consigliati.Count).ToList();
+
+            //return numeriSelezionati.OrderBy(n => n).ToList();
+            return consigliati.Select(x => x.Item1).ToList();
         }
 
         // === TEST E VALUTAZIONE ===
@@ -359,7 +421,7 @@ namespace Crs.Home.ApocalypsData
 
             foreach (var estrazione in testSet)
             {
-                var numeriSelezionati = PrevisioneNumeri(estrazione.Ruota, estrazione.Data, 25);
+                var numeriSelezionati = PrevisioneNumeri(estrazione.Ruota, estrazione.Data, estrazione.Numeri, out List<Tuple<int,int,List<string>>> risultati, 25);
                 int numeriGiocati = numeriSelezionati.Count;
 
                 totalNumeriSelezionati += numeriGiocati;

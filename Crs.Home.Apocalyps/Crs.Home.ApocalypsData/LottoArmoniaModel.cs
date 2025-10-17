@@ -115,7 +115,7 @@ namespace Crs.Home.ApocalypsData
             return Figura(comp);
         }
 
-        protected int Decina(int numero)
+        public static int Decina(int numero)
         {
             if (numero == 90) return 90;
             return (numero / 10) * 10;
@@ -803,7 +803,7 @@ namespace Crs.Home.ApocalypsData
             //this.estrazioniDaUltimaCalibrazione = 0;
         }
 
-        public List<int> PrevisioneConParametriOscillanti(string ruota, DateTime dataTarget, out List<Tuple<int, int, List<string>>> risultati)
+        public List<int> PrevisioneConParametriOscillanti(string ruota, DateTime dataTarget, List<int> numeriUsciti, out List<Tuple<int, int, List<string>>> risultati)
         {
             // 🎵 CREA PARAMETRI SPECIFICI PER QUESTA DATA
             var parametriOscillanti = new ParametriOscillanti(dataTarget);
@@ -828,7 +828,7 @@ namespace Crs.Home.ApocalypsData
             var consigliati = risultati
                 .Where(x => x.Item2 >= parametriOscillanti.Soglia)
                 .OrderByDescending(x => x.Item2)
-                .Select(x => x.Item1)
+                //.Select(x => x.Item1)
                 .ToList();
 
             // Fallback se troppo pochi numeri
@@ -837,12 +837,37 @@ namespace Crs.Home.ApocalypsData
                 consigliati = risultati
                     .OrderByDescending(x => x.Item2)
                     .Take(5)
-                    .Select(x => x.Item1)
+                    //.Select(x => x.Item1)
+                    .ToList();
+            }
+            else
+            if (consigliati.Count > 10)
+            {
+                consigliati = risultati
+                    .OrderByDescending(x => x.Item2)
+                    .Take(5)
+                    //.Select(x => x.Item1)
                     .ToList();
             }
 
+            if (numeriUsciti != null)
+            {
+                //var risultati1 = risultati.OrderBy(X => X.Item2).TakeLast(consigliati.Count).ToList();
+                var risultati1 = risultati.Where(X=> consigliati.Contains(X)).ToList();
+                risultati1.AddRange(risultati.Where(X => X.Item1 == numeriUsciti[0] ||
+                                            X.Item1 == numeriUsciti[1] ||
+                                            X.Item1 == numeriUsciti[2] ||
+                                            X.Item1 == numeriUsciti[3] ||
+                                            X.Item1 == numeriUsciti[4]));
+                risultati = risultati1.DistinctBy(X=>X.Item1).ToList();
+            }
+            else
+                risultati = risultati.OrderBy(X => X.Item2).TakeLast(consigliati.Count).ToList();
+
+            //risultati = consigliati;
+
             Console.WriteLine($"   Numeri consigliati: {string.Join(", ", consigliati)}");
-            return consigliati;
+            return consigliati.Select(x => x.Item1).ToList();
         }
 
 
@@ -862,6 +887,10 @@ namespace Crs.Home.ApocalypsData
             int B_temp = CalcolaBonusTemporaleOscillante(numero, ruota, dataTarget, parametri);
             int B_seq = CalcolaBonusSequenzaOscillante(numero, ruota, dataTarget, parametri);
             int B_fisica = CalcolaBonusFisicaCompleto(numero, ruota, dataTarget); // Fisica rimane invariata
+
+            // 🎯 NUOVO BONUS COPPIE SEGNALE
+            int B_coppie = CalcolaBonusCoppieSegnale(numero, ruota, dataTarget);
+            if (B_coppie > 0) regoleAttivate.Add("CoppieSegnale");
 
             // 🎵 REGISTRA REGOLE ATTIVATE
             if (B_dec > 0) regoleAttivate.Add("Decina");
@@ -888,6 +917,7 @@ namespace Crs.Home.ApocalypsData
                 (B_ir / 10.0 + 1) *
                 (B_temp / 10.0 + 1) *
                 (B_seq / 10.0 + 1) *
+                (B_coppie / 10.0 + 1) * // ⚠️ NUOVO FACTOR
                 (B_fisica / 10.0 + 1) * 10;
 
             return Tuple.Create((int)Math.Round(bonus_moltiplicativo), regoleAttivate);
@@ -1106,6 +1136,46 @@ namespace Crs.Home.ApocalypsData
             return B_seq;
         }
 
+        private int CalcolaBonusCoppieSegnale(int numero, string ruota, DateTime dataTarget)
+        {
+            int bonus = 0;
+
+            // 🔍 CERCA COPPIE SEGNALE NELLE ULTIME 5 ESTRAZIONI
+            var ultimeEstrazioni = GetUltimeEstrazioni(ruota, dataTarget, 5);
+
+            foreach (var estrazione in ultimeEstrazioni)
+            {
+                var numeriEstrazione = estrazione.Numeri;
+
+                // VERIFICA TUTTE LE COPPIE POSSIBILI NELL'ESTRAZIONE
+                for (int i = 0; i < numeriEstrazione.Count - 1; i++)
+                {
+                    for (int j = i + 1; j < numeriEstrazione.Count; j++)
+                    {
+                        int num1 = numeriEstrazione[i];
+                        int num2 = numeriEstrazione[j];
+
+                        if (RilevatoreCoppieSegnale.IsCoppiaSegnale(num1, num2))
+                        {
+                            // 🎯 COPPIA SEGNALE TROVATA!
+                            var coppia = new List<int> { num1, num2 };
+                            var numeriPredetti = RilevatoreCoppieSegnale.GetNumeriPredetti(coppia, ruota, estrazione.Data);
+
+                            // CALCOLA BONUS IN BASE AL TEMPO TRASCORSO
+                            int giorniTrascorsi = (dataTarget - estrazione.Data).Days;
+                            int moltiplicatoreTempo = Math.Max(1, 5 - giorniTrascorsi); // 5→1 punti
+
+                            if (numeriPredetti.Contains(numero))
+                            {
+                                bonus += 15 * moltiplicatoreTempo; // Bonus significativo
+                            }
+                        }
+                    }
+                }
+            }
+
+            return bonus;
+        }
     }
 
     public class ModelloAdattivo : ModelloLotto
@@ -1141,20 +1211,45 @@ namespace Crs.Home.ApocalypsData
                 risultati.Add(Tuple.Create(num, bonus.Item1, bonus.Item2));
             }
             int sogliaDinamica = SogliaAdattiva(risultati.Select(x => Tuple.Create(x.Item1, x.Item2)).ToList());
-            var consigliati = risultati.Where(x => x.Item2 >= sogliaDinamica).Select(x => x.Item1).ToList();
+            var consigliati = risultati.Where(x => x.Item2 >= sogliaDinamica).ToList();
             //var consigliati = risultati.Where(x => x.Item2 >= 50).ToList();
 
-            // se i numeri scelti sono troppi non considerarli: capita se sono all'inmizio dell'analisi e la soglia dinamica è bassa
-            if (consigliati.Count >= 10)
-                consigliati = new List<int>();
+            // se i numeri scelti sono troppi non considerarli: capita se sono all'inizio dell'analisi e la soglia dinamica è bassa
+            
+            // Fallback se troppo pochi numeri
+            if (consigliati.Count < 3)
+            {
+                consigliati = risultati
+                    .OrderByDescending(x => x.Item2)
+                    .Take(5)
+                    .ToList();
+            }
+            else
+            if (consigliati.Count > 10)
+            {
+                consigliati = risultati
+                    .OrderByDescending(x => x.Item2)
+                    .Take(5)
+                    .ToList();
+            }
+
 
             if (numeriUsciti != null)
             {
                 AggiornaPerformance(risultati, numeriUsciti);
+                //var risultati1 = risultati.OrderBy(X => X.Item2).TakeLast(consigliati.Count).ToList();
+                var risultati1 = risultati.Where(X => consigliati.Contains(X)).ToList();
+                risultati1.AddRange(risultati.Where(X => X.Item1 == numeriUsciti[0] ||
+                                            X.Item1 == numeriUsciti[1] ||
+                                            X.Item1 == numeriUsciti[2] ||
+                                            X.Item1 == numeriUsciti[3] ||
+                                            X.Item1 == numeriUsciti[4]));
+                risultati = risultati1.DistinctBy(X=>X.Item1).ToList();
             }
+            else
+                risultati = risultati.OrderBy(X => X.Item2).TakeLast(consigliati.Count).ToList();
 
-            risultati = risultati.OrderBy(X=>X.Item2).TakeLast(consigliati.Count).ToList();
-            return consigliati.OrderBy(x => x).ToList();
+            return consigliati.Select(x => x.Item1).ToList(); 
         }
 
         // Calcola dinamicamente la soglia basata sulla distribuzione
@@ -1403,12 +1498,71 @@ namespace Crs.Home.ApocalypsData
 
         public int Soglia_diff => 10 + (int)(2 * Math.Sin(OndaMensile())); // 8-12
 
-        public int Soglia => 65 + (int)(5 * Math.Sin(OndaCombinata())); // 60-70
+        //public int Soglia => 65 + (int)(5 * Math.Sin(OndaCombinata())); // 60-70
+        public int Soglia => 120 + (int)(5 * Math.Sin(OndaCombinata())); // 60-70
 
         private double OndaCombinata() =>
             (OndaSettimanale() + OndaMensile() * 0.7 + OndaStagionale() * 0.3) / 2;
     }
 
+    public class RilevatoreCoppieSegnale
+    {
+        public static bool IsCoppiaSegnale(int num1, int num2)
+        {
+            int fig1 = ModelloLotto.Figura(num1);
+            int fig2 = ModelloLotto.Figura(num2);
+            int dec1 = ModelloLotto.Decina(num1);
+            int dec2 = ModelloLotto.Decina(num2);
+            int distanza = Math.Abs(num1 - num2);
+            int figDistanza = ModelloLotto.Figura(distanza);
+
+            // 🎵 LEGGE ARMONICA DELLE COPPIE SEGNALE
+            bool condizioneFigure = (fig1 + fig2) is 4 or 5 or 7 or 9;
+            bool condizioneDecine = Math.Abs(dec1 - dec2) is 10 or 20 or 30 or 40 or 60;
+            bool condizioneDistanza = figDistanza is 4 or 8 or 9;
+
+            return condizioneFigure && condizioneDecine && condizioneDistanza;
+        }
+
+        public static List<int> GetNumeriPredetti(List<int> coppiaSegnale, string ruota, DateTime dataUscita)
+        {
+            // 🔍 Cerca pattern storici per questa coppia
+            var numeriPredetti = new List<int>();
+
+            // Pattern universali identificati
+            var patternUniversali = new Dictionary<List<int>, List<int>>
+            {
+                { new List<int> {23, 67}, new List<int> {11, 34, 58} },
+                { new List<int> {18, 54}, new List<int> {9, 27, 63} },
+                { new List<int> {32, 45}, new List<int> {70, 71, 72, 73, 18, 19, 20, 21} },
+                { new List<int> {11, 77}, new List<int> {22, 44, 66} },
+                { new List<int> {29, 83}, new List<int> {15, 37, 59} }
+            };
+
+            // Cerca pattern specifico
+            var coppiaOrdinata = coppiaSegnale.OrderBy(x => x).ToList();
+            if (patternUniversali.ContainsKey(coppiaOrdinata))
+            {
+                numeriPredetti.AddRange(patternUniversali[coppiaOrdinata]);
+            }
+
+            // Pattern generico basato su figure
+            int fig1 = ModelloLotto.Figura(coppiaSegnale[0]);
+            int fig2 = ModelloLotto.Figura(coppiaSegnale[1]);
+            int sommaFigure = fig1 + fig2;
+
+            // Aggiungi numeri basati sulla somma delle figure
+            switch (sommaFigure)
+            {
+                case 4: numeriPredetti.AddRange(new[] { 13, 31, 49, 67, 85 }); break;
+                case 5: numeriPredetti.AddRange(new[] { 14, 23, 32, 41, 50 }); break;
+                case 7: numeriPredetti.AddRange(new[] { 16, 25, 34, 43, 52 }); break;
+                case 9: numeriPredetti.AddRange(new[] { 18, 27, 36, 45, 54, 63, 72, 81, 90 }); break;
+            }
+
+            return numeriPredetti.Distinct().ToList();
+        }
+    }
 
     class Program
     {
