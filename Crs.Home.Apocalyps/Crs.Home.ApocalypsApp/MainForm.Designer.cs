@@ -142,7 +142,7 @@
             panelHeader.Dock = DockStyle.Top;
             panelHeader.Location = new Point(0, 0);
             panelHeader.Name = "panelHeader";
-            panelHeader.Size = new Size(1184, 67);
+            panelHeader.Size = new Size(1525, 67);
             panelHeader.TabIndex = 1;
             // 
             // btnSettings
@@ -167,12 +167,12 @@
             panelContainer.Dock = DockStyle.Fill;
             panelContainer.Location = new Point(0, 67);
             panelContainer.Name = "panelContainer";
-            panelContainer.Size = new Size(1184, 594);
+            panelContainer.Size = new Size(1525, 660);
             panelContainer.TabIndex = 0;
             // 
             // MainForm
             // 
-            ClientSize = new Size(1184, 661);
+            ClientSize = new Size(1525, 727);
             Controls.Add(panelContainer);
             Controls.Add(panelHeader);
             Name = "MainForm";

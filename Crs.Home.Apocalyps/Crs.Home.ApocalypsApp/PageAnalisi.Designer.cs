@@ -61,9 +61,6 @@ namespace Crs.Home.ApocalypsApp
             components = new System.ComponentModel.Container();
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle15 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle16 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle17 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
@@ -76,7 +73,23 @@ namespace Crs.Home.ApocalypsApp
             DataGridViewCellStyle dataGridViewCellStyle12 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle13 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle14 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle15 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle16 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle17 = new DataGridViewCellStyle();
             panelHeader = new Panel();
+            gbRegole = new GroupBox();
+            checkBox12 = new CheckBox();
+            checkBox11 = new CheckBox();
+            checkBox1 = new CheckBox();
+            checkBox2 = new CheckBox();
+            checkBox3 = new CheckBox();
+            checkBox5 = new CheckBox();
+            checkBox4 = new CheckBox();
+            checkBox7 = new CheckBox();
+            checkBox8 = new CheckBox();
+            checkBox6 = new CheckBox();
+            checkBox10 = new CheckBox();
+            checkBox9 = new CheckBox();
             btnStartModParametriOscillanti = new Button();
             label3 = new Label();
             lblNum = new Label();
@@ -107,6 +120,9 @@ namespace Crs.Home.ApocalypsApp
             radioTrimestre = new RadioButton();
             radioAnno = new RadioButton();
             groupBoxBudget = new GroupBox();
+            label5 = new Label();
+            numPrev = new NumericUpDown();
+            label4 = new Label();
             numBudget = new NumericUpDown();
             btnAggiorna = new Button();
             btnEsporta = new Button();
@@ -114,6 +130,18 @@ namespace Crs.Home.ApocalypsApp
             tabControl1 = new TabControl();
             tabPage1 = new TabPage();
             grigliaRisultati = new DataGridView();
+            intervalloDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            dataInizioDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            dataFineDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            numeroEstrazioniDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            numeriGiocatiDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            numeriVintiDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            ambiVintiDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            terniVintiDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            investimentoMinimoDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            guadagnoDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            investimentoPropostoDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            guadagnoPropostoDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             risultatoAnalisiBindingSource = new BindingSource(components);
             tabPage2 = new TabPage();
             grigliaDettagliEsrtrazione = new DataGridView();
@@ -128,23 +156,14 @@ namespace Crs.Home.ApocalypsApp
             tabPage3 = new TabPage();
             txtResTest = new RichTextBox();
             lblTotali = new Label();
-            intervalloDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-            dataInizioDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-            dataFineDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-            numeroEstrazioniDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-            numeriGiocatiDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-            numeriVintiDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-            ambiVintiDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-            terniVintiDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-            investimentoMinimoDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-            guadagnoDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-            investimentoPropostoDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-            guadagnoPropostoDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            btnTest2 = new Button();
             panelHeader.SuspendLayout();
+            gbRegole.SuspendLayout();
             groupBox1.SuspendLayout();
             gbInterval.SuspendLayout();
             groupBoxRaggruppamento.SuspendLayout();
             groupBoxBudget.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numPrev).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numBudget).BeginInit();
             panelContenuto.SuspendLayout();
             tabControl1.SuspendLayout();
@@ -160,6 +179,8 @@ namespace Crs.Home.ApocalypsApp
             // panelHeader
             // 
             panelHeader.BackColor = Color.FromArgb(192, 255, 192);
+            panelHeader.Controls.Add(btnTest2);
+            panelHeader.Controls.Add(gbRegole);
             panelHeader.Controls.Add(btnStartModParametriOscillanti);
             panelHeader.Controls.Add(label3);
             panelHeader.Controls.Add(lblNum);
@@ -180,6 +201,148 @@ namespace Crs.Home.ApocalypsApp
             panelHeader.Padding = new Padding(10);
             panelHeader.Size = new Size(1358, 135);
             panelHeader.TabIndex = 1;
+            // 
+            // gbRegole
+            // 
+            gbRegole.Controls.Add(checkBox12);
+            gbRegole.Controls.Add(checkBox11);
+            gbRegole.Controls.Add(checkBox1);
+            gbRegole.Controls.Add(checkBox2);
+            gbRegole.Controls.Add(checkBox3);
+            gbRegole.Controls.Add(checkBox5);
+            gbRegole.Controls.Add(checkBox4);
+            gbRegole.Controls.Add(checkBox7);
+            gbRegole.Controls.Add(checkBox8);
+            gbRegole.Controls.Add(checkBox6);
+            gbRegole.Controls.Add(checkBox10);
+            gbRegole.Controls.Add(checkBox9);
+            gbRegole.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            gbRegole.Location = new Point(680, 63);
+            gbRegole.Name = "gbRegole";
+            gbRegole.Size = new Size(433, 64);
+            gbRegole.TabIndex = 24;
+            gbRegole.TabStop = false;
+            gbRegole.Text = "Ruote";
+            // 
+            // checkBox12
+            // 
+            checkBox12.AutoSize = true;
+            checkBox12.Location = new Point(329, 42);
+            checkBox12.Name = "checkBox12";
+            checkBox12.Size = new Size(54, 19);
+            checkBox12.TabIndex = 16;
+            checkBox12.Text = "fisica";
+            checkBox12.UseVisualStyleBackColor = true;
+            // 
+            // checkBox11
+            // 
+            checkBox11.AutoSize = true;
+            checkBox11.Location = new Point(329, 19);
+            checkBox11.Name = "checkBox11";
+            checkBox11.Size = new Size(92, 19);
+            checkBox11.TabIndex = 15;
+            checkBox11.Text = "coppie segn";
+            checkBox11.UseVisualStyleBackColor = true;
+            // 
+            // checkBox1
+            // 
+            checkBox1.AutoSize = true;
+            checkBox1.Location = new Point(8, 19);
+            checkBox1.Name = "checkBox1";
+            checkBox1.Size = new Size(46, 19);
+            checkBox1.TabIndex = 5;
+            checkBox1.Text = "dec";
+            checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // checkBox2
+            // 
+            checkBox2.AutoSize = true;
+            checkBox2.Location = new Point(8, 42);
+            checkBox2.Name = "checkBox2";
+            checkBox2.Size = new Size(39, 19);
+            checkBox2.TabIndex = 6;
+            checkBox2.Text = "FA";
+            checkBox2.UseVisualStyleBackColor = true;
+            // 
+            // checkBox3
+            // 
+            checkBox3.AutoSize = true;
+            checkBox3.Location = new Point(60, 19);
+            checkBox3.Name = "checkBox3";
+            checkBox3.Size = new Size(43, 19);
+            checkBox3.TabIndex = 7;
+            checkBox3.Text = "pol";
+            checkBox3.UseVisualStyleBackColor = true;
+            // 
+            // checkBox5
+            // 
+            checkBox5.AutoSize = true;
+            checkBox5.Location = new Point(109, 19);
+            checkBox5.Name = "checkBox5";
+            checkBox5.Size = new Size(48, 19);
+            checkBox5.TabIndex = 14;
+            checkBox5.Text = "arm";
+            checkBox5.UseVisualStyleBackColor = true;
+            // 
+            // checkBox4
+            // 
+            checkBox4.AutoSize = true;
+            checkBox4.Location = new Point(60, 42);
+            checkBox4.Name = "checkBox4";
+            checkBox4.Size = new Size(39, 19);
+            checkBox4.TabIndex = 8;
+            checkBox4.Text = "rit";
+            checkBox4.UseVisualStyleBackColor = true;
+            // 
+            // checkBox7
+            // 
+            checkBox7.AutoSize = true;
+            checkBox7.Location = new Point(176, 19);
+            checkBox7.Name = "checkBox7";
+            checkBox7.Size = new Size(80, 19);
+            checkBox7.TabIndex = 13;
+            checkBox7.Text = "auto att 9";
+            checkBox7.UseVisualStyleBackColor = true;
+            // 
+            // checkBox8
+            // 
+            checkBox8.AutoSize = true;
+            checkBox8.Location = new Point(176, 42);
+            checkBox8.Name = "checkBox8";
+            checkBox8.Size = new Size(86, 19);
+            checkBox8.TabIndex = 9;
+            checkBox8.Text = "inter ruota";
+            checkBox8.UseVisualStyleBackColor = true;
+            // 
+            // checkBox6
+            // 
+            checkBox6.AutoSize = true;
+            checkBox6.Location = new Point(109, 42);
+            checkBox6.Name = "checkBox6";
+            checkBox6.Size = new Size(62, 19);
+            checkBox6.TabIndex = 12;
+            checkBox6.Text = "diff rit";
+            checkBox6.UseVisualStyleBackColor = true;
+            // 
+            // checkBox10
+            // 
+            checkBox10.AutoSize = true;
+            checkBox10.Location = new Point(266, 42);
+            checkBox10.Name = "checkBox10";
+            checkBox10.Size = new Size(45, 19);
+            checkBox10.TabIndex = 10;
+            checkBox10.Text = "seq";
+            checkBox10.UseVisualStyleBackColor = true;
+            // 
+            // checkBox9
+            // 
+            checkBox9.AutoSize = true;
+            checkBox9.Location = new Point(266, 20);
+            checkBox9.Name = "checkBox9";
+            checkBox9.Size = new Size(63, 19);
+            checkBox9.TabIndex = 11;
+            checkBox9.Text = "tempo";
+            checkBox9.UseVisualStyleBackColor = true;
             // 
             // btnStartModParametriOscillanti
             // 
@@ -235,11 +398,11 @@ namespace Crs.Home.ApocalypsApp
             btnTest.BackColor = Color.LightSteelBlue;
             btnTest.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             btnTest.ForeColor = Color.White;
-            btnTest.Location = new Point(1050, 68);
+            btnTest.Location = new Point(1187, 14);
             btnTest.Name = "btnTest";
-            btnTest.Size = new Size(100, 44);
+            btnTest.Size = new Size(64, 44);
             btnTest.TabIndex = 18;
-            btnTest.Text = "Test";
+            btnTest.Text = "Test 1";
             btnTest.UseVisualStyleBackColor = false;
             btnTest.Click += btnTest_Click;
             // 
@@ -496,6 +659,9 @@ namespace Crs.Home.ApocalypsApp
             // 
             // groupBoxBudget
             // 
+            groupBoxBudget.Controls.Add(label5);
+            groupBoxBudget.Controls.Add(numPrev);
+            groupBoxBudget.Controls.Add(label4);
             groupBoxBudget.Controls.Add(numBudget);
             groupBoxBudget.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             groupBoxBudget.Location = new Point(353, 3);
@@ -505,16 +671,47 @@ namespace Crs.Home.ApocalypsApp
             groupBoxBudget.TabStop = false;
             groupBoxBudget.Text = "Budget Disponibile";
             // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(173, 24);
+            label5.Name = "label5";
+            label5.Size = new Size(60, 15);
+            label5.TabIndex = 3;
+            label5.Text = "max prev";
+            // 
+            // numPrev
+            // 
+            numPrev.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            numPrev.Increment = new decimal(new int[] { 100, 0, 0, 0 });
+            numPrev.Location = new Point(240, 22);
+            numPrev.Maximum = new decimal(new int[] { 20, 0, 0, 0 });
+            numPrev.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            numPrev.Name = "numPrev";
+            numPrev.Size = new Size(45, 23);
+            numPrev.TabIndex = 2;
+            numPrev.TextAlign = HorizontalAlignment.Center;
+            numPrev.Value = new decimal(new int[] { 8, 0, 0, 0 });
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(14, 24);
+            label4.Name = "label4";
+            label4.Size = new Size(48, 15);
+            label4.TabIndex = 1;
+            label4.Text = "Budget";
+            // 
             // numBudget
             // 
             numBudget.DecimalPlaces = 2;
             numBudget.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             numBudget.Increment = new decimal(new int[] { 100, 0, 0, 0 });
-            numBudget.Location = new Point(10, 19);
+            numBudget.Location = new Point(75, 22);
             numBudget.Maximum = new decimal(new int[] { 1000000, 0, 0, 0 });
             numBudget.Minimum = new decimal(new int[] { 10, 0, 0, 0 });
             numBudget.Name = "numBudget";
-            numBudget.Size = new Size(120, 23);
+            numBudget.Size = new Size(75, 23);
             numBudget.TabIndex = 0;
             numBudget.TextAlign = HorizontalAlignment.Center;
             numBudget.Value = new decimal(new int[] { 100, 0, 0, 0 });
@@ -524,7 +721,7 @@ namespace Crs.Home.ApocalypsApp
             btnAggiorna.BackColor = Color.LightSteelBlue;
             btnAggiorna.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             btnAggiorna.ForeColor = Color.White;
-            btnAggiorna.Location = new Point(680, 68);
+            btnAggiorna.Location = new Point(1056, 15);
             btnAggiorna.Name = "btnAggiorna";
             btnAggiorna.Size = new Size(109, 44);
             btnAggiorna.TabIndex = 2;
@@ -537,7 +734,7 @@ namespace Crs.Home.ApocalypsApp
             btnEsporta.BackColor = Color.DarkOrange;
             btnEsporta.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             btnEsporta.ForeColor = Color.White;
-            btnEsporta.Location = new Point(1050, 15);
+            btnEsporta.Location = new Point(950, 15);
             btnEsporta.Name = "btnEsporta";
             btnEsporta.Size = new Size(100, 44);
             btnEsporta.TabIndex = 3;
@@ -605,141 +802,6 @@ namespace Crs.Home.ApocalypsApp
             grigliaRisultati.ReadOnly = true;
             grigliaRisultati.Size = new Size(1334, 396);
             grigliaRisultati.TabIndex = 0;
-            // 
-            // risultatoAnalisiBindingSource
-            // 
-            risultatoAnalisiBindingSource.DataSource = typeof(RisultatoAnalisi);
-            // 
-            // tabPage2
-            // 
-            tabPage2.Controls.Add(grigliaDettagliEsrtrazione);
-            tabPage2.Location = new Point(4, 24);
-            tabPage2.Name = "tabPage2";
-            tabPage2.Padding = new Padding(3);
-            tabPage2.Size = new Size(1340, 402);
-            tabPage2.TabIndex = 1;
-            tabPage2.Text = "Dettaglio Estrazioni";
-            tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // grigliaDettagliEsrtrazione
-            // 
-            grigliaDettagliEsrtrazione.AllowUserToAddRows = false;
-            dataGridViewCellStyle15.BackColor = Color.WhiteSmoke;
-            grigliaDettagliEsrtrazione.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle15;
-            grigliaDettagliEsrtrazione.AutoGenerateColumns = false;
-            grigliaDettagliEsrtrazione.BackgroundColor = Color.White;
-            dataGridViewCellStyle16.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle16.BackColor = SystemColors.Control;
-            dataGridViewCellStyle16.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            dataGridViewCellStyle16.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle16.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle16.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle16.WrapMode = DataGridViewTriState.True;
-            grigliaDettagliEsrtrazione.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle16;
-            grigliaDettagliEsrtrazione.ColumnHeadersHeight = 27;
-            grigliaDettagliEsrtrazione.Columns.AddRange(new DataGridViewColumn[] { ruotaDataGridViewTextBoxColumn, dataDataGridViewTextBoxColumn, numPrevistiPesiDataGridViewTextBoxColumn, CountPrevisti, NumEstrattiPesi, NumEstratti, NumVinti });
-            grigliaDettagliEsrtrazione.DataSource = risultatoEstrazioneBindingSource;
-            grigliaDettagliEsrtrazione.Dock = DockStyle.Fill;
-            grigliaDettagliEsrtrazione.EnableHeadersVisualStyles = false;
-            grigliaDettagliEsrtrazione.Location = new Point(3, 3);
-            grigliaDettagliEsrtrazione.Name = "grigliaDettagliEsrtrazione";
-            grigliaDettagliEsrtrazione.ReadOnly = true;
-            grigliaDettagliEsrtrazione.Size = new Size(1334, 396);
-            grigliaDettagliEsrtrazione.TabIndex = 1;
-            // 
-            // ruotaDataGridViewTextBoxColumn
-            // 
-            ruotaDataGridViewTextBoxColumn.DataPropertyName = "Ruota";
-            ruotaDataGridViewTextBoxColumn.HeaderText = "Ruota";
-            ruotaDataGridViewTextBoxColumn.Name = "ruotaDataGridViewTextBoxColumn";
-            ruotaDataGridViewTextBoxColumn.ReadOnly = true;
-            ruotaDataGridViewTextBoxColumn.Width = 63;
-            // 
-            // dataDataGridViewTextBoxColumn
-            // 
-            dataDataGridViewTextBoxColumn.DataPropertyName = "Data";
-            dataDataGridViewTextBoxColumn.HeaderText = "Data";
-            dataDataGridViewTextBoxColumn.Name = "dataDataGridViewTextBoxColumn";
-            dataDataGridViewTextBoxColumn.ReadOnly = true;
-            dataDataGridViewTextBoxColumn.Width = 120;
-            // 
-            // numPrevistiPesiDataGridViewTextBoxColumn
-            // 
-            numPrevistiPesiDataGridViewTextBoxColumn.DataPropertyName = "NumPrevistiPesi";
-            numPrevistiPesiDataGridViewTextBoxColumn.HeaderText = "Num Previsti (Pesi)";
-            numPrevistiPesiDataGridViewTextBoxColumn.Name = "numPrevistiPesiDataGridViewTextBoxColumn";
-            numPrevistiPesiDataGridViewTextBoxColumn.ReadOnly = true;
-            numPrevistiPesiDataGridViewTextBoxColumn.Width = 300;
-            // 
-            // CountPrevisti
-            // 
-            CountPrevisti.DataPropertyName = "CountPrevisti";
-            CountPrevisti.HeaderText = "# Previsti";
-            CountPrevisti.Name = "CountPrevisti";
-            CountPrevisti.ReadOnly = true;
-            // 
-            // NumEstrattiPesi
-            // 
-            NumEstrattiPesi.DataPropertyName = "NumEstrattiPesi";
-            NumEstrattiPesi.HeaderText = "Num Estratti (Pesi)";
-            NumEstrattiPesi.Name = "NumEstrattiPesi";
-            NumEstrattiPesi.ReadOnly = true;
-            NumEstrattiPesi.Width = 250;
-            // 
-            // NumEstratti
-            // 
-            NumEstratti.DataPropertyName = "NumEstratti";
-            NumEstratti.HeaderText = "Num Estratti";
-            NumEstratti.Name = "NumEstratti";
-            NumEstratti.ReadOnly = true;
-            NumEstratti.Width = 200;
-            // 
-            // NumVinti
-            // 
-            NumVinti.DataPropertyName = "NumVinti";
-            dataGridViewCellStyle17.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            NumVinti.DefaultCellStyle = dataGridViewCellStyle17;
-            NumVinti.HeaderText = "Num Vinti";
-            NumVinti.Name = "NumVinti";
-            NumVinti.ReadOnly = true;
-            // 
-            // risultatoEstrazioneBindingSource
-            // 
-            risultatoEstrazioneBindingSource.DataSource = typeof(RisultatoEstrazione);
-            // 
-            // tabPage3
-            // 
-            tabPage3.Controls.Add(txtResTest);
-            tabPage3.Location = new Point(4, 24);
-            tabPage3.Name = "tabPage3";
-            tabPage3.Padding = new Padding(3);
-            tabPage3.Size = new Size(1340, 402);
-            tabPage3.TabIndex = 2;
-            tabPage3.Text = "Risultati Test";
-            tabPage3.UseVisualStyleBackColor = true;
-            // 
-            // txtResTest
-            // 
-            txtResTest.BorderStyle = BorderStyle.None;
-            txtResTest.Dock = DockStyle.Fill;
-            txtResTest.Location = new Point(3, 3);
-            txtResTest.Name = "txtResTest";
-            txtResTest.Size = new Size(1334, 396);
-            txtResTest.TabIndex = 0;
-            txtResTest.Text = "";
-            // 
-            // lblTotali
-            // 
-            lblTotali.BackColor = Color.LightGray;
-            lblTotali.Dock = DockStyle.Bottom;
-            lblTotali.Font = new Font("Arial", 8F, FontStyle.Bold, GraphicsUnit.Point);
-            lblTotali.Location = new Point(5, 435);
-            lblTotali.Name = "lblTotali";
-            lblTotali.Padding = new Padding(5, 0, 0, 0);
-            lblTotali.Size = new Size(1348, 25);
-            lblTotali.TabIndex = 1;
-            lblTotali.Text = "Totali:";
-            lblTotali.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // intervalloDataGridViewTextBoxColumn
             // 
@@ -879,6 +941,154 @@ namespace Crs.Home.ApocalypsApp
             guadagnoPropostoDataGridViewTextBoxColumn.ReadOnly = true;
             guadagnoPropostoDataGridViewTextBoxColumn.Width = 138;
             // 
+            // risultatoAnalisiBindingSource
+            // 
+            risultatoAnalisiBindingSource.DataSource = typeof(RisultatoAnalisi);
+            // 
+            // tabPage2
+            // 
+            tabPage2.Controls.Add(grigliaDettagliEsrtrazione);
+            tabPage2.Location = new Point(4, 24);
+            tabPage2.Name = "tabPage2";
+            tabPage2.Padding = new Padding(3);
+            tabPage2.Size = new Size(1340, 402);
+            tabPage2.TabIndex = 1;
+            tabPage2.Text = "Dettaglio Estrazioni";
+            tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // grigliaDettagliEsrtrazione
+            // 
+            grigliaDettagliEsrtrazione.AllowUserToAddRows = false;
+            dataGridViewCellStyle15.BackColor = Color.WhiteSmoke;
+            grigliaDettagliEsrtrazione.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle15;
+            grigliaDettagliEsrtrazione.AutoGenerateColumns = false;
+            grigliaDettagliEsrtrazione.BackgroundColor = Color.White;
+            dataGridViewCellStyle16.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle16.BackColor = SystemColors.Control;
+            dataGridViewCellStyle16.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle16.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle16.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle16.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle16.WrapMode = DataGridViewTriState.True;
+            grigliaDettagliEsrtrazione.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle16;
+            grigliaDettagliEsrtrazione.ColumnHeadersHeight = 27;
+            grigliaDettagliEsrtrazione.Columns.AddRange(new DataGridViewColumn[] { ruotaDataGridViewTextBoxColumn, dataDataGridViewTextBoxColumn, numPrevistiPesiDataGridViewTextBoxColumn, CountPrevisti, NumEstrattiPesi, NumEstratti, NumVinti });
+            grigliaDettagliEsrtrazione.DataSource = risultatoEstrazioneBindingSource;
+            grigliaDettagliEsrtrazione.Dock = DockStyle.Fill;
+            grigliaDettagliEsrtrazione.EnableHeadersVisualStyles = false;
+            grigliaDettagliEsrtrazione.Location = new Point(3, 3);
+            grigliaDettagliEsrtrazione.Name = "grigliaDettagliEsrtrazione";
+            grigliaDettagliEsrtrazione.ReadOnly = true;
+            grigliaDettagliEsrtrazione.Size = new Size(1334, 396);
+            grigliaDettagliEsrtrazione.TabIndex = 1;
+            // 
+            // ruotaDataGridViewTextBoxColumn
+            // 
+            ruotaDataGridViewTextBoxColumn.DataPropertyName = "Ruota";
+            ruotaDataGridViewTextBoxColumn.HeaderText = "Ruota";
+            ruotaDataGridViewTextBoxColumn.Name = "ruotaDataGridViewTextBoxColumn";
+            ruotaDataGridViewTextBoxColumn.ReadOnly = true;
+            ruotaDataGridViewTextBoxColumn.Width = 63;
+            // 
+            // dataDataGridViewTextBoxColumn
+            // 
+            dataDataGridViewTextBoxColumn.DataPropertyName = "Data";
+            dataDataGridViewTextBoxColumn.HeaderText = "Data";
+            dataDataGridViewTextBoxColumn.Name = "dataDataGridViewTextBoxColumn";
+            dataDataGridViewTextBoxColumn.ReadOnly = true;
+            dataDataGridViewTextBoxColumn.Width = 120;
+            // 
+            // numPrevistiPesiDataGridViewTextBoxColumn
+            // 
+            numPrevistiPesiDataGridViewTextBoxColumn.DataPropertyName = "NumPrevistiPesi";
+            numPrevistiPesiDataGridViewTextBoxColumn.HeaderText = "Num Previsti (Pesi)";
+            numPrevistiPesiDataGridViewTextBoxColumn.Name = "numPrevistiPesiDataGridViewTextBoxColumn";
+            numPrevistiPesiDataGridViewTextBoxColumn.ReadOnly = true;
+            numPrevistiPesiDataGridViewTextBoxColumn.Width = 300;
+            // 
+            // CountPrevisti
+            // 
+            CountPrevisti.DataPropertyName = "CountPrevisti";
+            CountPrevisti.HeaderText = "# Previsti";
+            CountPrevisti.Name = "CountPrevisti";
+            CountPrevisti.ReadOnly = true;
+            // 
+            // NumEstrattiPesi
+            // 
+            NumEstrattiPesi.DataPropertyName = "NumEstrattiPesi";
+            NumEstrattiPesi.HeaderText = "Num Estratti (Pesi)";
+            NumEstrattiPesi.Name = "NumEstrattiPesi";
+            NumEstrattiPesi.ReadOnly = true;
+            NumEstrattiPesi.Width = 250;
+            // 
+            // NumEstratti
+            // 
+            NumEstratti.DataPropertyName = "NumEstratti";
+            NumEstratti.HeaderText = "Num Estratti";
+            NumEstratti.Name = "NumEstratti";
+            NumEstratti.ReadOnly = true;
+            NumEstratti.Width = 200;
+            // 
+            // NumVinti
+            // 
+            NumVinti.DataPropertyName = "NumVinti";
+            dataGridViewCellStyle17.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            NumVinti.DefaultCellStyle = dataGridViewCellStyle17;
+            NumVinti.HeaderText = "Num Vinti";
+            NumVinti.Name = "NumVinti";
+            NumVinti.ReadOnly = true;
+            // 
+            // risultatoEstrazioneBindingSource
+            // 
+            risultatoEstrazioneBindingSource.DataSource = typeof(RisultatoEstrazione);
+            // 
+            // tabPage3
+            // 
+            tabPage3.Controls.Add(txtResTest);
+            tabPage3.Location = new Point(4, 24);
+            tabPage3.Name = "tabPage3";
+            tabPage3.Padding = new Padding(3);
+            tabPage3.Size = new Size(1340, 402);
+            tabPage3.TabIndex = 2;
+            tabPage3.Text = "Risultati Test";
+            tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // txtResTest
+            // 
+            txtResTest.BorderStyle = BorderStyle.None;
+            txtResTest.Dock = DockStyle.Fill;
+            txtResTest.Location = new Point(3, 3);
+            txtResTest.Name = "txtResTest";
+            txtResTest.Size = new Size(1334, 396);
+            txtResTest.TabIndex = 0;
+            txtResTest.Text = "";
+            // 
+            // lblTotali
+            // 
+            lblTotali.BackColor = Color.LightGray;
+            lblTotali.Dock = DockStyle.Bottom;
+            lblTotali.Font = new Font("Arial", 8F, FontStyle.Bold, GraphicsUnit.Point);
+            lblTotali.Location = new Point(5, 435);
+            lblTotali.Name = "lblTotali";
+            lblTotali.Padding = new Padding(5, 0, 0, 0);
+            lblTotali.Size = new Size(1348, 25);
+            lblTotali.TabIndex = 1;
+            lblTotali.Text = "Totali:";
+            lblTotali.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // btnTest2
+            // 
+            btnTest2.BackColor = Color.LightSteelBlue;
+            btnTest2.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            btnTest2.ForeColor = Color.White;
+            btnTest2.Location = new Point(1257, 15);
+            btnTest2.Name = "btnTest2";
+            btnTest2.Size = new Size(64, 44);
+            btnTest2.TabIndex = 25;
+            btnTest2.Text = "Test 2";
+            btnTest2.UseVisualStyleBackColor = false;
+            btnTest2.Click += btnTest2_Click;
+            // 
             // PageAnalisi
             // 
             BackColor = Color.White;
@@ -888,6 +1098,8 @@ namespace Crs.Home.ApocalypsApp
             Size = new Size(1358, 600);
             panelHeader.ResumeLayout(false);
             panelHeader.PerformLayout();
+            gbRegole.ResumeLayout(false);
+            gbRegole.PerformLayout();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             gbInterval.ResumeLayout(false);
@@ -895,6 +1107,8 @@ namespace Crs.Home.ApocalypsApp
             groupBoxRaggruppamento.ResumeLayout(false);
             groupBoxRaggruppamento.PerformLayout();
             groupBoxBudget.ResumeLayout(false);
+            groupBoxBudget.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numPrev).EndInit();
             ((System.ComponentModel.ISupportInitialize)numBudget).EndInit();
             panelContenuto.ResumeLayout(false);
             tabControl1.ResumeLayout(false);
@@ -960,6 +1174,23 @@ namespace Crs.Home.ApocalypsApp
         private DataGridViewTextBoxColumn guadagnoDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn investimentoPropostoDataGridViewTextBoxColumn;
         private DataGridViewTextBoxColumn guadagnoPropostoDataGridViewTextBoxColumn;
+        private GroupBox gbRegole;
+        private CheckBox checkBox1;
+        private CheckBox checkBox2;
+        private CheckBox checkBox3;
+        private CheckBox checkBox4;
+        private CheckBox checkBox5;
+        private CheckBox checkBox6;
+        private CheckBox checkBox7;
+        private CheckBox checkBox8;
+        private CheckBox checkBox9;
+        private CheckBox checkBox10;
+        private Label label5;
+        private NumericUpDown numPrev;
+        private Label label4;
+        private CheckBox checkBox12;
+        private CheckBox checkBox11;
+        private Button btnTest2;
 
         //private void InizializzaColonneGriglia()
         //{

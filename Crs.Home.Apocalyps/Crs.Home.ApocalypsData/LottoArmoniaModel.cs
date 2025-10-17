@@ -803,7 +803,73 @@ namespace Crs.Home.ApocalypsData
             //this.estrazioniDaUltimaCalibrazione = 0;
         }
 
-        public List<int> PrevisioneConParametriOscillanti(string ruota, DateTime dataTarget, List<int> numeriUsciti, out List<Tuple<int, int, List<string>>> risultati)
+        //public List<int> PrevisioneConParametriOscillanti_(string ruota, DateTime dataTarget, List<int> numeriUsciti, out List<Tuple<int, int, List<string>>> risultati)
+        //{
+        //    // 🎵 CREA PARAMETRI SPECIFICI PER QUESTA DATA
+        //    var parametriOscillanti = new ParametriOscillanti(dataTarget);
+
+        //    Console.WriteLine($"🎵 Parametri per {dataTarget:dd/MM/yyyy}:");
+        //    Console.WriteLine($"   W_dec1: {parametriOscillanti.W_dec1}, W_FA: {parametriOscillanti.W_FA}, " +
+        //                      $"W_rit25: {parametriOscillanti.W_rit25}, Soglia: {parametriOscillanti.Soglia}");
+
+        //    risultati = new List<Tuple<int, int, List<string>>>();
+
+        //    for (int num = 1; num <= 90; num++)
+        //    {
+        //        // Escludi numeri recenti
+        //        var ultimeEstrazioni = GetUltimeEstrazioni(ruota, dataTarget, 3);
+        //        var numeriRecenti = ultimeEstrazioni.SelectMany(e => e.Numeri).ToList();
+        //        if (numeriRecenti.Contains(num)) continue;
+
+        //        var bonus = CalcolaBonusConRegoleOscillanti(num, ruota, dataTarget, parametriOscillanti, regoleDaConsiderare);
+        //        risultati.Add(Tuple.Create(num, bonus.Item1, bonus.Item2));
+        //    }
+
+        //    var consigliati = risultati
+        //        .Where(x => x.Item2 >= parametriOscillanti.Soglia)
+        //        .OrderByDescending(x => x.Item2)
+        //        //.Select(x => x.Item1)
+        //        .ToList();
+
+        //    // Fallback se troppo pochi numeri
+        //    if (consigliati.Count < 3)
+        //    {
+        //        consigliati = risultati
+        //            .OrderByDescending(x => x.Item2)
+        //            .Take(consigliati.Count)
+        //            .ToList();
+        //    }
+        //    else
+        //    if (consigliati.Count > 8)
+        //    {
+        //        consigliati = risultati
+        //            .OrderByDescending(x => x.Item2)
+        //            .Take(8)
+        //            .ToList();
+        //    }
+
+        //    if (numeriUsciti != null)
+        //    {
+        //        //var risultati1 = risultati.OrderBy(X => X.Item2).TakeLast(consigliati.Count).ToList();
+        //        var risultati1 = risultati.Where(X=> consigliati.Contains(X)).ToList();
+        //        risultati1.AddRange(risultati.Where(X => X.Item1 == numeriUsciti[0] ||
+        //                                    X.Item1 == numeriUsciti[1] ||
+        //                                    X.Item1 == numeriUsciti[2] ||
+        //                                    X.Item1 == numeriUsciti[3] ||
+        //                                    X.Item1 == numeriUsciti[4]));
+        //        risultati = risultati1.DistinctBy(X=>X.Item1).ToList();
+        //    }
+        //    else
+        //        risultati = risultati.OrderBy(X => X.Item2).TakeLast(consigliati.Count).ToList();
+
+        //    Console.WriteLine($"   Numeri consigliati: {string.Join(", ", consigliati)}");
+        //    return consigliati.Select(x => x.Item1).ToList();
+        //}
+
+        public List<int> PrevisioneConParametriOscillanti(string ruota, DateTime dataTarget,
+            List<int> numeriUsciti, out List<Tuple<int, int, List<string>>> risultati,
+            int maxNumDaPrevedere = 8, 
+            List<string> regoleDaConsiderare = null)  // ⚠️ NUOVO PARAMETRO OPZIONALE
         {
             // 🎵 CREA PARAMETRI SPECIFICI PER QUESTA DATA
             var parametriOscillanti = new ParametriOscillanti(dataTarget);
@@ -814,6 +880,17 @@ namespace Crs.Home.ApocalypsData
 
             risultati = new List<Tuple<int, int, List<string>>>();
 
+            // ⚠️ SE NULL, USA TUTTE LE REGOLE (COMPATIBILITÀ BACKWARD)
+            if (regoleDaConsiderare == null)
+            {
+                regoleDaConsiderare = new List<string>
+                {
+                    "Decina", "FiguraAntifigura", "Polarizzazione", "Ritardo",
+                    "Armonia", "DifferenzaRitardi", "AutoAttrazione9", "InterRuota",
+                    "Temporale", "Sequenza", "CoppieSegnale", "Fisica"
+                };
+            }
+
             for (int num = 1; num <= 90; num++)
             {
                 // Escludi numeri recenti
@@ -821,14 +898,15 @@ namespace Crs.Home.ApocalypsData
                 var numeriRecenti = ultimeEstrazioni.SelectMany(e => e.Numeri).ToList();
                 if (numeriRecenti.Contains(num)) continue;
 
-                var bonus = CalcolaBonusConRegoleOscillanti(num, ruota, dataTarget, parametriOscillanti);
+                // ⚠️ PASSA regoleDaConsiderare AL METODO DI CALCOLO
+                var bonus = CalcolaBonusConRegoleOscillanti(num, ruota, dataTarget,
+                            parametriOscillanti, regoleDaConsiderare);
                 risultati.Add(Tuple.Create(num, bonus.Item1, bonus.Item2));
             }
 
             var consigliati = risultati
                 .Where(x => x.Item2 >= parametriOscillanti.Soglia)
                 .OrderByDescending(x => x.Item2)
-                //.Select(x => x.Item1)
                 .ToList();
 
             // Fallback se troppo pochi numeri
@@ -836,42 +914,127 @@ namespace Crs.Home.ApocalypsData
             {
                 consigliati = risultati
                     .OrderByDescending(x => x.Item2)
-                    .Take(5)
-                    //.Select(x => x.Item1)
+                    .Take(Math.Max(3, consigliati.Count))
                     .ToList();
             }
-            else
-            if (consigliati.Count > 10)
+            else if (consigliati.Count > maxNumDaPrevedere)
             {
                 consigliati = risultati
                     .OrderByDescending(x => x.Item2)
-                    .Take(5)
-                    //.Select(x => x.Item1)
+                    .Take(maxNumDaPrevedere)
                     .ToList();
             }
 
             if (numeriUsciti != null)
             {
-                //var risultati1 = risultati.OrderBy(X => X.Item2).TakeLast(consigliati.Count).ToList();
-                var risultati1 = risultati.Where(X=> consigliati.Contains(X)).ToList();
+                var risultati1 = risultati.Where(X => consigliati.Contains(X)).ToList();
                 risultati1.AddRange(risultati.Where(X => X.Item1 == numeriUsciti[0] ||
                                             X.Item1 == numeriUsciti[1] ||
                                             X.Item1 == numeriUsciti[2] ||
                                             X.Item1 == numeriUsciti[3] ||
                                             X.Item1 == numeriUsciti[4]));
-                risultati = risultati1.DistinctBy(X=>X.Item1).ToList();
+                risultati = risultati1.DistinctBy(X => X.Item1).ToList();
             }
             else
-                risultati = risultati.OrderBy(X => X.Item2).TakeLast(consigliati.Count).ToList();
+            {
+                risultati = risultati.OrderByDescending(X => X.Item2).Take(consigliati.Count).ToList();
+            }
 
-            //risultati = consigliati;
-
-            Console.WriteLine($"   Numeri consigliati: {string.Join(", ", consigliati)}");
+            Console.WriteLine($"   Numeri consigliati: {string.Join(", ", consigliati.Select(x => x.Item1))}");
+            Console.WriteLine($"   Regole attive: {string.Join(", ", regoleDaConsiderare)}"); // ⚠️ NUOVO LOG
             return consigliati.Select(x => x.Item1).ToList();
         }
 
+        private Tuple<int, List<string>> CalcolaBonusConRegoleOscillanti(int numero, string ruota,
+                DateTime dataTarget, ParametriOscillanti parametri, List<string> regoleDaConsiderare)
+        {
+            var regoleAttivate = new List<string>();
 
-        private Tuple<int, List<string>> CalcolaBonusConRegoleOscillanti(int numero, string ruota, DateTime dataTarget, ParametriOscillanti parametri)
+            // 🎯 CALCOLA SOLO LE REGOLE SELEZIONATE
+            int B_dec = regoleDaConsiderare.Contains("Decina") ?
+                CalcolaBonusDecinaOscillante(numero, ruota, dataTarget, parametri) : 0;
+
+            int B_FA = regoleDaConsiderare.Contains("FiguraAntifigura") ?
+                CalcolaBonusFAOscillante(numero, ruota, dataTarget, parametri) : 0;
+
+            int B_pol = regoleDaConsiderare.Contains("Polarizzazione") ?
+                CalcolaBonusPolarizzazioneOscillante(numero, ruota, dataTarget, parametri) : 0;
+
+            int B_rit = regoleDaConsiderare.Contains("Ritardo") ?
+                CalcolaBonusRitardoOscillante(numero, ruota, dataTarget, parametri) : 0;
+
+            int B_arm = regoleDaConsiderare.Contains("Armonia") ?
+                CalcolaBonusArmoniaOscillante(numero, ruota, dataTarget, parametri) : 0;
+
+            int B_diff = regoleDaConsiderare.Contains("DifferenzaRitardi") ?
+                CalcolaBonusDifferenzaRitardiOscillante(numero, ruota, dataTarget, parametri) : 0;
+
+            int B_9 = regoleDaConsiderare.Contains("AutoAttrazione9") ?
+                CalcolaBonusAutoAttrazione9Oscillante(numero, ruota, dataTarget, parametri) : 0;
+
+            int B_ir = regoleDaConsiderare.Contains("InterRuota") ?
+                CalcolaBonusInterRuotaOscillante(numero, ruota, dataTarget, parametri) : 0;
+
+            int B_temp = regoleDaConsiderare.Contains("Temporale") ?
+                CalcolaBonusTemporaleOscillante(numero, ruota, dataTarget, parametri) : 0;
+
+            int B_seq = regoleDaConsiderare.Contains("Sequenza") ?
+                CalcolaBonusSequenzaOscillante(numero, ruota, dataTarget, parametri) : 0;
+
+            int B_coppie = regoleDaConsiderare.Contains("CoppieSegnale") ?
+                CalcolaBonusCoppieSegnale(numero, ruota, dataTarget) : 0;
+
+            int B_fisica = regoleDaConsiderare.Contains("Fisica") ?
+                CalcolaBonusFisicaCompleto(numero, ruota, dataTarget) : 0;
+
+            // 🎯 REGISTRA SOLO REGOLE ATTIVATE E SELEZIONATE
+            if (B_dec > 0 && regoleDaConsiderare.Contains("Decina"))
+                regoleAttivate.Add("Decina");
+            if (B_FA > 0 && regoleDaConsiderare.Contains("FiguraAntifigura"))
+                regoleAttivate.Add("FiguraAntifigura");
+            if (B_pol > 0 && regoleDaConsiderare.Contains("Polarizzazione"))
+                regoleAttivate.Add("Polarizzazione");
+            if (B_rit > 0 && regoleDaConsiderare.Contains("Ritardo"))
+                regoleAttivate.Add("Ritardo");
+            if (B_arm > 0 && regoleDaConsiderare.Contains("Armonia"))
+                regoleAttivate.Add("Armonia");
+            if (B_diff > 0 && regoleDaConsiderare.Contains("DifferenzaRitardi"))
+                regoleAttivate.Add("DifferenzaRitardi");
+            if (B_9 > 0 && regoleDaConsiderare.Contains("AutoAttrazione9"))
+                regoleAttivate.Add("AutoAttrazione9");
+            if (B_ir > 0 && regoleDaConsiderare.Contains("InterRuota"))
+                regoleAttivate.Add("InterRuota");
+            if (B_temp > 0 && regoleDaConsiderare.Contains("Temporale"))
+                regoleAttivate.Add("Temporale");
+            if (B_seq > 0 && regoleDaConsiderare.Contains("Sequenza"))
+                regoleAttivate.Add("Sequenza");
+            if (B_coppie > 0 && regoleDaConsiderare.Contains("CoppieSegnale"))
+                regoleAttivate.Add("CoppieSegnale");
+            if (B_fisica > 0 && regoleDaConsiderare.Contains("Fisica"))
+                regoleAttivate.Add("Fisica");
+
+            // 🎯 CALCOLO MOLTIPLICATIVO SOLO CON REGOLE ATTIVE
+            double bonus_moltiplicativo = 1.0;
+
+            if (regoleDaConsiderare.Contains("Decina")) bonus_moltiplicativo *= (B_dec / 10.0 + 1);
+            if (regoleDaConsiderare.Contains("FiguraAntifigura")) bonus_moltiplicativo *= (B_FA / 10.0 + 1);
+            if (regoleDaConsiderare.Contains("Polarizzazione")) bonus_moltiplicativo *= (B_pol / 10.0 + 1);
+            if (regoleDaConsiderare.Contains("Ritardo")) bonus_moltiplicativo *= (B_rit / 10.0 + 1);
+            if (regoleDaConsiderare.Contains("Armonia")) bonus_moltiplicativo *= (B_arm / 10.0 + 1);
+            if (regoleDaConsiderare.Contains("DifferenzaRitardi")) bonus_moltiplicativo *= (B_diff / 10.0 + 1);
+            if (regoleDaConsiderare.Contains("AutoAttrazione9")) bonus_moltiplicativo *= (B_9 / 10.0 + 1);
+            if (regoleDaConsiderare.Contains("InterRuota")) bonus_moltiplicativo *= (B_ir / 10.0 + 1);
+            if (regoleDaConsiderare.Contains("Temporale")) bonus_moltiplicativo *= (B_temp / 10.0 + 1);
+            if (regoleDaConsiderare.Contains("Sequenza")) bonus_moltiplicativo *= (B_seq / 10.0 + 1);
+            if (regoleDaConsiderare.Contains("CoppieSegnale")) bonus_moltiplicativo *= (B_coppie / 10.0 + 1);
+            if (regoleDaConsiderare.Contains("Fisica")) bonus_moltiplicativo *= (B_fisica / 10.0 + 1);
+
+            bonus_moltiplicativo *= 10;
+
+            return Tuple.Create((int)Math.Round(bonus_moltiplicativo), regoleAttivate);
+        }
+
+        private Tuple<int, List<string>> CalcolaBonusConRegoleOscillanti_(int numero, string ruota, DateTime dataTarget, ParametriOscillanti parametri)
         {
             var regoleAttivate = new List<string>();
 
@@ -1498,8 +1661,8 @@ namespace Crs.Home.ApocalypsData
 
         public int Soglia_diff => 10 + (int)(2 * Math.Sin(OndaMensile())); // 8-12
 
-        //public int Soglia => 65 + (int)(5 * Math.Sin(OndaCombinata())); // 60-70
-        public int Soglia => 120 + (int)(5 * Math.Sin(OndaCombinata())); // 60-70
+        public int Soglia => 65 + (int)(5 * Math.Sin(OndaCombinata())); // 60-70
+        //public int Soglia => 120 + (int)(5 * Math.Sin(OndaCombinata())); // 60-70
 
         private double OndaCombinata() =>
             (OndaSettimanale() + OndaMensile() * 0.7 + OndaStagionale() * 0.3) / 2;

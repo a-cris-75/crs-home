@@ -22,8 +22,6 @@ namespace Crs.Home.ApocalypsApp
         public PageAnalisi()
         {
             InitializeComponent();
-            //InizializzaColonneGriglia();
-            //InizializzaDatiEsempio();
             AggiornaGriglia();
         }
 
@@ -162,25 +160,8 @@ namespace Crs.Home.ApocalypsApp
 
         private void AggiornaGriglia()
         {
-            //grigliaRisultati.Rows.Clear();
             grigliaRisultati.DataSource = risultati;
             grigliaDettagliEsrtrazione.DataSource = risultatiEstr;
-            //foreach (var risultato in risultati)
-            //{
-            //    grigliaRisultati.Rows.Add(
-            //        risultato.Intervallo,
-            //        risultato.NumeroEstrazioni,
-            //        risultato.NumeriGiocati,
-            //        risultato.NumeriVinti,
-            //        risultato.AmbiVinti,
-            //        risultato.TerniVinti,
-            //        risultato.InvestimentoMinimo.ToString("C2"),
-            //        risultato.Guadagno.ToString("C2"),
-            //        risultato.InvestimentoProposto.ToString("C2"),
-            //        risultato.GuadagnoProposto.ToString("C2")
-            //    );
-            //}
-
             // Calcola totali
             CalcolaTotali();
         }
@@ -196,11 +177,17 @@ namespace Crs.Home.ApocalypsApp
             int terniIndovinati = risultati.Sum(r => r.TerniVinti);
             int numeriGiocati = risultati.Sum(r => r.NumeriGiocati);
 
+            float perc = 0;
+            if (numeriGiocati > 0) perc = ((float)numeriIndovinati / numeriGiocati * 100);
+
             lblTotali.Text = $"Totali - Invest.Min: {totInvestimentoMin:C2} | Guadagno: {totGuadagno:C2} | " +
                            $"Invest.Prop: {totInvestimentoProp:C2} | Guadagno Prop: {totGuadagnoProp:C2} | " +
-                           $"Bilancio: {(totGuadagnoProp - totInvestimentoProp):C2} | " +
+                           $"Bilancio: {(totGuadagnoProp - totInvestimentoProp):C2} |        " +
+                           $"Estrazioni: {risultatiEstr.DistinctBy(X => X.Ruota).Count().ToString()} | " +
                            $"Tot Giocati: {(numeriGiocati)} | " +
-                           $"Tot Vincenti: {(numeriIndovinati)}  | Tot Ambi: {ambiIndovinati} | Tot Terni: {terniIndovinati}";
+                           $"Tot Vincenti: {(numeriIndovinati)}  | " +
+                           //$"Perc: {perc.ToString("0.00")} % | " +
+                           $"Tot Ambi: {ambiIndovinati} | Tot Terni: {terniIndovinati}";
 
             double successRate = (double)numeriIndovinati / numeriGiocati * 100;
             double probabilitaCasuale = 5.0 / 90.0; // 5.56%
@@ -362,7 +349,7 @@ namespace Crs.Home.ApocalypsApp
                             // Qui processi il risultato della previsione e calcoli le metriche
                             // (questa parte dipende dalla struttura del tuo modello)
                             ProcessaRisultatoPrevisione(nuoviRisultati, periodo, estrazione, numeriPrevisione, ruota, indiceperiodo++);
-                            
+
                             RisultatoEstrazione re = new RisultatoEstrazione();
                             re.Ruota = ruota;
                             re.Data = estrazione.Data;
@@ -373,8 +360,8 @@ namespace Crs.Home.ApocalypsApp
                             //        (numeriPrevisione.Count() > 2 && numeriPrevisione[2] == X.Item1) ||
                             //        (numeriPrevisione.Count() > 3 && numeriPrevisione[3] == X.Item1) ||
                             //        (numeriPrevisione.Count() > 4 && numeriPrevisione[4] == X.Item1))
-                            re.NumeriPrevisionePeso = numPesiRegole.Where(X =>numeriPrevisione.Where(Y=>Y==X.Item1).Any())
-                                .Select(x => (x.Item1, x.Item2)).OrderBy(X=>X.Item2).ToList();
+                            re.NumeriPrevisionePeso = numPesiRegole.Where(X => numeriPrevisione.Where(Y => Y == X.Item1).Any())
+                                .Select(x => (x.Item1, x.Item2)).OrderBy(X => X.Item2).ToList();
                             re.NumeriEstrazionePeso = numPesiRegole.Where(X =>
                                     estrazione.Numeri[0] == X.Item1 ||
                                     estrazione.Numeri[1] == X.Item1 ||
@@ -449,6 +436,25 @@ namespace Crs.Home.ApocalypsApp
                 var periodi = SuddividiInPeriodi(dataInizioAnalisi, dataFineAnalisi, raggruppamento);
 
                 ModelloParametriOscillanti ModelloParOscillanti = new ModelloParametriOscillanti(ParametriCondivisi.Estrazioni);
+                int numdaprevedere = (int)numPrev.Value;
+                List<string> regole = new List<string>
+                {
+                      (checkBox1.Checked)? "Decina":""
+                    , (checkBox2.Checked)? "FiguraAntifigura":""
+                    , (checkBox3.Checked)? "Polarizzazione":""
+                    , (checkBox4.Checked)? "Ritardo":""
+                    , (checkBox5.Checked)? "Armonia":""
+                    , (checkBox6.Checked)? "DifferenzaRitardi":""
+                    , (checkBox7.Checked)? "AutoAttrazione9":""
+                    , (checkBox8.Checked)? "InterRuota":""
+                    , (checkBox9.Checked)? "Temporale":""
+                    , (checkBox10.Checked)? "Sequenza":""
+                    , (checkBox11.Checked)? "CoppieSegnale":""
+                    , (checkBox12.Checked)? "Fisica":""
+                };
+
+                regole = regole.Where(X => !string.IsNullOrEmpty(X)).ToList();
+
                 int indiceperiodo = 0;
                 foreach (var periodo in periodi)
                 {
@@ -464,10 +470,11 @@ namespace Crs.Home.ApocalypsApp
                             var numeriPrevisione = ModelloParOscillanti.PrevisioneConParametriOscillanti(
                                 ruota: ruota,
                                 dataTarget: estrazione.Data,
-                                numeriUsciti: estrazione.Numeri, // Passa i numeri realmente usciti per la simulazione
-                                out List<Tuple<int, int, List<string>>> numPesiRegole
+                                numeriUsciti: estrazione.Numeri, // Passa i numeri realmente usciti per la simulazione                        
+                                out List<Tuple<int, int, List<string>>> numPesiRegole,
+                                numdaprevedere, regole
                             );
-                            
+
                             // Qui processi il risultato della previsione e calcoli le metriche
                             // (questa parte dipende dalla struttura del tuo modello)
                             ProcessaRisultatoPrevisione(nuoviRisultati, periodo, estrazione, numeriPrevisione, ruota, indiceperiodo++);
@@ -762,7 +769,7 @@ namespace Crs.Home.ApocalypsApp
                 risultatoEsistente.TerniVinti += CalcolaCombinazioni(numvintiprev, 3);
             }
 
-            if(toadd)
+            if (toadd)
                 risultati.Add(risultatoEsistente);
 
             CalcolaMetricheFinanziarie(risultatoEsistente, indiceperiodo);
@@ -787,6 +794,28 @@ namespace Crs.Home.ApocalypsApp
         }
 
         private void btnTest_Click(object sender, EventArgs e)
+        {
+            Test1();
+        }
+
+        private void Test2()
+        {
+            ModelloAdattivo ModelloAdattivo = new ModelloAdattivo(ParametriCondivisi.Estrazioni);
+            // 1. Ritardi figure
+            var ritardi = ModelloAdattivo.CalcolaRitardiFigure("RM", new DateTime(2024, 1, 16));
+            txtResTest.Text = "";
+            txtResTest.Text += ($"Ritardo Figura2: {ritardi[2]}"); // Per numero 21 (figura 3)
+
+            // 2. Parametri oscillanti
+            var param = new ParametriOscillanti(new DateTime(2024, 1, 16));
+            txtResTest.Text += ($"\nW_dec1: {param.W_dec1}, W_FA: {param.W_FA}");
+
+            // 3. Numeri esclusi (ultime 3 estrazioni)
+            var ultime = ModelloAdattivo.GetUltimeEstrazioni("RM", new DateTime(2024, 1, 16), 3);
+            txtResTest.Text += ($"\nNumeri recenti: {string.Join(", ", ultime.SelectMany(e => e.Numeri))}");
+        }
+
+        private void Test1()
         {
             string ruota = "RM";
             List<int> numeri = txtDbgNum.Text.Split(",").Select(X => Convert.ToInt32(X)).ToList();
@@ -848,6 +877,10 @@ namespace Crs.Home.ApocalypsApp
             }
         }
 
+        private void btnTest2_Click(object sender, EventArgs e)
+        {
+            Test2();
+        }
     }
 
     public class RisultatoAnalisi
