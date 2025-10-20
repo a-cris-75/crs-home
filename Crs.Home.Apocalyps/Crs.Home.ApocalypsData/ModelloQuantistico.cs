@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Crs.Home.ApocalypsData
 {
-    public class MotorePrevisionale
+    public class ModelloQuantistico
     {
         protected readonly Dictionary<string, List<int>> _famiglieNumeri;
 
-        public MotorePrevisionale()
+        public ModelloQuantistico()
         {
             _famiglieNumeri = CaricaFamiglieNumeri();
         }
@@ -85,7 +85,7 @@ namespace Crs.Home.ApocalypsData
             return candidati.Take(10).ToList();
         }
 
-        private Dictionary<string, List<int>> CaricaFamiglieNumeri()
+        protected Dictionary<string, List<int>> CaricaFamiglieNumeri()
         {
             // Implementare mappatura famiglie → numeri
             // Es: "figura_3" → [3,12,21,30,39,48,57,66,75,84]
@@ -93,7 +93,7 @@ namespace Crs.Home.ApocalypsData
         }
     }
 
-    public class MotorePrevisionaleArmonico: MotorePrevisionale
+    public class MotoreQuantisitcoArmonico: ModelloQuantistico
     {
         // Transizioni armoniche scoperte
         private static readonly Dictionary<int, List<int>> TransizioniArmoniche =
@@ -193,14 +193,14 @@ namespace Crs.Home.ApocalypsData
         public int Decina => Valore / 10;
         public int Unita => Valore % 10;
 
-        private int CalcolaFigura(int numero)
+        protected int CalcolaFigura(int numero)
         {
             int somma = numero;
             while (somma > 9) somma = somma / 10 + somma % 10;
             return somma;
         }
 
-        private int CalcolaAntifigura(int numero)
+        protected int CalcolaAntifigura(int numero)
         {
             return CalcolaFigura(90 - numero);
         }
