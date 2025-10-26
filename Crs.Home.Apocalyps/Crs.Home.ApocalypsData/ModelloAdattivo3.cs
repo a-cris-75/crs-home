@@ -118,11 +118,11 @@ namespace Crs.Home.ApocalypsData
             if (fNum == 9) return 0; // Escludi figura 9
 
             var estrRuota = GetUltimeEstrazioni(ruota, dataTarget, 3);
-            var coppieFA = new HashSet<Tuple<int, int>>
-            {
-                Tuple.Create(1, 8), Tuple.Create(8, 1),
-                Tuple.Create(4, 5), Tuple.Create(5, 4)
-            };
+            //var coppieFA = new HashSet<Tuple<int, int>>
+            //{
+            //    Tuple.Create(1, 8), Tuple.Create(8, 1),
+            //    Tuple.Create(4, 5), Tuple.Create(5, 4)
+            //};
 
             for (int i = 0; i < estrRuota.Count; i++)
             {
@@ -142,34 +142,6 @@ namespace Crs.Home.ApocalypsData
             return B_FA;
         }
 
-        private int CalcolaBonusPolarizzazione(int numero, string ruota, DateTime dataTarget)
-        {
-            int B_pol = 0;
-            var estrRuota = GetUltimeEstrazioni(ruota, dataTarget, 1);
-            if (estrRuota.Count == 0) return 0;
-
-            var ultimaCinquina = estrRuota[0].Numeri;
-            var figureUltima = new HashSet<int>(ultimaCinquina.Select(Figura));
-            int varieta = figureUltima.Count;
-            int fNum = Figura(numero);
-
-            if (varieta == 5) // Alta varietà → bonus figure già usate
-            {
-                var figureUltime3 = new HashSet<int>();
-                foreach (var e in GetUltimeEstrazioni(ruota, dataTarget, 3))
-                {
-                    figureUltime3.UnionWith(e.Numeri.Select(Figura));
-                }
-                if (figureUltime3.Contains(fNum))
-                    B_pol += param.W_pol;
-            }
-            else if (varieta <= 3) // Bassa varietà → bonus figure nuove
-            {
-                if (!figureUltima.Contains(fNum))
-                    B_pol += param.W_pol;
-            }
-            return B_pol;
-        }
 
         private int CalcolaBonusRitardo(int numero, string ruota, DateTime dataTarget)
         {
@@ -381,14 +353,7 @@ namespace Crs.Home.ApocalypsData
 
         // ========== METODI DI SUPPORTO ==========
 
-        private List<Estrazione> GetUltimeEstrazioni(string ruota, DateTime dataTarget, int numeroEstrazioni)
-        {
-            return estrazioni
-                .Where(e => e.Ruota == ruota && e.Data < dataTarget)
-                .OrderByDescending(e => e.Data)
-                .Take(numeroEstrazioni)
-                .ToList();
-        }
+        
 
         private bool CoppiaForti(string ruotaA, string ruotaB)
         {

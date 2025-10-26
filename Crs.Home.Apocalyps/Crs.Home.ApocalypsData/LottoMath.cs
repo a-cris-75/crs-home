@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Crs.Home.ApocalypsData.DataEntities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -87,5 +88,7 @@ namespace Crs.Home.ApocalypsData
 
             return famiglie;
         }
+
+        
     }
 }
