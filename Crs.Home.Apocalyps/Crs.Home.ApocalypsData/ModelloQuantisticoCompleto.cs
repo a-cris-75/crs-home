@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace Crs.Home.ApocalypsData
 {
-    public class ModelloQuantisticoCompleto : ModelloQuantistico
+    public class ModelloQuantisticoCompleto //: ModelloQuantistico
     {
         private Dictionary<string, List<int>> _famiglieNumeri;
         private List<(IOperatoreArmonico operatore, double peso)> _operatoriConPesi; // ✅ CORRETTA DICHIARAZIONE
         public ModelloQuantisticoCompleto()
         {
-            _famiglieNumeri = CaricaFamiglieNumeri();
+            _famiglieNumeri = LottoMath.CaricaFamiglieNumeri();
             _operatoriConPesi = new List<(IOperatoreArmonico, double)> // ✅ INIZIALIZZAZIONE CORRETTA
                                         {
                                             (new OperatoreCluster(), 0.3),
@@ -23,9 +23,9 @@ namespace Crs.Home.ApocalypsData
                                         };
         }
 
-        public List<int> PrevediNumeri(List<List<int>> ultime3Estrazioni)
+        public List<int> PrevediNumeri(List<List<int>> ultime3Estrazioni, int quantiNumeri, out List<Tuple<int, int, List<string>>> numPesiRegole)
         {
-            // 🌊 1. CALCOLA ONDA PASSAO (dalle ultime 3 estrazioni)
+            // 🌊 1. CALCOLA ONDA PASSATO (dalle ultime 3 estrazioni)
             var ondaPassato = CalcolaOndaPassato(ultime3Estrazioni);
 
             // 🔮 2. CALCOLA ONDA FUTURO IPOTETICA (trasformazione armonica)
@@ -34,8 +34,13 @@ namespace Crs.Home.ApocalypsData
             // 💥 3. INTERFERENZA QUANTISTICA
             var ondaInterferenza = InterferenzaCostruttiva(ondaPassato, ondaFuturo);
 
+            var picchiConEnergia = CollassoPerPiccoEnergia(ondaInterferenza, quantiNumeri);
+            //numPesiRegole = new List<Tuple<int, int, List<string>>>();
+            numPesiRegole = picchiConEnergia.Select(pe => Tuple.Create(pe.Item1, (int)(pe.Item2 * 100), new List<string> { "Energia*100" }))
+                .ToList();
+
             // 🎯 4. COLLASSO DELLA FUNZIONE D'ONDA
-            return CollassoPerPicco(ondaInterferenza, 10);
+            return picchiConEnergia.Select(X => X.Item1).ToList();//CollassoPerPicco(ondaInterferenza, quantiNumeri);
         }
 
 
@@ -90,77 +95,7 @@ namespace Crs.Home.ApocalypsData
             return onda;
         }
 
-        private OndaArmonica CalcolaOndaFuturoIpotetica_(OndaArmonica ondaPassato)
-        {
-            var ondaFuturo = new OndaArmonica();
-
-            // 🎵 1. SPECCHIATURA ARMONICA (68% - pattern più forte)
-            var picchiPassato = TrovaPicchi(ondaPassato, soglia: 0.5);
-            foreach (var picco in picchiPassato)
-            {
-                var figura = LottoMath.CalcolaFigura(picco.Numero);
-                var antifigura = 10 - figura;
-
-                var numeriAntifigura = _famiglieNumeri[$"figura_{antifigura}"];
-                foreach (var num in numeriAntifigura)
-                {
-                    ondaFuturo.Energia[num - 1] += picco.Energia * 0.68;
-                }
-            }
-
-            // 🔄 2. COMPLEMENTARIETÀ DECIMALE (72%)
-            foreach (var picco in picchiPassato)
-            {
-                var unita = picco.Numero % 10;
-
-                // Tutti i numeri con stessa unità
-                for (int num = unita; num <= 90; num += 10)
-                {
-                    if (num >= 1 && num <= 90)
-                    {
-                        ondaFuturo.Energia[num - 1] += picco.Energia * 0.72;
-                    }
-                }
-            }
-
-            // 🏛️ 3. NUMERI ARMONICI UNIVERSALI
-            var numeriArmonici = new[] { 30, 70, 49, 81, 22, 55, 66, 88, 11, 44, 90 };
-            foreach (var num in numeriArmonici)
-            {
-                ondaFuturo.Energia[num - 1] += 0.3;
-            }
-
-            // 🌊 4. RINFORZO TRANSIZIONI FORTI
-            foreach (var picco in picchiPassato)
-            {
-                var figura = LottoMath.CalcolaFigura(picco.Numero);
-
-                // Transizioni forti scoperte: 3↔7, 4↔9, etc.
-                var transizioni = new Dictionary<int, List<int>>
-            {
-                { 1, new List<int> { 6 } }, { 2, new List<int> { 8 } },
-                { 3, new List<int> { 7 } }, { 4, new List<int> { 9 } },
-                { 6, new List<int> { 1 } }, { 7, new List<int> { 3 } },
-                { 8, new List<int> { 2 } }, { 9, new List<int> { 4 } }
-            };
-
-                if (transizioni.ContainsKey(figura))
-                {
-                    foreach (var figuraTarget in transizioni[figura])
-                    {
-                        var numeriTransizione = _famiglieNumeri[$"figura_{figuraTarget}"];
-                        foreach (var num in numeriTransizione.Take(3)) // Solo 3 più probabili
-                        {
-                            ondaFuturo.Energia[num - 1] += picco.Energia * 0.5;
-                        }
-                    }
-                }
-            }
-
-            ondaFuturo.Normalizza();
-            return ondaFuturo;
-        }
-
+        
         private OndaArmonica CalcolaOndaFuturoIpotetica(OndaArmonica ondaPassato)
         {
             var ondaFuturo = new OndaArmonica();
@@ -266,6 +201,18 @@ namespace Crs.Home.ApocalypsData
             return numeriOrdinati;
         }
 
+        private List<(int, double)> CollassoPerPiccoEnergia(OndaArmonica onda, int quantiNumeri)
+        {
+            var numeriOrdinati = onda.Energia
+                .Select((energia, index) => new { Numero = index + 1, Energia = energia })
+                .OrderByDescending(x => x.Energia)
+                .Select(x => (x.Numero,x.Energia))
+                .Take(quantiNumeri)
+                .ToList();
+
+            return numeriOrdinati;
+        }
+
         private List<PiccoEnergia> TrovaPicchi(OndaArmonica onda, double soglia)
         {
             var picchi = new List<PiccoEnergia>();
@@ -353,8 +300,6 @@ namespace Crs.Home.ApocalypsData
 
         public IOperatoreArmonico Clone() => new OperatoreCluster();
     }
-
-
 
     public class OperatoreTransizioniArmoniche : IOperatoreArmonico
     {
@@ -505,19 +450,45 @@ namespace Crs.Home.ApocalypsData
     {
         public void Applica(OndaArmonica onda, List<List<int>> estrazioni, Dictionary<string, List<int>> famiglieNumeri)
         {
-            var numeriArmonici = GetNumeriArmoniciMultiLivello();
-            foreach (var num in numeriArmonici)
-            {
-                onda.Energia[num - 1] += 0.4;
-            }
-        }
-
-        private List<int> GetNumeriArmoniciMultiLivello()
-        {
-            return new List<int>
+            // ⚠️ RIDUCO energia numeri universali
+            var numeriArmonici = new List<int>
         {
             30, 70, 49, 81, 22, 55, 66, 88, 11, 44, 90
         };
+
+            foreach (var num in numeriArmonici)
+            {
+                onda.Energia[num - 1] += 0.1; // ⬇️ DA 0.4 A 0.1
+            }
+
+            // ✅ AGGIUNGO: energia basata sull'input specifico
+            var numeriInputSpecifici = TrovaNumeriArmoniciInput(estrazioni);
+            foreach (var num in numeriInputSpecifici)
+            {
+                onda.Energia[num - 1] += 0.3;
+            }
+        }
+
+        private List<int> TrovaNumeriArmoniciInput(List<List<int>> estrazioni)
+        {
+            // Numeri armonici CORRELATI all'input specifico
+            var numeri = new List<int>();
+            var figureInput = estrazioni.SelectMany(e => e).Select(LottoMath.CalcolaFigura).Distinct();
+
+            foreach (var figura in figureInput)
+            {
+                // Aggiungi numeri con figura = decina (es: 30, 44, 55, etc.)
+                for (int i = 1; i <= 9; i++)
+                {
+                    var numero = figura * 10 + figura;
+                    if (numero <= 90)
+                    {
+                        numeri.Add(numero);
+                    }
+                }
+            }
+
+            return numeri.Distinct().ToList();
         }
 
         public IOperatoreArmonico Clone() => new OperatoreMultiLivello();
@@ -529,22 +500,126 @@ namespace Crs.Home.ApocalypsData
         IOperatoreArmonico Clone();
     }
 
-    public static class LottoMath
+    
+    public class OndaGranulare
     {
-        public static int CalcolaFigura(int numero)
-        {
-            if (numero < 1 || numero > 90)
-                return 0;
+        // 📊 MATRICE DI STATI: [figura, attributo]
+        // Attributi: 0-8 = decine, 9-18 = unità, 19 = speciali
+        public double[,] EnergiaStati { get; set; } = new double[10, 20]; // [0-9 figure, 0-19 attributi]
 
-            int somma = numero;
-            while (somma > 9)
+        // 🎯 ENERGIA SPECIFICA PER NUMERO (backup per compatibilità)
+        public double[] EnergiaNumeri { get; set; } = new double[91];
+
+        public OndaGranulare()
+        {
+            // Inizializzazione
+            for (int i = 0; i < 10; i++)
+                for (int j = 0; j < 20; j++)
+                    EnergiaStati[i, j] = 0.0;
+
+            for (int i = 0; i < 91; i++)
+                EnergiaNumeri[i] = 0.0;
+        }
+
+        public void AggiornaConEstrazione(List<int> estrazione)
+        {
+            foreach (var numero in estrazione)
             {
-                somma = somma / 10 + somma % 10;
+                if (numero < 1 || numero > 90) continue;
+
+                var figura = LottoMath.CalcolaFigura(numero);
+                var decina = numero / 10;
+                var unita = numero % 10;
+
+                // 💫 1. ENERGIA DIRETTA PER STATI
+                EnergiaStati[figura, decina] += 1.0;    // Relazione figura-decina
+                EnergiaStati[figura, unita + 10] += 0.8; // Relazione figura-unità (+10 offset)
+
+                // 🎵 2. ENERGIA PER RELAZIONI ARMONICHE
+                if (figura == decina)
+                    EnergiaStati[figura, 19] += 0.5; // Numero armonico (es: 33, 44, 55)
+
+                if (figura + unita == 10)
+                    EnergiaStati[figura, 18] += 0.3; // Complementarità figura-unità
             }
-            return somma;
+        }
+
+        public void PropagaEnergia()
+        {
+            // 🔄 PROPAGAZIONE DELL'ENERGIA TRA STATI CORRELATI
+            for (int figura = 1; figura <= 9; figura++)
+            {
+                for (int decina = 0; decina <= 8; decina++)
+                {
+                    if (EnergiaStati[figura, decina] > 0.5)
+                    {
+                        // Propaga a tutti i numeri con stessa figura E decina
+                        for (int unita = 0; unita <= 9; unita++)
+                        {
+                            var numero = decina * 10 + unita;
+                            if (numero >= 1 && numero <= 90 && LottoMath.CalcolaFigura(numero) == figura)
+                            {
+                                EnergiaNumeri[numero] += EnergiaStati[figura, decina] * 0.7;
+                            }
+                        }
+                    }
+                }
+
+                for (int unita = 0; unita <= 9; unita++)
+                {
+                    if (EnergiaStati[figura, unita + 10] > 0.5)
+                    {
+                        // Propaga a tutti i numeri con stessa figura E unità
+                        for (int decina = 0; decina <= 8; decina++)
+                        {
+                            var numero = decina * 10 + unita;
+                            if (numero >= 1 && numero <= 90 && LottoMath.CalcolaFigura(numero) == figura)
+                            {
+                                EnergiaNumeri[numero] += EnergiaStati[figura, unita + 10] * 0.6;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public List<int> GetNumeriCollassati(int quanti = 10)
+        {
+            PropagaEnergia(); // Assicurati che l'energia sia propagata
+
+            return EnergiaNumeri
+                .Select((energia, index) => new { Numero = index, Energia = energia })
+                .Where(x => x.Numero >= 1 && x.Numero <= 90)
+                .OrderByDescending(x => x.Energia)
+                .Select(x => x.Numero)
+                .Take(quanti)
+                .ToList();
+        }
+
+        public void Normalizza()
+        {
+            // Normalizza l'energia degli stati
+            var maxStati = 0.0;
+            for (int i = 0; i < 10; i++)
+                for (int j = 0; j < 20; j++)
+                    if (EnergiaStati[i, j] > maxStati) maxStati = EnergiaStati[i, j];
+
+            if (maxStati > 0)
+            {
+                for (int i = 0; i < 10; i++)
+                    for (int j = 0; j < 20; j++)
+                        EnergiaStati[i, j] /= maxStati;
+            }
+
+            // Normalizza l'energia dei numeri
+            var maxNumeri = EnergiaNumeri.Max();
+            if (maxNumeri > 0)
+            {
+                for (int i = 1; i <= 90; i++)
+                    EnergiaNumeri[i] /= maxNumeri;
+            }
         }
     }
-
 }
 
 

@@ -59,24 +59,25 @@ namespace Crs.Home.ApocalypsApp
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle10 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle11 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle12 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle13 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle14 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle15 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle16 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle17 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle18 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle19 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle20 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle21 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle22 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle23 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle24 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle25 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle26 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle27 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle28 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle29 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle30 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle31 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle32 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle33 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle34 = new DataGridViewCellStyle();
             panelHeader = new Panel();
+            btnTest2 = new Button();
             gbRegole = new GroupBox();
             checkBox12 = new CheckBox();
             checkBox11 = new CheckBox();
@@ -156,7 +157,7 @@ namespace Crs.Home.ApocalypsApp
             tabPage3 = new TabPage();
             txtResTest = new RichTextBox();
             lblTotali = new Label();
-            btnTest2 = new Button();
+            btnAnalisiModQuantistico = new Button();
             panelHeader.SuspendLayout();
             gbRegole.SuspendLayout();
             groupBox1.SuspendLayout();
@@ -179,6 +180,7 @@ namespace Crs.Home.ApocalypsApp
             // panelHeader
             // 
             panelHeader.BackColor = Color.FromArgb(192, 255, 192);
+            panelHeader.Controls.Add(btnAnalisiModQuantistico);
             panelHeader.Controls.Add(btnTest2);
             panelHeader.Controls.Add(gbRegole);
             panelHeader.Controls.Add(btnStartModParametriOscillanti);
@@ -199,8 +201,21 @@ namespace Crs.Home.ApocalypsApp
             panelHeader.Location = new Point(0, 0);
             panelHeader.Name = "panelHeader";
             panelHeader.Padding = new Padding(10);
-            panelHeader.Size = new Size(1358, 135);
+            panelHeader.Size = new Size(1358, 196);
             panelHeader.TabIndex = 1;
+            // 
+            // btnTest2
+            // 
+            btnTest2.BackColor = Color.LightSteelBlue;
+            btnTest2.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            btnTest2.ForeColor = Color.White;
+            btnTest2.Location = new Point(1227, 15);
+            btnTest2.Name = "btnTest2";
+            btnTest2.Size = new Size(64, 44);
+            btnTest2.TabIndex = 25;
+            btnTest2.Text = "Test 2";
+            btnTest2.UseVisualStyleBackColor = false;
+            btnTest2.Click += btnTest2_Click;
             // 
             // gbRegole
             // 
@@ -217,12 +232,12 @@ namespace Crs.Home.ApocalypsApp
             gbRegole.Controls.Add(checkBox10);
             gbRegole.Controls.Add(checkBox9);
             gbRegole.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            gbRegole.Location = new Point(680, 63);
+            gbRegole.Location = new Point(680, 68);
             gbRegole.Name = "gbRegole";
             gbRegole.Size = new Size(433, 64);
             gbRegole.TabIndex = 24;
             gbRegole.TabStop = false;
-            gbRegole.Text = "Ruote";
+            gbRegole.Text = "Regole";
             // 
             // checkBox12
             // 
@@ -349,7 +364,7 @@ namespace Crs.Home.ApocalypsApp
             btnStartModParametriOscillanti.BackColor = Color.LightSteelBlue;
             btnStartModParametriOscillanti.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             btnStartModParametriOscillanti.ForeColor = Color.White;
-            btnStartModParametriOscillanti.Location = new Point(795, 15);
+            btnStartModParametriOscillanti.Location = new Point(812, 15);
             btnStartModParametriOscillanti.Name = "btnStartModParametriOscillanti";
             btnStartModParametriOscillanti.Size = new Size(124, 44);
             btnStartModParametriOscillanti.TabIndex = 23;
@@ -398,7 +413,7 @@ namespace Crs.Home.ApocalypsApp
             btnTest.BackColor = Color.LightSteelBlue;
             btnTest.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             btnTest.ForeColor = Color.White;
-            btnTest.Location = new Point(1187, 14);
+            btnTest.Location = new Point(1157, 15);
             btnTest.Name = "btnTest";
             btnTest.Size = new Size(64, 44);
             btnTest.TabIndex = 18;
@@ -420,9 +435,9 @@ namespace Crs.Home.ApocalypsApp
             groupBox1.Controls.Add(chkNapoli);
             groupBox1.Controls.Add(chkPalermo);
             groupBox1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            groupBox1.Location = new Point(350, 63);
+            groupBox1.Location = new Point(353, 67);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(319, 64);
+            groupBox1.Size = new Size(316, 64);
             groupBox1.TabIndex = 17;
             groupBox1.TabStop = false;
             groupBox1.Text = "Ruote";
@@ -544,7 +559,7 @@ namespace Crs.Home.ApocalypsApp
             gbInterval.Controls.Add(label2);
             gbInterval.Controls.Add(dateTimeFine);
             gbInterval.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            gbInterval.Location = new Point(9, 63);
+            gbInterval.Location = new Point(10, 67);
             gbInterval.Name = "gbInterval";
             gbInterval.Size = new Size(328, 64);
             gbInterval.TabIndex = 16;
@@ -596,7 +611,7 @@ namespace Crs.Home.ApocalypsApp
             btnStartModelloArmonia.ForeColor = Color.White;
             btnStartModelloArmonia.Location = new Point(680, 15);
             btnStartModelloArmonia.Name = "btnStartModelloArmonia";
-            btnStartModelloArmonia.Size = new Size(109, 44);
+            btnStartModelloArmonia.Size = new Size(124, 44);
             btnStartModelloArmonia.TabIndex = 4;
             btnStartModelloArmonia.Text = "Analisi Modello Armonia";
             btnStartModelloArmonia.UseVisualStyleBackColor = false;
@@ -721,7 +736,7 @@ namespace Crs.Home.ApocalypsApp
             btnAggiorna.BackColor = Color.LightSteelBlue;
             btnAggiorna.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             btnAggiorna.ForeColor = Color.White;
-            btnAggiorna.Location = new Point(1056, 15);
+            btnAggiorna.Location = new Point(124, 138);
             btnAggiorna.Name = "btnAggiorna";
             btnAggiorna.Size = new Size(109, 44);
             btnAggiorna.TabIndex = 2;
@@ -734,9 +749,9 @@ namespace Crs.Home.ApocalypsApp
             btnEsporta.BackColor = Color.DarkOrange;
             btnEsporta.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             btnEsporta.ForeColor = Color.White;
-            btnEsporta.Location = new Point(950, 15);
+            btnEsporta.Location = new Point(9, 138);
             btnEsporta.Name = "btnEsporta";
-            btnEsporta.Size = new Size(100, 44);
+            btnEsporta.Size = new Size(109, 44);
             btnEsporta.TabIndex = 3;
             btnEsporta.Text = "Esporta CSV";
             btnEsporta.UseVisualStyleBackColor = false;
@@ -748,10 +763,10 @@ namespace Crs.Home.ApocalypsApp
             panelContenuto.Controls.Add(tabControl1);
             panelContenuto.Controls.Add(lblTotali);
             panelContenuto.Dock = DockStyle.Fill;
-            panelContenuto.Location = new Point(0, 135);
+            panelContenuto.Location = new Point(0, 196);
             panelContenuto.Name = "panelContenuto";
             panelContenuto.Padding = new Padding(5);
-            panelContenuto.Size = new Size(1358, 465);
+            panelContenuto.Size = new Size(1358, 404);
             panelContenuto.TabIndex = 0;
             // 
             // tabControl1
@@ -763,7 +778,7 @@ namespace Crs.Home.ApocalypsApp
             tabControl1.Location = new Point(5, 5);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(1348, 430);
+            tabControl1.Size = new Size(1348, 369);
             tabControl1.TabIndex = 2;
             // 
             // tabPage1
@@ -772,7 +787,7 @@ namespace Crs.Home.ApocalypsApp
             tabPage1.Location = new Point(4, 24);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(1340, 402);
+            tabPage1.Size = new Size(1340, 341);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Raggruppamento";
             tabPage1.UseVisualStyleBackColor = true;
@@ -780,18 +795,18 @@ namespace Crs.Home.ApocalypsApp
             // grigliaRisultati
             // 
             grigliaRisultati.AllowUserToAddRows = false;
-            dataGridViewCellStyle1.BackColor = Color.WhiteSmoke;
-            grigliaRisultati.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle18.BackColor = Color.WhiteSmoke;
+            grigliaRisultati.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle18;
             grigliaRisultati.AutoGenerateColumns = false;
             grigliaRisultati.BackgroundColor = Color.White;
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = SystemColors.Control;
-            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            dataGridViewCellStyle2.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
-            grigliaRisultati.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle19.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle19.BackColor = SystemColors.Control;
+            dataGridViewCellStyle19.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle19.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle19.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle19.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle19.WrapMode = DataGridViewTriState.True;
+            grigliaRisultati.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle19;
             grigliaRisultati.ColumnHeadersHeight = 27;
             grigliaRisultati.Columns.AddRange(new DataGridViewColumn[] { intervalloDataGridViewTextBoxColumn, dataInizioDataGridViewTextBoxColumn, dataFineDataGridViewTextBoxColumn, numeroEstrazioniDataGridViewTextBoxColumn, numeriGiocatiDataGridViewTextBoxColumn, numeriVintiDataGridViewTextBoxColumn, ambiVintiDataGridViewTextBoxColumn, terniVintiDataGridViewTextBoxColumn, investimentoMinimoDataGridViewTextBoxColumn, guadagnoDataGridViewTextBoxColumn, investimentoPropostoDataGridViewTextBoxColumn, guadagnoPropostoDataGridViewTextBoxColumn });
             grigliaRisultati.DataSource = risultatoAnalisiBindingSource;
@@ -800,14 +815,14 @@ namespace Crs.Home.ApocalypsApp
             grigliaRisultati.Location = new Point(3, 3);
             grigliaRisultati.Name = "grigliaRisultati";
             grigliaRisultati.ReadOnly = true;
-            grigliaRisultati.Size = new Size(1334, 396);
+            grigliaRisultati.Size = new Size(1334, 335);
             grigliaRisultati.TabIndex = 0;
             // 
             // intervalloDataGridViewTextBoxColumn
             // 
             intervalloDataGridViewTextBoxColumn.DataPropertyName = "Intervallo";
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            intervalloDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle20.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            intervalloDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle20;
             intervalloDataGridViewTextBoxColumn.FillWeight = 200F;
             intervalloDataGridViewTextBoxColumn.HeaderText = "Intervallo";
             intervalloDataGridViewTextBoxColumn.Name = "intervalloDataGridViewTextBoxColumn";
@@ -817,8 +832,8 @@ namespace Crs.Home.ApocalypsApp
             // dataInizioDataGridViewTextBoxColumn
             // 
             dataInizioDataGridViewTextBoxColumn.DataPropertyName = "DataInizio";
-            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataInizioDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle21.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataInizioDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle21;
             dataInizioDataGridViewTextBoxColumn.FillWeight = 150F;
             dataInizioDataGridViewTextBoxColumn.HeaderText = "DataInizio";
             dataInizioDataGridViewTextBoxColumn.Name = "dataInizioDataGridViewTextBoxColumn";
@@ -829,8 +844,8 @@ namespace Crs.Home.ApocalypsApp
             // dataFineDataGridViewTextBoxColumn
             // 
             dataFineDataGridViewTextBoxColumn.DataPropertyName = "DataFine";
-            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataFineDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle22.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataFineDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle22;
             dataFineDataGridViewTextBoxColumn.FillWeight = 150F;
             dataFineDataGridViewTextBoxColumn.HeaderText = "DataFine";
             dataFineDataGridViewTextBoxColumn.Name = "dataFineDataGridViewTextBoxColumn";
@@ -841,8 +856,8 @@ namespace Crs.Home.ApocalypsApp
             // numeroEstrazioniDataGridViewTextBoxColumn
             // 
             numeroEstrazioniDataGridViewTextBoxColumn.DataPropertyName = "NumeroEstrazioni";
-            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            numeroEstrazioniDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle23.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            numeroEstrazioniDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle23;
             numeroEstrazioniDataGridViewTextBoxColumn.FillWeight = 80F;
             numeroEstrazioniDataGridViewTextBoxColumn.HeaderText = "Num Estrazioni";
             numeroEstrazioniDataGridViewTextBoxColumn.Name = "numeroEstrazioniDataGridViewTextBoxColumn";
@@ -852,8 +867,8 @@ namespace Crs.Home.ApocalypsApp
             // numeriGiocatiDataGridViewTextBoxColumn
             // 
             numeriGiocatiDataGridViewTextBoxColumn.DataPropertyName = "NumeriGiocati";
-            dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            numeriGiocatiDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle24.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            numeriGiocatiDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle24;
             numeriGiocatiDataGridViewTextBoxColumn.HeaderText = "Num Giocati";
             numeriGiocatiDataGridViewTextBoxColumn.Name = "numeriGiocatiDataGridViewTextBoxColumn";
             numeriGiocatiDataGridViewTextBoxColumn.ReadOnly = true;
@@ -862,8 +877,8 @@ namespace Crs.Home.ApocalypsApp
             // numeriVintiDataGridViewTextBoxColumn
             // 
             numeriVintiDataGridViewTextBoxColumn.DataPropertyName = "NumeriVinti";
-            dataGridViewCellStyle8.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            numeriVintiDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle25.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            numeriVintiDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle25;
             numeriVintiDataGridViewTextBoxColumn.FillWeight = 80F;
             numeriVintiDataGridViewTextBoxColumn.HeaderText = "Num Vinti";
             numeriVintiDataGridViewTextBoxColumn.Name = "numeriVintiDataGridViewTextBoxColumn";
@@ -873,8 +888,8 @@ namespace Crs.Home.ApocalypsApp
             // ambiVintiDataGridViewTextBoxColumn
             // 
             ambiVintiDataGridViewTextBoxColumn.DataPropertyName = "AmbiVinti";
-            dataGridViewCellStyle9.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            ambiVintiDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle26.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            ambiVintiDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle26;
             ambiVintiDataGridViewTextBoxColumn.FillWeight = 80F;
             ambiVintiDataGridViewTextBoxColumn.HeaderText = "Ambi Vinti";
             ambiVintiDataGridViewTextBoxColumn.Name = "ambiVintiDataGridViewTextBoxColumn";
@@ -884,8 +899,8 @@ namespace Crs.Home.ApocalypsApp
             // terniVintiDataGridViewTextBoxColumn
             // 
             terniVintiDataGridViewTextBoxColumn.DataPropertyName = "TerniVinti";
-            dataGridViewCellStyle10.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            terniVintiDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle27.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            terniVintiDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle27;
             terniVintiDataGridViewTextBoxColumn.FillWeight = 80F;
             terniVintiDataGridViewTextBoxColumn.HeaderText = "Terni Vinti";
             terniVintiDataGridViewTextBoxColumn.Name = "terniVintiDataGridViewTextBoxColumn";
@@ -895,10 +910,10 @@ namespace Crs.Home.ApocalypsApp
             // investimentoMinimoDataGridViewTextBoxColumn
             // 
             investimentoMinimoDataGridViewTextBoxColumn.DataPropertyName = "InvestimentoMinimo";
-            dataGridViewCellStyle11.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle11.Format = "N2";
-            dataGridViewCellStyle11.NullValue = null;
-            investimentoMinimoDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle28.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle28.Format = "N2";
+            dataGridViewCellStyle28.NullValue = null;
+            investimentoMinimoDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle28;
             investimentoMinimoDataGridViewTextBoxColumn.FillWeight = 150F;
             investimentoMinimoDataGridViewTextBoxColumn.HeaderText = "Investimento Minimo";
             investimentoMinimoDataGridViewTextBoxColumn.Name = "investimentoMinimoDataGridViewTextBoxColumn";
@@ -908,9 +923,9 @@ namespace Crs.Home.ApocalypsApp
             // guadagnoDataGridViewTextBoxColumn
             // 
             guadagnoDataGridViewTextBoxColumn.DataPropertyName = "Guadagno";
-            dataGridViewCellStyle12.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle12.Format = "N2";
-            guadagnoDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle29.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle29.Format = "N2";
+            guadagnoDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle29;
             guadagnoDataGridViewTextBoxColumn.FillWeight = 120F;
             guadagnoDataGridViewTextBoxColumn.HeaderText = "Guadagno";
             guadagnoDataGridViewTextBoxColumn.Name = "guadagnoDataGridViewTextBoxColumn";
@@ -920,9 +935,9 @@ namespace Crs.Home.ApocalypsApp
             // investimentoPropostoDataGridViewTextBoxColumn
             // 
             investimentoPropostoDataGridViewTextBoxColumn.DataPropertyName = "InvestimentoProposto";
-            dataGridViewCellStyle13.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle13.Format = "N2";
-            investimentoPropostoDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle13;
+            dataGridViewCellStyle30.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle30.Format = "N2";
+            investimentoPropostoDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle30;
             investimentoPropostoDataGridViewTextBoxColumn.FillWeight = 150F;
             investimentoPropostoDataGridViewTextBoxColumn.HeaderText = "Investimento Proposto";
             investimentoPropostoDataGridViewTextBoxColumn.Name = "investimentoPropostoDataGridViewTextBoxColumn";
@@ -932,9 +947,9 @@ namespace Crs.Home.ApocalypsApp
             // guadagnoPropostoDataGridViewTextBoxColumn
             // 
             guadagnoPropostoDataGridViewTextBoxColumn.DataPropertyName = "GuadagnoProposto";
-            dataGridViewCellStyle14.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle14.Format = "N2";
-            guadagnoPropostoDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle14;
+            dataGridViewCellStyle31.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle31.Format = "N2";
+            guadagnoPropostoDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle31;
             guadagnoPropostoDataGridViewTextBoxColumn.FillWeight = 150F;
             guadagnoPropostoDataGridViewTextBoxColumn.HeaderText = "Guadagno Proposto";
             guadagnoPropostoDataGridViewTextBoxColumn.Name = "guadagnoPropostoDataGridViewTextBoxColumn";
@@ -959,18 +974,18 @@ namespace Crs.Home.ApocalypsApp
             // grigliaDettagliEsrtrazione
             // 
             grigliaDettagliEsrtrazione.AllowUserToAddRows = false;
-            dataGridViewCellStyle15.BackColor = Color.WhiteSmoke;
-            grigliaDettagliEsrtrazione.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle15;
+            dataGridViewCellStyle32.BackColor = Color.WhiteSmoke;
+            grigliaDettagliEsrtrazione.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle32;
             grigliaDettagliEsrtrazione.AutoGenerateColumns = false;
             grigliaDettagliEsrtrazione.BackgroundColor = Color.White;
-            dataGridViewCellStyle16.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle16.BackColor = SystemColors.Control;
-            dataGridViewCellStyle16.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            dataGridViewCellStyle16.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle16.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle16.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle16.WrapMode = DataGridViewTriState.True;
-            grigliaDettagliEsrtrazione.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle16;
+            dataGridViewCellStyle33.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle33.BackColor = SystemColors.Control;
+            dataGridViewCellStyle33.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle33.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle33.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle33.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle33.WrapMode = DataGridViewTriState.True;
+            grigliaDettagliEsrtrazione.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle33;
             grigliaDettagliEsrtrazione.ColumnHeadersHeight = 27;
             grigliaDettagliEsrtrazione.Columns.AddRange(new DataGridViewColumn[] { ruotaDataGridViewTextBoxColumn, dataDataGridViewTextBoxColumn, numPrevistiPesiDataGridViewTextBoxColumn, CountPrevisti, NumEstrattiPesi, NumEstratti, NumVinti });
             grigliaDettagliEsrtrazione.DataSource = risultatoEstrazioneBindingSource;
@@ -1032,8 +1047,8 @@ namespace Crs.Home.ApocalypsApp
             // NumVinti
             // 
             NumVinti.DataPropertyName = "NumVinti";
-            dataGridViewCellStyle17.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            NumVinti.DefaultCellStyle = dataGridViewCellStyle17;
+            dataGridViewCellStyle34.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            NumVinti.DefaultCellStyle = dataGridViewCellStyle34;
             NumVinti.HeaderText = "Num Vinti";
             NumVinti.Name = "NumVinti";
             NumVinti.ReadOnly = true;
@@ -1068,7 +1083,7 @@ namespace Crs.Home.ApocalypsApp
             lblTotali.BackColor = Color.LightGray;
             lblTotali.Dock = DockStyle.Bottom;
             lblTotali.Font = new Font("Arial", 8F, FontStyle.Bold, GraphicsUnit.Point);
-            lblTotali.Location = new Point(5, 435);
+            lblTotali.Location = new Point(5, 374);
             lblTotali.Name = "lblTotali";
             lblTotali.Padding = new Padding(5, 0, 0, 0);
             lblTotali.Size = new Size(1348, 25);
@@ -1076,18 +1091,18 @@ namespace Crs.Home.ApocalypsApp
             lblTotali.Text = "Totali:";
             lblTotali.TextAlign = ContentAlignment.MiddleLeft;
             // 
-            // btnTest2
+            // btnAnalisiModQuantistico
             // 
-            btnTest2.BackColor = Color.LightSteelBlue;
-            btnTest2.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            btnTest2.ForeColor = Color.White;
-            btnTest2.Location = new Point(1257, 15);
-            btnTest2.Name = "btnTest2";
-            btnTest2.Size = new Size(64, 44);
-            btnTest2.TabIndex = 25;
-            btnTest2.Text = "Test 2";
-            btnTest2.UseVisualStyleBackColor = false;
-            btnTest2.Click += btnTest2_Click;
+            btnAnalisiModQuantistico.BackColor = Color.LightSteelBlue;
+            btnAnalisiModQuantistico.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            btnAnalisiModQuantistico.ForeColor = Color.White;
+            btnAnalisiModQuantistico.Location = new Point(942, 15);
+            btnAnalisiModQuantistico.Name = "btnAnalisiModQuantistico";
+            btnAnalisiModQuantistico.Size = new Size(124, 44);
+            btnAnalisiModQuantistico.TabIndex = 26;
+            btnAnalisiModQuantistico.Text = "Analisi Mod Quantistico";
+            btnAnalisiModQuantistico.UseVisualStyleBackColor = false;
+            btnAnalisiModQuantistico.Click += btnAnalisiModQuantistico_Click;
             // 
             // PageAnalisi
             // 
@@ -1146,7 +1161,7 @@ namespace Crs.Home.ApocalypsApp
         private Label label2;
         private DateTimePicker dateTimeFine;
         private GroupBox groupBox1;
-        private Button button1;
+        private Button btnAnalisiModQuantistico;
         private Button btnTest;
         private TabPage tabPage3;
         private RichTextBox txtResTest;

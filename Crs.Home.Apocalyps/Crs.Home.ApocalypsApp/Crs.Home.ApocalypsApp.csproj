@@ -6,11 +6,11 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-    <ApplicationIcon>ICO\dice.ico</ApplicationIcon>
+    <ApplicationIcon>ICO\symantec.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="ICO\dice.ico" />
+    <Content Include="ICO\symantec.ico" />
   </ItemGroup>
 
   <ItemGroup>

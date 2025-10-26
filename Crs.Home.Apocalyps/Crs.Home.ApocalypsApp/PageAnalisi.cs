@@ -635,6 +635,123 @@ namespace Crs.Home.ApocalypsApp
         }
 
 
+        private bool AnalisiModelloQuantistico()
+        {
+            try
+            {
+                // Prepara i risultati
+                List<RisultatoAnalisi>  nuoviRisultati = new List<RisultatoAnalisi>();
+                List<RisultatoEstrazione> nuoviRisultatiDet = new List<RisultatoEstrazione>();
+
+                List<string> ruoteSelezionate;
+
+                List<Periodo> periodi;
+                bool res = GetPeriodiInit(out ruoteSelezionate, out int quantiNum, out periodi);
+                if (!res)
+                {
+                    return res;
+                }
+
+                ModelloQuantisticoCompleto Modello = new ModelloQuantisticoCompleto();
+                int indiceperiodo = 0;
+                foreach (var periodo in periodi)
+                {
+                    // Per ogni ruota selezionata
+                    foreach (string ruota in ruoteSelezionate)
+                    {
+                        // Ottieni le estrazioni per questo periodo e ruota
+                        var estrazioniPeriodo = OttieniEstrazioniPerPeriodo(periodo.DataInizio, periodo.DataFine, ruota);
+
+                        foreach (var estrazione in estrazioniPeriodo)
+                        {
+                            var ultime3estr = OttieniEstrazioni(estrazione.Data, 3, ruota).Select(X => X.Numeri).ToList();
+                            // Chiama il modello adattivo per la previsione
+                            var numeriPrevisione = Modello.PrevediNumeri(ultime3estr, quantiNum, out List<Tuple<int, int, List<string>>> numPesiRegole);
+
+                            // Qui processi il risultato della previsione e calcoli le metriche
+                            // (questa parte dipende dalla struttura del tuo modello)
+                            ProcessaRisultatoPrevisione(nuoviRisultati, periodo, estrazione, numeriPrevisione, ruota, indiceperiodo++);
+
+                            RisultatoEstrazione re = new RisultatoEstrazione();
+                            re.Ruota = ruota;
+                            re.Data = estrazione.Data;
+                            re.NumeriEstrazione = estrazione.Numeri;
+
+                            re.NumeriPrevisionePeso = numPesiRegole.Where(X => numeriPrevisione.Where(Y => Y == X.Item1).Any())
+                                .Select(x => (x.Item1, x.Item2)).OrderBy(X => X.Item2).ToList();
+                            re.NumeriEstrazionePeso = numPesiRegole.Where(X =>
+                                    estrazione.Numeri[0] == X.Item1 ||
+                                    estrazione.Numeri[1] == X.Item1 ||
+                                    estrazione.Numeri[2] == X.Item1 ||
+                                    estrazione.Numeri[3] == X.Item1 ||
+                                    estrazione.Numeri[4] == X.Item1)
+                                .Select(x => (x.Item1, x.Item2)).OrderBy(X => X.Item2).ToList();
+
+                            nuoviRisultatiDet.Add(re);
+                        }
+                    }
+                }
+
+                // Aggiorna i risultati e la griglia
+                risultati = nuoviRisultati;
+                risultatiEstr = nuoviRisultatiDet;
+                AggiornaGriglia();
+
+                this.Cursor = Cursors.Default;
+
+                MessageBox.Show($"Analisi completata! Processate {nuoviRisultati.Count} periodi.",
+                              "Analisi Completata", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Errore durante l'analisi: {ex.Message}",
+                              "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.Cursor = Cursors.Default;
+            }
+
+            return true;
+        }
+
+        private bool GetPeriodiInit(out List<string> ruoteSelezionate, out int quantiNumeri, out List<Periodo> periodi)
+        {
+            bool res = true;
+            // Ottieni le ruote selezionate
+            ruoteSelezionate = OttieniRuoteSelezionate();
+            if (ruoteSelezionate.Count == 0)
+            {
+                MessageBox.Show("Seleziona almeno una ruota per l'analisi.", "Attenzione",
+                              MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                res = false;
+            }
+
+            DateTime dataInizioAnalisi = dateTimeInizio.Value;
+            DateTime dataFineAnalisi = dateTimeFine.Value;
+
+            if (dataInizioAnalisi < ParametriCondivisi.DataInizioAnalisi)
+                dataInizioAnalisi = ParametriCondivisi.DataInizioAnalisi;
+
+            if (dataFineAnalisi > ParametriCondivisi.DataFineAnalisi)
+                dataFineAnalisi = ParametriCondivisi.DataFineAnalisi;
+
+
+            // Verifica che le date siano valide
+            if (dataInizioAnalisi == DateTime.MinValue || dataFineAnalisi == DateTime.MinValue)
+            {
+                MessageBox.Show("Intervallo date non valido. Carica prima i dati nel Tabellone.",
+                              "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                res = false;
+            }
+
+            this.Cursor = Cursors.WaitCursor;
+            
+            // Per ogni periodo nel raggruppamento selezionato
+            string raggruppamento = OttieniRaggruppamentoSelezionato();
+            periodi = SuddividiInPeriodi(dataInizioAnalisi, dataFineAnalisi, raggruppamento);
+
+            quantiNumeri = (int)numPrev.Value;
+            return res;
+        }
+
         private List<string> OttieniRuoteSelezionate()
         {
             List<string> ruoteSelezionate = new List<string>();
@@ -722,6 +839,13 @@ namespace Crs.Home.ApocalypsApp
             // Questo metodo dovrebbe recuperare le estrazioni dal database o dalla fonte dati
             // Per ora restituisco una lista vuota - tu implementerai la logica specifica
             return ParametriCondivisi.Estrazioni.Where(X => X.Ruota.Equals(ruota) && X.Data >= dataInizio && X.Data < dataFine).ToList();
+        }
+
+        private List<Estrazione> OttieniEstrazioni(DateTime dataPrev, int numEstrPrec, string ruota)
+        {
+            // Questo metodo dovrebbe recuperare le estrazioni dal database o dalla fonte dati
+            // Per ora restituisco una lista vuota - tu implementerai la logica specifica
+            return ParametriCondivisi.Estrazioni.Where(X => X.Ruota.Equals(ruota) && X.Data <= dataPrev).TakeLast(numEstrPrec).ToList();
         }
 
         private RisultatoAnalisi ProcessaRisultatoPrevisione(List<RisultatoAnalisi> risultati, Periodo periodo,
@@ -880,6 +1004,11 @@ namespace Crs.Home.ApocalypsApp
         private void btnTest2_Click(object sender, EventArgs e)
         {
             Test2();
+        }
+
+        private void btnAnalisiModQuantistico_Click(object sender, EventArgs e)
+        {
+            AnalisiModelloQuantistico();
         }
     }
 
