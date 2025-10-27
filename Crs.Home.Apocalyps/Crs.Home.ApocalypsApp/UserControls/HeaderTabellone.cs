@@ -246,7 +246,8 @@ namespace Crs.Home.ApocalypsApp.UserControls
                 riga = SetRowRuota(riga, e.Data, lstRM[idx], err);
                 riga = SetRowRuota(riga, e.Data, lstTO[idx], err);
                 riga = SetRowRuota(riga, e.Data, lstVE[idx], err);
-                riga = SetRowRuota(riga, e.Data, lstNZ[idx], err);
+                if(lstNA.Count()>idx)
+                    riga = SetRowRuota(riga, e.Data, lstNZ[idx], err);
                 GrigliaDestinazione.Rows.Add(riga);
                 idx++;
             }

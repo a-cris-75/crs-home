@@ -43,7 +43,6 @@ namespace Crs.Home.ApocalypsData
             return picchiConEnergia.Select(X => X.Item1).ToList();//CollassoPerPicco(ondaInterferenza, quantiNumeri);
         }
 
-
         //private OndaArmonica CalcolaOndaPassato(List<List<int>> estrazioni)
         //{
         //    var onda = new OndaArmonica();
@@ -94,7 +93,6 @@ namespace Crs.Home.ApocalypsData
             onda.Normalizza();
             return onda;
         }
-
         
         private OndaArmonica CalcolaOndaFuturoIpotetica(OndaArmonica ondaPassato)
         {
@@ -225,7 +223,6 @@ namespace Crs.Home.ApocalypsData
             }
             return picchi.OrderByDescending(p => p.Energia).ToList();
         }
-
 
     }
 
