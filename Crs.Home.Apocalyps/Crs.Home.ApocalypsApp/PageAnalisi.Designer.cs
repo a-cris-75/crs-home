@@ -658,7 +658,7 @@ namespace Crs.Home.ApocalypsApp
             btnStartModelloArmonia.TabIndex = 4;
             btnStartModelloArmonia.Text = "Analisi Modello Armonia";
             btnStartModelloArmonia.UseVisualStyleBackColor = false;
-            btnStartModelloArmonia.Click += BtnAvviaAnalisi_Click;
+            btnStartModelloArmonia.Click += BtnModelloArmonia_Click;
             // 
             // groupBoxRaggruppamento
             // 

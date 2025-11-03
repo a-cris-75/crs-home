@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-//using static Google.Protobuf.Collections.MapField<TKey, TValue>;
 
 namespace Crs.Home.ApocalypsApp
 {
@@ -16,8 +15,6 @@ namespace Crs.Home.ApocalypsApp
         private List<RisultatoAnalisi> risultati = new List<RisultatoAnalisi>();
         private List<RisultatoEstrazione> risultatiEstr = new List<RisultatoEstrazione>();
         private decimal budgetDisponibile = 1000m;
-
-
 
         public PageAnalisi()
         {
@@ -263,28 +260,20 @@ namespace Crs.Home.ApocalypsApp
             }
         }
 
-        private void BtnAvviaAnalisi_Click(object sender, EventArgs e)
+        private void BtnModelloArmonia_Click(object sender, EventArgs e)
         {
-            bool flowControl = AnalisiModelloArmonia();
-            if (!flowControl)
-            {
-                return;
-            }
+            PrevisioniMerge.Add("ModelloArmonia", AnalisiModelloArmonia());
+            
         }
 
 
         private void btnStartModParametriOscillanti_Click(object sender, EventArgs e)
         {
-            bool flowControl = AnalisiModelloArmoniaOscillazione();
-            if (!flowControl)
-            {
-                return;
-            }
+            PrevisioniMerge.Add("ModelloParametriOscilanti",AnalisiModelloArmoniaOscillazione());
         }
 
-        private List<RisultatoEstrazione> PrevisioniMerge = new List<RisultatoEstrazione>();
 
-        private bool AnalisiModelloArmonia()
+        private List<RisultatoEstrazione>? AnalisiModelloArmonia()
         {
             try
             {
@@ -295,7 +284,7 @@ namespace Crs.Home.ApocalypsApp
                 {
                     MessageBox.Show("Seleziona almeno una ruota per l'analisi.", "Attenzione",
                                   MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return false;
+                    return null;
                 }
 
                 // Ottieni l'intervallo di date dai parametri condivisi
@@ -317,7 +306,7 @@ namespace Crs.Home.ApocalypsApp
                 {
                     MessageBox.Show("Intervallo date non valido. Carica prima i dati nel Tabellone.",
                                   "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return false;
+                    return null;
                 }
 
                 this.Cursor = Cursors.WaitCursor;
@@ -395,10 +384,10 @@ namespace Crs.Home.ApocalypsApp
                 this.Cursor = Cursors.Default;
             }
 
-            return true;
+            return risultatiEstr;
         }
 
-        private bool AnalisiModelloArmoniaOscillazione()
+        private List<RisultatoEstrazione>? AnalisiModelloArmoniaOscillazione()
         {
             try
             {
@@ -409,7 +398,7 @@ namespace Crs.Home.ApocalypsApp
                 {
                     MessageBox.Show("Seleziona almeno una ruota per l'analisi.", "Attenzione",
                                   MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return false;
+                    return null;
                 }
 
                 DateTime dataInizioAnalisi = dateTimeInizio.Value;
@@ -426,7 +415,7 @@ namespace Crs.Home.ApocalypsApp
                 {
                     MessageBox.Show("Intervallo date non valido. Carica prima i dati nel Tabellone.",
                                   "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return false;
+                    return null;
                 }
 
                 this.Cursor = Cursors.WaitCursor;
@@ -528,10 +517,10 @@ namespace Crs.Home.ApocalypsApp
                 this.Cursor = Cursors.Default;
             }
 
-            return true;
+            return risultatiEstr;
         }
 
-        private bool AnalisiModelloArmoniaStatistica()
+        private List<RisultatoEstrazione>? AnalisiModelloArmoniaStatistica()
         {
             try
             {
@@ -542,7 +531,7 @@ namespace Crs.Home.ApocalypsApp
                 {
                     MessageBox.Show("Seleziona almeno una ruota per l'analisi.", "Attenzione",
                                   MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return false;
+                    return null;
                 }
 
                 DateTime dataInizioAnalisi = dateTimeInizio.Value;
@@ -560,7 +549,7 @@ namespace Crs.Home.ApocalypsApp
                 {
                     MessageBox.Show("Intervallo date non valido. Carica prima i dati nel Tabellone.",
                                   "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return false;
+                    return null;
                 }
 
                 this.Cursor = Cursors.WaitCursor;
@@ -634,10 +623,12 @@ namespace Crs.Home.ApocalypsApp
                 this.Cursor = Cursors.Default;
             }
 
-            return true;
+            return risultatiEstr;
         }
 
-        private bool AnalisiModelloQuantistico()
+
+        private Dictionary<string, List<RisultatoEstrazione>?> PrevisioniMerge = new Dictionary<string, List<RisultatoEstrazione>?>();
+        private List<RisultatoEstrazione>? AnalisiModelloQuantistico()
         {
             try
             {
@@ -651,7 +642,7 @@ namespace Crs.Home.ApocalypsApp
                 bool res = GetPeriodiInit(out ruoteSelezionate, out int quantiNum, out periodi);
                 if (!res)
                 {
-                    return res;
+                    return null;
                 }
 
                 ModelloQuantisticoCompleto Modello = new ModelloQuantisticoCompleto();
@@ -713,10 +704,10 @@ namespace Crs.Home.ApocalypsApp
                 this.Cursor = Cursors.Default;
             }
 
-            return true;
+            return risultatiEstr;
         }
 
-        private bool AnalisiModelloCicli()
+        private List<RisultatoEstrazione>? AnalisiModelloCicli()
         {
             try
             {
@@ -730,7 +721,7 @@ namespace Crs.Home.ApocalypsApp
                 bool res = GetPeriodiInit(out ruoteSelezionate, out int quantiNum, out periodi);
                 if (!res)
                 {
-                    return res;
+                    return null;
                 }
 
                 ModelloCicliIntelligente Modello = new ModelloCicliIntelligente();
@@ -797,10 +788,10 @@ namespace Crs.Home.ApocalypsApp
                 this.Cursor = Cursors.Default;
             }
 
-            return true;
+            return risultatiEstr;
         }
 
-        private bool AnalisiModelloGeometricoCubo()
+        private List<RisultatoEstrazione>? AnalisiModelloGeometricoCubo()
         {
             try
             {
@@ -813,7 +804,7 @@ namespace Crs.Home.ApocalypsApp
                 bool res = GetPeriodiInit(out ruoteSelezionate, out int quantiNum, out periodi);
                 if (!res)
                 {
-                    return res;
+                    return null;
                 }
                 
                 int indiceperiodo = 0;
@@ -877,7 +868,7 @@ namespace Crs.Home.ApocalypsApp
                 this.Cursor = Cursors.Default;
             }
 
-            return true;
+            return risultatiEstr;
         }
 
 
@@ -1254,17 +1245,17 @@ namespace Crs.Home.ApocalypsApp
 
         private void btnAnalisiModQuantistico_Click(object sender, EventArgs e)
         {
-            AnalisiModelloQuantistico();
+            PrevisioniMerge.Add("ModelloQuantistico", AnalisiModelloQuantistico());
         }
 
         private void btnModCicli_Click(object sender, EventArgs e)
         {
-            AnalisiModelloCicli();
+            PrevisioniMerge.Add("ModelloCicli", AnalisiModelloCicli());
         }
 
         private void btnModGeometricoCubo_Click(object sender, EventArgs e)
         {
-            AnalisiModelloGeometricoCubo();
+            PrevisioniMerge.Add("ModelloGeometricoCubo",AnalisiModelloGeometricoCubo());
         }
     }
 
